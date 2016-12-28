@@ -3,14 +3,14 @@
     namespace repository_namespace;
 
     use Masterkey\Repository\Contracts\RepositoryInterface;
-    use Masterkey\Repository\Eloquent\Repository;
+    use Masterkey\Repository\BaseRepository;
 
     /**
      * repository_class
      *
      * @package repository_namespace
      */
-    class repository_class extends Repository
+    class repository_class extends BaseRepository
     {
         /**
          * @return  string

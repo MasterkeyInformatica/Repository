@@ -2,7 +2,7 @@
 
     namespace criteria_namespace;
 
-    use Masterkey\Repository\Criteria\Criteria;
+    use Masterkey\Repository\Criteria;
     use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
     /**
