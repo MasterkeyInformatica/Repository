@@ -5,6 +5,8 @@
     use Masterkey\Repository\Contracts\RepositoryInterface;
     use Masterkey\Repository\BaseRepository;
 
+    use model_path\model_name;
+
     /**
      * repository_class
      *
@@ -17,6 +19,6 @@
          */
         public function model()
         {
-            return 'model_path\model_name';
+            return model_name::class;
         }
     }
