@@ -6,6 +6,16 @@
     use Illuminate\Support\Facades\Config;
     use Doctrine\Common\Inflector\Inflector;
 
+    /**
+     * CriteriaCreator
+     *
+     * Realiza a criação da classe de Criteria
+     *
+     * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+     * @version 1.0.1
+     * @since   28/12/2016
+     * @package Masterkey\Repository\Console\Commands\Creators
+     */
     class CriteriaCreator {
 
         /**
@@ -114,7 +124,7 @@
             $model = $this->getModel();
 
             // Get the criteria path from the config file.
-            $directory = Config::get('repositories.criteria_path');
+            $directory = Config::get('repository.criteria_path');
 
             // Check if the model is not null.
             if(isset($model) && !empty($model))
@@ -142,7 +152,7 @@
             $model    = $this->pluralizeModel();
 
             // Criteria namespace.
-            $criteria_namespace = Config::get('repositories.criteria_namespace');
+            $criteria_namespace = Config::get('repository.criteria_namespace');
 
             // Criteria class.
             $criteria_class     = $criteria;

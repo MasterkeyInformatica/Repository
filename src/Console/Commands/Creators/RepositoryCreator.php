@@ -9,7 +9,12 @@
     /**
      * Class RepositoryCreator
      *
-     * @package Bosnadev\Repositories\Console\Commands\Creators
+     * Realiza a criação da classe repositório;
+     *
+     * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+     * @version 1.0.1
+     * @since   28/12/2016
+     * @package Masterkey\Repository\Console\Commands\Creators
      */
     class RepositoryCreator {
 
@@ -111,7 +116,7 @@
         protected function getDirectory()
         {
             // Get the directory from the config file.
-            $directory = Config::get('repositories.repository_path');
+            $directory = Config::get('repository.repository_path');
 
             // Return the directory.
             return $directory;
@@ -193,13 +198,13 @@
         protected function getPopulateData()
         {
             // Repository namespace.
-            $repository_namespace = Config::get('repositories.repository_namespace');
+            $repository_namespace = Config::get('repository.repository_namespace');
 
             // Repository class.
             $repository_class     = $this->getRepositoryName();
 
             // Model path.
-            $model_path           = Config::get('repositories.model_namespace');
+            $model_path           = Config::get('repository.model_namespace');
 
             // Model name.
             $model_name           = $this->getModelName();
