@@ -1,0 +1,24 @@
+<?php
+
+    namespace criteria_namespace;
+
+    use Masterkey\Repository\Criteria\Criteria;
+    use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
+
+    /**
+     * criteria_class
+     *
+     * @package criteria_namespace
+     */
+    class criteria_class extends Criteria {
+
+        /**
+         * @param   $model
+         * @param   Repository $repository
+         * @return  mixed
+         */
+        public function apply($model, Repository $repository)
+        {
+            return $model;
+        }
+    }

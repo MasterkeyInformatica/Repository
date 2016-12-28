@@ -1,0 +1,19 @@
+{
+    "name": "masterkey/repository",
+    "description": "Repository Pattern for Laravel 5",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matheus Lopes Santos",
+            "email": "fale_com_lopez@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Masterkey\\Repository\\": "src/"
+        }
+    }
+}
