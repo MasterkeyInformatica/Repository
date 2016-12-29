@@ -7,84 +7,81 @@
     use Symfony\Component\Console\Input\InputArgument;
     use Masterkey\Repository\Console\Commands\Creators\CriteriaCreator;
 
+    /**
+     * MakeCriteriaCommand
+     *
+     * Define commands to create a new criteria class
+     *
+     * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+     * @version 1.0.1
+     * @since   29/12/2016
+     * @package Masterkey\Repository\Console\Commands
+     */
     class MakeCriteriaCommand extends Command
     {
         /**
-         * The name and signature of the console command.
+         * Command's name
          *
          * @var string
          */
         protected $name = 'make:criteria';
 
         /**
-         * The console command description.
+         * Command's description
          *
          * @var string
          */
         protected $description = 'Create a new criteria class';
 
         /**
-         * @var
+         * @var CriteriaCreator
          */
         protected $creator;
 
         /**
-         * @var
+         * @var Composer
          */
         protected $composer;
 
         /**
-         * @param CriteriaCreator $creator
+         * Class constructor
+         *
+         * @param   CriteriaCreator  $creator
          */
         public function __construct(CriteriaCreator $creator)
         {
             parent::__construct();
 
-            // Set the creator.
             $this->creator  = $creator;
-
-            // Set the composer.
             $this->composer = app()['composer'];
         }
 
         /**
          * Execute the console command.
          *
-         * @return mixed
+         * @return  mixed
          */
         public function handle()
         {
-            // Get the arguments.
             $arguments = $this->argument();
-
-            // Get the options.
             $options   = $this->option();
 
-            // Write criteria.
             $this->writeCriteria($arguments, $options);
-
-            // Dump autoload.
             $this->composer->dumpAutoloads();
         }
 
         /**
          * Write the criteria.
          *
-         * @param $arguments
-         * @param $options
+         * @param   array  $arguments
+         * @param   array  $options
          */
         public function writeCriteria($arguments, $options)
         {
-            // Set criteria.
             $criteria = $arguments['criteria'];
-
-            // Set model.
             $model    = $options['model'];
 
-            // Create the criteria.
-            if($this->creator->create($criteria, $model))
-            {
-                // Information message.
+            if($this->creator->create($criteria, $model)) {
                 $this->info("Succesfully created the criteria class.");
             }
         }
@@ -92,7 +89,7 @@
         /**
          * Get the console command arguments.
          *
-         * @return array
+         * @return  array
          */
         protected function getArguments()
         {
@@ -104,7 +101,7 @@
         /**
          * Get the console command options.
          *
-         * @return array
+         * @return  array
          */
         protected function getOptions()
         {

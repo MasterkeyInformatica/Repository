@@ -7,17 +7,27 @@
     use Symfony\Component\Console\Input\InputArgument;
     use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
 
+    /**
+     * MakeRepositoryCommand
+     *
+     * Define commands to create a new repository class
+     *
+     * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+     * @version 1.0.1
+     * @since   29/12/2016
+     * @package Masterkey\Repository\Console\Commands
+     */
     class MakeRepositoryCommand extends Command
     {
         /**
-         * The name and signature of the console command.
+         * Command's name
          *
          * @var string
          */
         protected $name = 'make:repository';
 
         /**
-         * The console command description.
+         * Command's description
          *
          * @var string
          */
@@ -29,68 +39,58 @@
         protected $creator;
 
         /**
-         * @var
+         * @var Composer
          */
         protected $composer;
 
         /**
-         * @param RepositoryCreator $creator
+         * Class Constructor
+         *
+         * @param   RepositoryCreator  $creator
          */
         public function __construct(RepositoryCreator $creator)
         {
             parent::__construct();
 
-            // Set the creator.
             $this->creator  = $creator;
-
-            // Set composer.
             $this->composer = app()['composer'];
         }
 
         /**
-         * Execute the console command.
+         * Execute the console command
          *
          * @return mixed
          */
         public function handle()
         {
-            // Get the arguments.
             $arguments = $this->argument();
-
-            // Get the options.
             $options   = $this->option();
 
-            // Write repository.
             $this->writeRepository($arguments, $options);
 
-            // Dump autoload.
             $this->composer->dumpAutoloads();
         }
 
         /**
-         * @param $arguments
-         * @param $options
+         * Write a new repository class
+         *
+         * @param   array  $arguments
+         * @param   array  $options
          */
         protected function writeRepository($arguments, $options)
         {
-            // Set repository.
             $repository = $arguments['repository'];
-
-            // Set model.
             $model      = $options['model'];
 
-            // Create the repository.
-            if($this->creator->create($repository, $model))
-            {
-                // Information message.
+            if($this->creator->create($repository, $model)) {
                 $this->info("Successfully created the repository class");
             }
         }
 
         /**
-         * Get the console command arguments.
+         * Return the console's args
          *
-         * @return array
+         * @return  array
          */
         protected function getArguments()
         {
@@ -100,9 +100,9 @@
         }
 
         /**
-         * Get the console command options.
+         * Return the console's options
          *
-         * @return array
+         * @return  array
          */
         protected function getOptions()
         {
