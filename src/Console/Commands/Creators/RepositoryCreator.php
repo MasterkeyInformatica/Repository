@@ -12,8 +12,8 @@
      * Realiza a criação da classe repositório;
      *
      * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version 1.0.1
-     * @since   28/12/2016
+     * @version 1.0.2
+     * @since   29/12/2016
      * @package Masterkey\Repository\Console\Commands\Creators
      */
     class RepositoryCreator {
@@ -24,17 +24,17 @@
         protected $files;
 
         /**
-         * @var
+         * @var string
          */
         protected $repository;
 
         /**
-         * @var
+         * @var string
          */
         protected $model;
 
         /**
-         * @param Filesystem $files
+         * @param   Filesystem  $files
          */
         public function __construct(Filesystem $files)
         {
@@ -42,7 +42,7 @@
         }
 
         /**
-         * @return mixed
+         * @return  mixed
          */
         public function getRepository()
         {
@@ -50,11 +50,13 @@
         }
 
         /**
-         * @param mixed $repository
+         * @param   mixed  $repository
+         * @return  $this
          */
         public function setRepository($repository)
         {
             $this->repository = $repository;
+            return $this;
         }
 
         /**
@@ -66,7 +68,8 @@
         }
 
         /**
-         * @param mixed $model
+         * @param   mixed  $model
+         * @return  $this
          */
         public function setModel($model)
         {
@@ -76,36 +79,32 @@
         /**
          * Create the repository.
          *
-         * @param $repository
-         * @param $model
-         * @return int
+         * @param   string  $repository
+         * @param   string  $model
+         * @return  bool
          */
         public function create($repository, $model)
         {
-            // Set the repository.
-            $this->setRepository($repository);
-
-            // Set the model.
-            $this->setModel($model);
-
-            // Create the directory.
-            $this->createDirectory();
-
-            // Return result.
-            return $this->createClass();
+            return $this->setRepository($repository)
+                        ->setModel($model)
+                        ->createDirectory()
+                        ->createClass();
         }
 
+        /**
+         * Creates de directory form the repository
+         *
+         * @return  $this
+         */
         protected function createDirectory()
         {
-            // Directory.
             $directory = $this->getDirectory();
 
-            // Check if the directory exists.
-            if(!$this->files->isDirectory($directory))
-            {
-                // Create the directory if not.
+            if(!$this->files->isDirectory($directory)) {
                 $this->files->makeDirectory($directory, 0755, true);
             }
+
+            return $this;
         }
 
         /**
@@ -115,31 +114,22 @@
          */
         protected function getDirectory()
         {
-            // Get the directory from the config file.
-            $directory = Config::get('repository.repository_path');
-
-            // Return the directory.
-            return $directory;
+            return Config::get('repository.repository_path');
         }
 
         /**
          * Get the repository name.
          *
-         * @return mixed|string
+         * @return  mixed|string
          */
         protected function getRepositoryName()
         {
-            // Get the repository.
             $repository_name = $this->getRepository();
 
-            // Check if the repository ends with 'Repository'.
-            if(!strpos($repository_name, 'Repository') !== false)
-            {
-                // Append 'Repository' if not.
+            if(!strpos($repository_name, 'Repository') !== false) {
                 $repository_name .= 'Repository';
             }
 
-            // Return repository name.
             return $repository_name;
         }
 
@@ -150,19 +140,11 @@
          */
         protected function getModelName()
         {
-            // Set model.
-            $model      = $this->getModel();
+            $model = $this->getModel();
 
-            // Check if the model isset.
-            if(isset($model) && !empty($model))
-            {
-                // Set the model name from the model option.
+            if(isset($model) && !empty($model)) {
                 $model_name = $model;
-            }
-
-            else
-            {
-                // Set the model name by the stripped repository name.
+            } else {
                 $model_name = Inflector::singularize($this->stripRepositoryName());
             }
 
@@ -173,52 +155,34 @@
         /**
          * Get the stripped repository name.
          *
-         * @return string
+         * @return  string
          */
         protected function stripRepositoryName()
         {
-            // Lowercase the repository.
             $repository = strtolower($this->getRepository());
-
-            // Remove repository from the string.
             $stripped   = str_replace("repository", "", $repository);
 
-            // Uppercase repository name.
-            $result = ucfirst($stripped);
-
-            // Return the result.
-            return $result;
+            return ucfirst($stripped);
         }
 
         /**
          * Get the populate data.
          *
-         * @return array
+         * @return  array
          */
         protected function getPopulateData()
         {
-            // Repository namespace.
-            $repository_namespace = Config::get('repository.repository_namespace');
+            $repository_namespace   = Config::get('repository.repository_namespace');
+            $repository_class       = $this->getRepositoryName();
+            $model_path             = Config::get('repository.model_namespace');
+            $model_name             = $this->getModelName();
 
-            // Repository class.
-            $repository_class     = $this->getRepositoryName();
-
-            // Model path.
-            $model_path           = Config::get('repository.model_namespace');
-
-            // Model name.
-            $model_name           = $this->getModelName();
-
-            // Populate data.
-            $populate_data = [
+            return [
                 'repository_namespace' => $repository_namespace,
                 'repository_class'     => $repository_class,
                 'model_path'           => $model_path,
                 'model_name'           => $model_name
             ];
-
-            // Return populate data.
-            return $populate_data;
         }
 
         /**
@@ -228,25 +192,18 @@
          */
         protected function getPath()
         {
-            // Path.
-            $path = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getRepositoryName() . '.php';
-
-            // return path.
-            return $path;
+            return $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getRepositoryName() . '.php';
         }
 
         /**
-         * Get the stub.
+         * Get the stub file.
          *
-         * @return string
+         * @return  string
+         * @throws  \Illuminate\Contracts\Filesystem\FileNotFoundException
          */
         protected function getStub()
         {
-            // Stub
-            $stub = $this->files->get($this->getStubPath() . "repository.stub");
-
-            // Return stub.
-            return $stub;
+            return $this->files->get($this->getStubPath() . "repository.stub");
         }
 
         /**
@@ -256,11 +213,7 @@
          */
         protected function getStubPath()
         {
-            // Stub path.
-            $stub_path = __DIR__ . '/../../../../resources/stubs/';
-
-            // Return the stub path.
-            return $stub_path;
+            return __DIR__ . '/../../../../resources/stubs/';
         }
 
         /**
@@ -270,29 +223,23 @@
          */
         protected function populateStub()
         {
-            // Populate data
-            $populate_data = $this->getPopulateData();
+            $populate_data  = $this->getPopulateData();
+            $stub           = $this->getStub();
 
-            // Stub
-            $stub = $this->getStub();
-
-            // Loop through the populate data.
-            foreach ($populate_data as $key => $value)
-            {
-                // Populate the stub.
+            foreach ($populate_data as $key => $value) {
                 $stub = str_replace($key, $value, $stub);
             }
 
-            // Return the stub.
             return $stub;
         }
 
+        /**
+         * Create the new Class
+         *
+         * @return  mixed
+         */
         protected function createClass()
         {
-            // Result.
-            $result = $this->files->put($this->getPath(), $this->populateStub());
-
-            // Return the result.
-            return $result;
+            return $this->files->put($this->getPath(), $this->populateStub());
         }
     }

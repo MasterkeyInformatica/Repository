@@ -12,8 +12,8 @@
      * Realiza a criação da classe de Criteria
      *
      * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version 1.0.1
-     * @since   28/12/2016
+     * @version 1.0.2
+     * @since   29/12/2016
      * @package Masterkey\Repository\Console\Commands\Creators
      */
     class CriteriaCreator {
@@ -24,17 +24,17 @@
         protected $files;
 
         /**
-         * @var
+         * @var string
          */
         protected $criteria;
 
         /**
-         * @var
+         * @var string
          */
         protected $model;
 
         /**
-         * @param Filesystem $files
+         * @param   Filesystem  $files
          */
         public function __construct(Filesystem $files)
         {
@@ -42,7 +42,7 @@
         }
 
         /**
-         * @return mixed
+         * @return  mixed
          */
         public function getCriteria()
         {
@@ -50,15 +50,17 @@
         }
 
         /**
-         * @param mixed $criteria
+         * @param   mixed  $criteria
+         * @return  $this
          */
         public function setCriteria($criteria)
         {
             $this->criteria = $criteria;
+            return $this;
         }
 
         /**
-         * @return mixed
+         * @return  mixed
          */
         public function getModel()
         {
@@ -66,74 +68,61 @@
         }
 
         /**
-         * @param mixed $model
+         * @param   mixed  $model
+         * @return  $this
          */
         public function setModel($model)
         {
             $this->model = $model;
+            return $this;
         }
 
         /**
          * Create the criteria.
          *
-         * @param $criteria
-         * @param $model
-         *
-         * @return int
+         * @param   string  $criteria
+         * @param   string  $model
+         * @return  bool
          */
         public function create($criteria, $model)
         {
-            // Set the criteria.
-            $this->setCriteria($criteria);
-
-            // Set the model.
-            $this->setModel($model);
-
-            // Create the folder directory.
-            $this->createDirectory();
-
-            // Return result.
-            return $this->createClass();
+            return $this->setCriteria($criteria)
+                        ->setModel($model)
+                        ->createDirectory()
+                        ->createClass();
         }
 
 
         /**
          * Create the criteria directory.
+         *
+         * @return  $this
          */
         public function createDirectory()
         {
-            // Directory
             $directory = $this->getDirectory();
 
-            // Check if the directory exists.
-            if(!$this->files->isDirectory($directory))
-            {
-                // Create the directory if not.
+            if(!$this->files->isDirectory($directory)) {
                 $this->files->makeDirectory($directory, 0755, true);
             }
+
+            return $this;
         }
 
         /**
          * Get the criteria directory.
          *
-         * @return string
+         * @return  string
          */
         public function getDirectory()
         {
-            // Model
-            $model = $this->getModel();
+            $model      = $this->getModel();
+            $directory  = Config::get('repository.criteria_path');
 
-            // Get the criteria path from the config file.
-            $directory = Config::get('repository.criteria_path');
-
-            // Check if the model is not null.
-            if(isset($model) && !empty($model))
-            {
-                // Update the directory with the model name.
+            if(isset($model) && !empty($model)) {
                 $directory .= DIRECTORY_SEPARATOR . $this->pluralizeModel();
             }
 
-            // Return the directory.
             return $directory;
         }
 
@@ -141,135 +130,93 @@
         /**
          * Get the populate data.
          *
-         * @return array
+         * @return  array
          */
         protected function getPopulateData()
         {
-            // Criteria.
-            $criteria =  $this->getCriteria();
+            $criteria   =  $this->getCriteria();
+            $model      = $this->pluralizeModel();
 
-            // Model
-            $model    = $this->pluralizeModel();
-
-            // Criteria namespace.
             $criteria_namespace = Config::get('repository.criteria_namespace');
-
-            // Criteria class.
             $criteria_class     = $criteria;
 
-            // Check if the model isset and not empty.
-            if(isset($model) && !empty($model))
-            {
-                // Update the criteria namespace with the model folder.
+            if(isset($model) && !empty($model)) {
                 $criteria_namespace .= '\\' . $model;
             }
 
-            // Populate data.
-            $populate_data = [
+            return [
                 'criteria_namespace' => $criteria_namespace,
                 'criteria_class'     => $criteria_class
             ];
-
-            // Return the populate data.
-            return $populate_data;
         }
 
         /**
          * Get the path.
          *
-         * @return string
+         * @return  string
          */
         protected function getPath()
         {
-            // Path
-            $path = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getCriteria() . '.php';
-
-            // Return the path.
-            return $path;
+            return $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getCriteria() . '.php';
         }
 
         /**
          * Get the stub.
          *
-         * @return string
-         * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+         * @return  string
+         * @throws  \Illuminate\Contracts\Filesystem\FileNotFoundException
          */
         protected function getStub()
         {
-            // Stub
-            $stub = $this->files->get($this->getStubPath() . "criteria.stub");
-
-            // Return the stub.
-            return $stub;
+            return $this->files->get($this->getStubPath() . "criteria.stub");
         }
 
         /**
          * Get the stub path.
          *
-         * @return string
+         * @return  string
          */
         protected function getStubPath()
         {
-            // Path
-            $path = __DIR__ . '/../../../../resources/stubs/';
-
-            // Return the path.
-            return $path;
+            return __DIR__ . '/../../../../resources/stubs/';
         }
 
         /**
          * Populate the stub.
          *
-         * @return mixed
+         * @return  mixed
          */
         protected function populateStub()
         {
-            // Populate data
-            $populate_data = $this->getPopulateData();
+            $populate_data  = $this->getPopulateData();
+            $stub           = $this->getStub();
 
-            // Stub
-            $stub = $this->getStub();
-
-            // Loop through the populate data.
-            foreach ($populate_data as $search => $replace)
-            {
-                // Populate the stub.
+            foreach ($populate_data as $search => $replace) {
                 $stub = str_replace($search, $replace, $stub);
             }
 
-            // Return the stub.
             return $stub;
         }
 
         /**
          * Create the repository class.
          *
-         * @return int
+         * @return  bool
          */
         protected function createClass()
         {
-            // Result.
-            $result = $this->files->put($this->getPath(), $this->populateStub());
-
-            // Return the result.
-            return $result;
+            return $this->files->put($this->getPath(), $this->populateStub());
         }
 
         /**
          * Pluralize the model.
          *
-         * @return string
+         * @return  string
          */
         protected function pluralizeModel()
         {
-            // Pluralized
             $pluralized = Inflector::pluralize($this->getModel());
 
-            // Uppercase first character the modelname
-            $model_name = ucfirst($pluralized);
-
-            // Return the pluralized model.
-            return $model_name;
+            return ucfirst($pluralized);
         }
-
     }
