@@ -24,7 +24,7 @@ Após o composer baixar a dependência, adicione o *Service Provider* em app.php
 ```
 
 Feito isso, publique o arquivo de configuração do repositório:
-```php
+```sh
 php artisan vendor:publish
 ```
 
