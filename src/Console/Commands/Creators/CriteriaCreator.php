@@ -141,7 +141,7 @@
             $criteria_class     = $criteria;
 
             if(isset($model) && !empty($model)) {
-                $criteria_namespace .= '\\' . $model;
+                $criteria_namespace .= '\\' . str_replace('/', '\\', $model);
             }
 
             return [

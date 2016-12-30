@@ -10,8 +10,8 @@
      *
      * @package criteria_namespace
      */
-    class criteria_class extends Criteria {
-
+    class criteria_class extends Criteria
+    {
         /**
          * @param   $model
          * @param   Repository $repository
