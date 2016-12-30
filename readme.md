@@ -31,4 +31,9 @@ No arquivo de configuração você pode definir o local onde os repositories e c
 Criando Repositories
 --------------------
 
-em breve
+Você pode Criar um repositório utilizando o artisan:
+```php
+php artisan make:repository UsersRepository --model=Users
+// ou ainda
+php artisan make:repository Users/Users --model=Models/Users
+```

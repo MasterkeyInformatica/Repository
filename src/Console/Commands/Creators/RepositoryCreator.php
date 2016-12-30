@@ -12,11 +12,13 @@
      * Realiza a criação da classe repositório;
      *
      * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version 1.0.2
+     * @version 1.1.0
      * @since   29/12/2016
      * @package Masterkey\Repository\Console\Commands\Creators
      */
-    class RepositoryCreator {
+    class RepositoryCreator
+    {
+        use NamespaceTrait;
 
         /**
          * @var Filesystem
@@ -34,11 +36,33 @@
         protected $model;
 
         /**
+         * @var string
+         */
+        protected $repositoryNamespace;
+
+        /**
          * @param   Filesystem  $files
          */
         public function __construct(Filesystem $files)
         {
             $this->files = $files;
+        }
+
+        /**
+         * @param   string  $namespace
+         */
+        public function setRepositoryNamespace($namespace)
+        {
+            $this->repositoryNamespace = $namespace;
+            return $this;
+        }
+
+        /**
+         * @return  string
+         */
+        public function getRepositoryNamespace()
+        {
+            return $this->repositoryNamespace;
         }
 
         /**
@@ -74,6 +98,7 @@
         public function setModel($model)
         {
             $this->model = $model;
+            return $this;
         }
 
         /**
@@ -85,8 +110,13 @@
          */
         public function create($repository, $model)
         {
-            return $this->setRepository($repository)
-                        ->setModel($model)
+            $repository = $this->getNamespaceOf($repository);
+            $model      = $this->getNamespaceOf($model);
+
+            return $this->setRepositoryNamespace($repository->namespace)
+                        ->setRepository($repository->className)
+                        ->setModelNamespace($model->namespace)
+                        ->setModel($model->className)
                         ->createDirectory()
                         ->createClass();
         }
@@ -98,7 +128,7 @@
          */
         protected function createDirectory()
         {
-            $directory = $this->getDirectory();
+            $directory = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getRepositoryNamespace();
 
             if(!$this->files->isDirectory($directory)) {
                 $this->files->makeDirectory($directory, 0755, true);
@@ -177,6 +207,14 @@
             $model_path             = Config::get('repository.model_namespace');
             $model_name             = $this->getModelName();
 
+            if($this->getRepositoryNamespace() != '') {
+                $repository_namespace .= '\\' . str_replace('/', '\\', $this->getRepositoryNamespace());
+            }
+
+            if($this->getModelNamespace() !== '') {
+                $model_path .= '\\' . str_replace('/', '\\', $this->getModelNamespace());
+            }
+
             return [
                 'repository_namespace' => $repository_namespace,
                 'repository_class'     => $repository_class,
@@ -192,7 +230,8 @@
          */
         protected function getPath()
         {
-            return $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getRepositoryName() . '.php';
+            $directory = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getRepositoryNamespace();
+            return $directory . DIRECTORY_SEPARATOR . $this->getRepositoryName() . '.php';
         }
 
         /**
