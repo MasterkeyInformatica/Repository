@@ -1,6 +1,8 @@
 Masterkey Repository
 ====================
 
+[![Build Status](https://travis-ci.org/MasterkeyInformatica/Repository.svg?branch=master)](https://travis-ci.org/MasterkeyInformatica/Repository)
+
 Este projeto foi desenvolvido para que pudessemos ter uma camada de
 abstração dos Models do Laravel, desacoplando a lógica dos Controllers.
 
@@ -32,8 +34,8 @@ Criando Repositories
 --------------------
 
 Você pode Criar um repositório utilizando o artisan:
-```php
+```sh
 php artisan make:repository UsersRepository --model=Users
-// ou ainda
+# ou ainda
 php artisan make:repository Users/Users --model=Models/Users
 ```
