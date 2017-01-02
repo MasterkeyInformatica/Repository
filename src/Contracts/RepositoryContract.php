@@ -8,8 +8,8 @@
      * Interface that rules repository classes
      *
      * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version  1.0.0
-     * @since    28/12/2016
+     * @version  1.1.0
+     * @since    02/01/2017
      * @package  Masterkey\Repository\Contracts
      */
     interface RepositoryContract
@@ -19,6 +19,19 @@
          * @return  mixed
          */
         public function all($columns = ['*']);
+
+        /**
+         * @param   array  $relations
+         * @return  mixed
+         */
+        public function with(array $relations);
+
+        /**
+         * @param   string  $value
+         * @param   string|null  $key
+         * @return  array
+         */
+        public function pluck($value, $key = null);
 
         /**
          * @param   int  $perPage
@@ -31,13 +44,19 @@
          * @param   array  $data
          * @return  mixed
          */
+        public function create(array $data);
+
+        /**
+         * @param   array  $data
+         * @return  mixed
+         */
         public function save(array $data);
 
         /**
          * @param   array  $data
          * @return  mixed
          */
-        public function create(array $data);
+        public function massInsert(array $data);
 
         /**
          * @param   int  $id
@@ -47,10 +66,22 @@
         public function update($id, array $data);
 
         /**
-         * @param   int  $id
+         * @param   array  $data
          * @return  mixed
          */
+        public function massUpdate(array $data);
+
+        /**
+         * @param   int  $id
+         * @return  bool
+         */
         public function delete($id);
+
+        /**
+         * @param   int  $id
+         * @return  bool
+         */
+        public function destroy($id);
 
         /**
          * @param   int  $id

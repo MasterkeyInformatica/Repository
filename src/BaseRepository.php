@@ -24,42 +24,42 @@
     {
         /**
          * Container's instance
-         * 
+         *
          * @var App
          */
         protected $app;
 
         /**
          * Model's instance
-         * 
+         *
          * @var Model
          */
         protected $model;
 
         /**
          * Collection's instance
-         * 
+         *
          * @var Collection
          */
         protected $criteria;
 
         /**
          * Skip defined criterias
-         * 
+         *
          * @var boolean
          */
         protected $skipCriteria = false;
 
         /**
          * Prevent criteria's overwriting
-         * 
+         *
          * @var boolean
          */
         protected $preventCriteriaOverwriting = true;
 
         /**
          * Class Constructor
-         * 
+         *
          * @param   App  $app
          * @param   Collection  $collection
          */
@@ -74,16 +74,16 @@
 
         /**
          * Return the model from a Repository
-         * 
+         *
          * @return  mixed
          */
         public abstract function model();
 
         /**
          * Return all columns in DB
-         * 
+         *
          * @param   array  $columns
-         * @return  
+         * @return
          */
         public function all($columns = ['*'])
         {
@@ -93,7 +93,7 @@
 
         /**
          * Returns the model with relationships
-         * 
+         *
          * @param   array  $relations
          * @return  $this
          */
@@ -105,7 +105,7 @@
 
         /**
          * Create a key -> value with DB data
-         * 
+         *
          * @param   string  $value
          * @param   string|null $key
          * @return  mixed
@@ -131,7 +131,7 @@
 
         /**
          * Paginate results from DB
-         * 
+         *
          * @param   integer  $perPage
          * @param   array  $columns
          * @return  mixed
@@ -144,7 +144,7 @@
 
         /**
          * Creates a new model
-         * 
+         *
          * @param   array  $data
          * @return  mixed|bool
          */
@@ -155,7 +155,7 @@
 
         /**
          * Save a new model without mass assignement
-         * 
+         *
          * @param   array  $data
          * @return  bool
          */
@@ -168,8 +168,19 @@
         }
 
         /**
+         * Perform bulk insertions on the model
+         *
+         * @param   array  $data
+         * @return  mixed
+         */
+        public function massInsert(array $data)
+        {
+            return $this->model->insert($data);
+        }
+
+        /**
          * Update a model
-         * 
+         *
          * @param   int  $id
          * @param   array  $data
          * @return  bool
@@ -182,7 +193,7 @@
 
         /**
          * Make a massive update on DB
-         * 
+         *
          * @param   array  $data
          * @return  bool
          */
@@ -194,7 +205,7 @@
 
         /**
          * Delete a model
-         * 
+         *
          * @param   int  $id
          * @return  bool
          */
@@ -206,7 +217,7 @@
 
         /**
          * Make a massive deleting on DB
-         * 
+         *
          * @param   int|array  $ids
          * @return  bool
          */
@@ -218,7 +229,7 @@
 
         /**
          * Find a model in DB
-         * 
+         *
          * @param   int   $id
          * @param   array  $columns
          * @return  mixed
@@ -231,7 +242,7 @@
 
         /**
          * Search for a model by a column
-         * 
+         *
          * @param   string  $attribute
          * @param   mixed  $value
          * @param   array  $columns
@@ -245,7 +256,7 @@
 
         /**
          * Search for records by a column
-         * 
+         *
          * @param   string  $attribute
          * @param   mixed  $value
          * @param   array  $columns
@@ -259,7 +270,7 @@
 
         /**
          * Search for records usgin where
-         * 
+         *
          * @param   array  $where
          * @param   array  $columns
          * @param   boolean $or
@@ -299,7 +310,7 @@
 
         /**
          * Call the factory for the model specified on the Repository
-         * 
+         *
          * @return  \Illuminate\Database\Eloquent\Builder
          */
         public function makeModel()
@@ -309,7 +320,7 @@
 
         /**
          * Create the model's instance
-         * 
+         *
          * @param   Model  $eloquentModel
          * @return  \Illuminate\Database\Eloquent\Builder
          * @throws  RepositoryException
@@ -327,7 +338,7 @@
 
         /**
          * Reset querying's scope
-         * 
+         *
          * @return   $this
          */
         public function resetScope()
@@ -338,7 +349,7 @@
 
         /**
          * Skip the criteria's querying scope
-         * 
+         *
          * @param   boolean  $status
          * @return  $this
          */
@@ -350,7 +361,7 @@
 
         /**
          * Return all criterias
-         * 
+         *
          * @return   Collection
          */
         public function getCriteria()
@@ -360,7 +371,7 @@
 
         /**
          * Apply a criteria on a model
-         * 
+         *
          * @param   Criteria  $criteria
          * @return  $this
          */
@@ -372,7 +383,7 @@
 
         /**
          * Push Criteria into Criteria's collection
-         * 
+         *
          * @param   Criteria  $criteria
          * @return  $this
          */
@@ -396,7 +407,7 @@
 
         /**
          * Apply a criteria on a model
-         * 
+         *
          * @return   $this
          */
         public function applyCriteria()
