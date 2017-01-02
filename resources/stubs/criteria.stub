@@ -3,7 +3,7 @@
     namespace criteria_namespace;
 
     use Masterkey\Repository\Criteria;
-    use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
+    use Masterkey\Repository\Contracts\RepositoryContract as Repository;
 
     /**
      * criteria_class
@@ -15,7 +15,7 @@
         /**
          * @param   $model
          * @param   Repository $repository
-         * @return  mixed
+         * @return  \Illuminate\Database\Eloquent\Builder
          */
         public function apply($model, Repository $repository)
         {

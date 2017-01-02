@@ -1,7 +1,8 @@
 <?php
 
-    use Masterkey\Repository\BaseRepository;
+    namespace Masterkey\Tests\Models;
 
+    use Masterkey\Repository\BaseRepository;
 
     class UserRepository extends BaseRepository
     {
@@ -12,7 +13,6 @@
 
         public function model()
         {
-            // Cria um esboço para a classe AlgumaClasse.
-            return Mockery::mock('Illuminate\Database\Eloquent\Model');
+            return User::class;
         }
     }

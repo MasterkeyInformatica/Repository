@@ -10,14 +10,13 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+    },
     "autoload": {
         "psr-4": {
-            "Masterkey\\Repository\\": "src/"
-        },
-        "files": [
-            "tests/Repositories/UserRepository.php"
-        ]
+            "Masterkey\\Repository\\": "src/",
+            "Masterkey\\Tests\\": "tests/"
+        }
     },
     "require-dev": {
         "phpunit/phpunit": "4.8.*",
@@ -25,6 +24,7 @@
         "illuminate/support": "^5.3",
         "illuminate/container": "^5.3",
         "illuminate/config": "^5.3",
-        "mockery/mockery": "^0.9.7"
+        "illuminate/database": "^5.3",
+        "illuminate/pagination": "^5.3"
     }
 }

@@ -8,6 +8,8 @@
 
     use Masterkey\Repository\Contracts\CriteriaContract;
     use Masterkey\Repository\Contracts\RepositoryContract;
+
+    use Masterkey\Repository\Exceptions\Model\ModelNotSavedException;
     use Masterkey\Repository\Exceptions\RepositoryException;
 
     /**
@@ -147,10 +149,17 @@
          *
          * @param   array  $data
          * @return  mixed|bool
+         * @throws  ModelNotSavedException
          */
         public function create(array $data)
         {
-            return $this->model->create($data);
+            $model = $this->model->create($data);
+
+            if($model) {
+                return $model;
+            }
+
+            throw new ModelNotSavedException;
         }
 
         /**
@@ -158,13 +167,19 @@
          *
          * @param   array  $data
          * @return  bool
+         * @throws  ModelNotSavedException
          */
         public function save(array $data)
         {
             foreach ($data as $k => $v) {
                 $this->model->$k = $v;
             }
-           return $this->model->save();
+
+            if($this->model->save()) {
+                return $this->model;
+            }
+
+            throw new ModelNotSavedException;
         }
 
         /**
@@ -172,10 +187,15 @@
          *
          * @param   array  $data
          * @return  mixed
+         * @throws  ModelNotSavedException
          */
         public function massInsert(array $data)
         {
-            return $this->model->insert($data);
+            if($this->model->insert($data)) {
+                return true;
+            }
+
+            throw new ModelNotSavedException('Não foi possível salvar alguns registros. Tente novamente');
         }
 
         /**
@@ -221,10 +241,10 @@
          * @param   int|array  $ids
          * @return  bool
          */
-        public function destroy($id)
+        public function destroy($ids)
         {
             $this->applyCriteria();
-            return $this->model->destroy($id0);
+            return $this->model->destroy($ids);
         }
 
         /**
