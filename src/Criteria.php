@@ -2,7 +2,7 @@
 
     namespace Masterkey\Repository;
 
-    use Masterkey\Repository\Contracts\RepositoryContract as Repository
+    use Masterkey\Repository\Contracts\RepositoryContract as Repository;
 
     /**
      * Criteria
@@ -19,10 +19,10 @@
     {
         /**
          * Apply a criteria on a model
-         * 
+         *
          * @param   mixed  $model
          * @param   Repository  $repository
          * @return  mixed
          */
-        public abstract function apply($model, Repository $repository)
+        public abstract function apply($model, Repository $repository);
     }
