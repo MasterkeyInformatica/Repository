@@ -2,6 +2,7 @@
 
     use Masterkey\Tests\Models\User;
     use Masterkey\Tests\Models\UserRepository;
+    use Masterkey\Tests\Models\ActiveUsers;
 
     class UserRepositoryTest extends PHPUnit_Framework_TestCase
     {
@@ -79,7 +80,7 @@
         public function testMassInsert()
         {
             $user = $this->user->massInsert([
-                ['name' => 'Maria', 'active' => true, 'logins' => 5],
+                ['name' => 'Maria', 'active' => false, 'logins' => 5],
                 ['name' => 'Sharon', 'active' => false, 'logins' => 3]
             ]);
 
@@ -133,5 +134,15 @@
         {
             $sum = $this->user->sum('logins');
             $this->assertEquals(28, $sum);
+        }
+
+        public function testCriteria()
+        {
+            $all        = $this->user->count();
+            $criteria   = new ActiveUsers();
+            $active     = $this->user->getByCriteria($criteria)->count();
+
+            $this->assertEquals(5, $all);
+            $this->assertEquals(3, $active);
         }
     }
