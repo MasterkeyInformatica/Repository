@@ -8,8 +8,8 @@
      * Interface that rules repository classes
      *
      * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version  1.1.0
-     * @since    02/01/2017
+     * @version  1.2.0
+     * @since    03/01/2017
      * @package  Masterkey\Repository\Contracts
      */
     interface RepositoryContract
@@ -112,4 +112,33 @@
          * @return  mixed
          */
         public function findWhere($where, $columns = ['*']);
+
+        /**
+         * @return  integer
+         */
+        public function count();
+
+        /**
+         * @param   string  $column
+         * @return  int|float
+         */
+        public function max($column);
+
+        /**
+         * @param   string  $column
+         * @return  int|float
+         */
+        public function min($column);
+
+        /**
+         * @param   string  $column
+         * @return  int|float
+         */
+        public function avg($column);
+
+        /**
+         * @param   string  $column
+         * @return  int|float
+         */
+        public function sum($column);
     }

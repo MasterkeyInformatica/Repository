@@ -10,7 +10,8 @@
 
         protected $fillable = [
             'name',
-            'active'
+            'active',
+            'logins'
         ];
 
         public $timestamps = false;

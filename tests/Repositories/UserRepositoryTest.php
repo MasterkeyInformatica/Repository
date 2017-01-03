@@ -56,7 +56,8 @@
         {
             $user = $this->user->create([
                 'name'      => 'Garcia',
-                'active'    => true
+                'active'    => true,
+                'logins'    => 2
             ]);
 
             $this->assertEquals(true, $user->exists);
@@ -67,7 +68,8 @@
         {
             $user = $this->user->save([
                 'name'      => 'Penelope',
-                'active'    => true
+                'active'    => true,
+                'logins'    => 8
             ]);
 
             $this->assertEquals(true, $user->exists);
@@ -77,8 +79,8 @@
         public function testMassInsert()
         {
             $user = $this->user->massInsert([
-                ['name' => 'Maria', 'active' => true],
-                ['name' => 'Sharon', 'active' => false]
+                ['name' => 'Maria', 'active' => true, 'logins' => 5],
+                ['name' => 'Sharon', 'active' => false, 'logins' => 3]
             ]);
 
             $this->assertEquals(true, $user);
@@ -98,8 +100,38 @@
          */
         public function testDelete()
         {
-            $this->user->delete(1);
+            $this->user->delete(2);
 
-            $this->user->find(1);
+            $this->user->find(2);
+        }
+
+        public function testCount()
+        {
+            $saved = $this->user->count();
+            $this->assertEquals(5, $saved);
+        }
+
+        public function testMax()
+        {
+            $max = $this->user->max('logins');
+            $this->assertEquals(10, $max);
+        }
+
+        public function testMin()
+        {
+            $min = $this->user->min('logins');
+            $this->assertEquals(2, $min);
+        }
+
+        public function testAvg()
+        {
+            $avg = $this->user->avg('logins');
+            $this->assertEquals(5.6, $avg);
+        }
+
+        public function testSum()
+        {
+            $sum = $this->user->sum('logins');
+            $this->assertEquals(28, $sum);
         }
     }

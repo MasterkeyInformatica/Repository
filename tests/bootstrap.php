@@ -39,8 +39,8 @@
     $pdo    = $capsule->getConnection('sqlite')->getPdo();
     $db     = new DB($pdo, 'sqlite');
 
-    $db->statement('CREATE TABLE if not exists users (id integer not null primary key AUTOINCREMENT, name varchar(20) not null, active bool not null)');
+    $db->statement('CREATE TABLE if not exists users (id integer not null primary key AUTOINCREMENT, name varchar(20) not null, active bool not null, logins integer not null)');
     $db->table('users')->insert([
-        ['name' => 'Jonas', 'active' => true],
-        ['name' => 'Matilda', 'active' => false]
+        ['name' => 'Jonas', 'active' => true, 'logins' => 10],
+        ['name' => 'Matilda', 'active' => false, 'logins' => 5]
     ]);

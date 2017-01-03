@@ -444,4 +444,63 @@
 
             return $this;
         }
+
+        /**
+         * Count ocurrences on the database.
+         *
+         * @return  integer
+         */
+        public function count()
+        {
+            $this->applyCriteria();
+            return $this->model->count();
+        }
+
+        /**
+         * Find the max value of a column
+         *
+         * @param   string  $column
+         * @return  int|float
+         */
+        public function max($column)
+        {
+            $this->applyCriteria();
+            return $this->model->max($column);
+        }
+
+        /**
+         * Find the min value of a column
+         *
+         * @param   string  $column
+         * @return  int|float
+         */
+        public function min($column)
+        {
+            $this->applyCriteria();
+            return $this->model->min($column);
+        }
+
+        /**
+         * Find the AVG value of a column
+         *
+         * @param   string  $column
+         * @return  int|float
+         */
+        public function avg($column)
+        {
+            $this->applyCriteria();
+            return $this->model->avg($column);
+        }
+
+        /**
+         * Sum all values from a column
+         *
+         * @param   string  $column
+         * @return  int|float
+         */
+        public function sum($column)
+        {
+            $this->applyCriteria();
+            return $this->model->sum($column);
+        }
     }
