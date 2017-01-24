@@ -85,7 +85,7 @@
          * Return all columns in DB
          *
          * @param   array  $columns
-         * @return
+         * @return  \Illuminate\Support\Collection
          */
         public function all($columns = ['*'])
         {
@@ -145,7 +145,7 @@
         }
 
         /**
-         * Creates a new model
+         * Create a new model
          *
          * @param   array  $data
          * @return  mixed|bool
@@ -154,6 +154,24 @@
         public function create(array $data)
         {
             $model = $this->model->create($data);
+
+            if($model) {
+                return $model;
+            }
+
+            throw new ModelNotSavedException;
+        }
+
+        /**
+         * Create a new model or return a saved model
+         *
+         * @param   array $data
+         * @return  mixed
+         * @throws  ModelNotSavedException
+         */
+        public function firstOrCreate(array $data)
+        {
+            $model = $this->model->firstOrCreate($data);
 
             if($model) {
                 return $model;
@@ -258,6 +276,19 @@
         {
             $this->applyCriteria();
             return $this->model->findOrFail($id, $columns);
+        }
+
+        /**
+         * Return the first model
+         *
+         * @param   array  $columns
+         * @return  mixed
+         */
+        public function first($columns = ['*'])
+        {
+            $this->applyCriteria();
+
+            return $this->model->first($columns);
         }
 
         /**

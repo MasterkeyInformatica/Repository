@@ -50,6 +50,12 @@
          * @param   array  $data
          * @return  mixed
          */
+        public function firstOrCreate(array $data);
+
+        /**
+         * @param   array  $data
+         * @return  mixed
+         */
         public function save(array $data);
 
         /**
@@ -89,6 +95,12 @@
          * @return  mixed
          */
         public function find($id, $columns = ['*']);
+
+        /**
+         * @param   array  $columns
+         * @return  mixed
+         */
+        public function first($columns = ['*']);
 
         /**
          * @param   string  $field
