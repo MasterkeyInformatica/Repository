@@ -2,9 +2,9 @@
 
     namespace Masterkey\Repository;
 
-    use Illuminate\Support\Collection;
+    use Illuminate\Contracts\Support\Arrayable;
+    use Illuminate\Contracts\Container\Container;
     use Illuminate\Database\Eloquent\Model;
-    use Illuminate\Container\Container as App;
 
     use Masterkey\Repository\Contracts\CriteriaContract;
     use Masterkey\Repository\Contracts\RepositoryContract;
@@ -18,30 +18,24 @@
      * Classe desenvolvida para trabalhar com o padrão repository com o Laravel 5
      *
      * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version  1.0.0
-     * @since    28/12/2016
+     * @version  1.1.0
+     * @since    31/01/2017
      * @package  Masterkey\Repository
      */
     abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         /**
-         * Container's instance
-         *
-         * @var App
+         * @var \Illuminate\Contracts\Container\Container
          */
         protected $app;
 
         /**
-         * Model's instance
-         *
-         * @var Model
+         * @var \Illuminate\Database\Eloquent\Model
          */
         protected $model;
 
         /**
-         * Collection's instance
-         *
-         * @var Collection
+         * @var \Illuminate\Contracts\Support\Arrayable
          */
         protected $criteria;
 
@@ -60,15 +54,13 @@
         protected $preventCriteriaOverwriting = true;
 
         /**
-         * Class Constructor
-         *
-         * @param   App  $app
-         * @param   Collection  $collection
+         * @param   Container  $container
+         * @param   Arrayable  $arrayable
          */
-        public function __construct(App $app, Collection $collection)
+        public function __construct(Container $container, Arrayable $arrayable)
         {
-            $this->app      = $app;
-            $this->criteria = $collection;
+            $this->app      = $container;
+            $this->criteria = $arrayable;
 
             $this->resetScope();
             $this->makeModel();
@@ -82,8 +74,6 @@
         public abstract function model();
 
         /**
-         * Return all columns in DB
-         *
          * @param   array  $columns
          * @return  \Illuminate\Support\Collection
          */
@@ -94,8 +84,6 @@
         }
 
         /**
-         * Returns the model with relationships
-         *
          * @param   array  $relations
          * @return  $this
          */
@@ -114,15 +102,9 @@
          */
         public function pluck($value, $key = null)
         {
-            $laravel = app();
-
             $this->applyCriteria();
 
-            if($laravel::VERSION >= 5.2) {
-                $lists = $this->model->pluck($value, $key);
-            } else {
-                $lists = $this->model->lists($value, $key);
-            }
+            $lists = $this->model->pluck($value, $key);
 
             if (is_array($lists)) {
                 return $lists;
@@ -132,8 +114,6 @@
         }
 
         /**
-         * Paginate results from DB
-         *
          * @param   integer  $perPage
          * @param   array  $columns
          * @return  mixed
@@ -145,8 +125,6 @@
         }
 
         /**
-         * Create a new model
-         *
          * @param   array  $data
          * @return  mixed|bool
          * @throws  ModelNotSavedException
@@ -163,8 +141,6 @@
         }
 
         /**
-         * Create a new model or return a saved model
-         *
          * @param   array $data
          * @return  mixed
          * @throws  ModelNotSavedException
@@ -217,8 +193,6 @@
         }
 
         /**
-         * Update a model
-         *
          * @param   int  $id
          * @param   array  $data
          * @return  bool
@@ -230,8 +204,6 @@
         }
 
         /**
-         * Make a massive update on DB
-         *
          * @param   array  $data
          * @return  bool
          */
@@ -242,8 +214,6 @@
         }
 
         /**
-         * Delete a model
-         *
          * @param   int  $id
          * @return  bool
          */
@@ -266,8 +236,6 @@
         }
 
         /**
-         * Find a model in DB
-         *
          * @param   int   $id
          * @param   array  $columns
          * @return  mixed
@@ -279,8 +247,6 @@
         }
 
         /**
-         * Return the first model
-         *
          * @param   array  $columns
          * @return  mixed
          */
@@ -289,6 +255,21 @@
             $this->applyCriteria();
 
             return $this->model->first($columns);
+        }
+
+        /**
+         * @param   array  $columns
+         * @return  mixed
+         */
+        public function last($columns = ['*'])
+        {
+            $this->applyCriteria();
+
+            $primaryKey = $this->model->getKeyName();
+
+            return $this->model
+                        ->orderBy($primaryKey, 'desc')
+                        ->first();
         }
 
         /**
@@ -413,7 +394,7 @@
         /**
          * Return all criterias
          *
-         * @return   Collection
+         * @return   \Illuminate\Database\Eloquent\Collection
          */
         public function getCriteria()
         {
@@ -477,8 +458,6 @@
         }
 
         /**
-         * Count ocurrences on the database.
-         *
          * @return  integer
          */
         public function count()
@@ -488,8 +467,6 @@
         }
 
         /**
-         * Find the max value of a column
-         *
          * @param   string  $column
          * @return  int|float
          */
@@ -500,8 +477,6 @@
         }
 
         /**
-         * Find the min value of a column
-         *
          * @param   string  $column
          * @return  int|float
          */
@@ -512,8 +487,6 @@
         }
 
         /**
-         * Find the AVG value of a column
-         *
          * @param   string  $column
          * @return  int|float
          */
@@ -524,8 +497,6 @@
         }
 
         /**
-         * Sum all values from a column
-         *
          * @param   string  $column
          * @return  int|float
          */

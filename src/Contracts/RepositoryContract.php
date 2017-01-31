@@ -103,6 +103,12 @@
         public function first($columns = ['*']);
 
         /**
+         * @param   array  $columns
+         * @return  mixed
+         */
+        public function last($columns = ['*']);
+
+        /**
          * @param   string  $field
          * @param   mixed  $value
          * @param   array  $columns

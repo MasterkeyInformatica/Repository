@@ -2,7 +2,6 @@
 
     namespace repository_namespace;
 
-    use Masterkey\Repository\Contracts\RepositoryInterface;
     use Masterkey\Repository\BaseRepository;
 
     use model_path\model_name;

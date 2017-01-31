@@ -145,4 +145,20 @@
             $this->assertEquals(5, $all);
             $this->assertEquals(3, $active);
         }
+
+        public function testFirst()
+        {
+            $user   = $this->user->find(1);
+            $first  = $this->user->first();
+
+            $this->assertEquals($user->name, $first->name);
+        }
+
+        public function testLast()
+        {
+            $user = $this->user->find(6);
+            $last = $this->user->last();
+
+            $this->assertEquals($user->name, $last->name);
+        }
     }

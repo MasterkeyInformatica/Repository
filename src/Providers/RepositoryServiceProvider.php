@@ -53,19 +53,19 @@
         {
             // FileSystem.
             $this->app->instance('FileSystem', new Filesystem());
+
             // Composer.
-            $this->app->bind('Composer', function ($app)
-            {
+            $this->app->bind('Composer', function ($app) {
                 return new Composer($app['FileSystem']);
             });
+
             // Repository creator.
-            $this->app->singleton('RepositoryCreator', function ($app)
-            {
+            $this->app->singleton('RepositoryCreator', function ($app) {
                 return new RepositoryCreator($app['FileSystem']);
             });
+
             // Criteria creator.
-            $this->app->singleton('CriteriaCreator', function ($app)
-            {
+            $this->app->singleton('CriteriaCreator', function ($app) {
                 return new CriteriaCreator($app['FileSystem']);
             });
         }
@@ -73,23 +73,17 @@
         protected function registerMakeRepositoryCommand()
         {
             // Make repository command.
-            $this->app['command.repository.make'] = $this->app->share(
-                function($app)
-                {
-                    return new MakeRepositoryCommand($app['RepositoryCreator'], $app['Composer']);
-                }
-            );
+            $this->app['command.repository.make'] = $this->app->share(function($app) {
+                return new MakeRepositoryCommand($app['RepositoryCreator'], $app['Composer']);
+            });
         }
 
         protected function registerMakeCriteriaCommand()
         {
             // Make criteria command.
-            $this->app['command.criteria.make'] = $this->app->share(
-                function($app)
-                {
-                    return new MakeCriteriaCommand($app['CriteriaCreator'], $app['Composer']);
-                }
-            );
+            $this->app['command.criteria.make'] = $this->app->share(function($app) {
+                return new MakeCriteriaCommand($app['CriteriaCreator'], $app['Composer']);
+            });
         }
 
         public function provides()
