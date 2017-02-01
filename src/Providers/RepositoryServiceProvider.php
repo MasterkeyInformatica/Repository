@@ -11,6 +11,14 @@
     use Masterkey\Repository\Console\Commands\Creators\CriteriaCreator;
     use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
 
+    /**
+     * RepositoryServiceProvider
+     *
+     * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+     * @version 2.0.0
+     * @since   31/01/2017
+     * @package Masterkey\Repository\Providers
+     */
     class RepositoryServiceProvider extends ServiceProvider
     {
         /**
@@ -32,6 +40,8 @@
 
         /**
          * Registra os serviços providos pelo Package
+         *
+         * @return  void
          */
         public function register()
         {
@@ -41,7 +51,10 @@
 
             $this->registerMakeCriteriaCommand();
 
-            $this->commands(['command.repository.make', 'command.criteria.make']);
+            $this->commands([
+                MakeRepositoryCommand::class,
+                MakeCriteriaCommand::class
+            ]);
 
             $config_path = __DIR__ . '/../../config/repository.php';
 
@@ -55,18 +68,18 @@
          */
         protected function registerBindings()
         {
-            $this->app->instance(Filesystem::class, new Filesystem());
+            $this->app->instance('Filesystem', new Filesystem());
 
-            $this->app->bind(Composer::class, function ($app) {
-                return new Composer($app['FileSystem']);
+            $this->app->bind('Composer', function ($app) {
+                return new Composer($app['Filesystem']);
             });
 
-            $this->app->singleton(RepositoryCreator::class, function ($app) {
-                return new RepositoryCreator($app['FileSystem']);
+            $this->app->singleton('RepositoryCreator', function ($app) {
+                return new RepositoryCreator($app['Filesystem']);
             });
 
-            $this->app->singleton(CriteriaCreator::class, function ($app) {
-                return new CriteriaCreator($app['FileSystem']);
+            $this->app->singleton('CriteriaCreator', function ($app) {
+                return new CriteriaCreator($app['Filesystem']);
             });
         }
 
