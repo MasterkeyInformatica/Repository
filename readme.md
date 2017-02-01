@@ -12,6 +12,8 @@ Para utilização com o Laravel, utilize o composer:
 composer require masterkey/repository
 ```
 
+Para utilização com o Laravel 5.3, verifique o *branch* **1.0**
+
 Após o composer baixar a dependência, adicione o *Service Provider* em app.php
 
 ```php
