@@ -159,4 +159,9 @@
          * @return  int|float
          */
         public function sum($column);
+
+        /**
+         * @return  \Illuminate\Database\Eloquent\Builder
+         */
+        public function getBuilder();
     }

@@ -505,4 +505,12 @@
             $this->applyCriteria();
             return $this->model->sum($column);
         }
+
+        /**
+         * @return  \Illuminate\Database\Eloquent\Builder
+         */
+        public function getBuilder()
+        {
+            return $this->model->query();
+        }
     }
