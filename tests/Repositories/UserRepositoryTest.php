@@ -161,4 +161,11 @@
 
             $this->assertEquals($user->name, $last->name);
         }
+
+        public function testBuilder()
+        {
+            $builder = $this->user->getBuilder();
+
+            $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
+        }
     }
