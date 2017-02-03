@@ -2,8 +2,8 @@
 
     namespace Masterkey\Repository;
 
-    use Illuminate\Contracts\Support\Arrayable;
-    use Illuminate\Contracts\Container\Container;
+    use Illuminate\Support\Collection;
+    use Illuminate\Container\Container;
     use Illuminate\Database\Eloquent\Model;
 
     use Masterkey\Repository\Contracts\CriteriaContract;
@@ -18,14 +18,14 @@
      * Classe desenvolvida para trabalhar com o padrão repository com o Laravel 5
      *
      * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version  1.1.0
-     * @since    31/01/2017
+     * @version  1.1.1
+     * @since    03/02/2017
      * @package  Masterkey\Repository
      */
     abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         /**
-         * @var \Illuminate\Contracts\Container\Container
+         * @var \Illuminate\Container\Container
          */
         protected $app;
 
@@ -35,7 +35,7 @@
         protected $model;
 
         /**
-         * @var \Illuminate\Contracts\Support\Arrayable
+         * @var \Illuminate\Support\Collection
          */
         protected $criteria;
 
@@ -57,7 +57,7 @@
          * @param   Container  $container
          * @param   Arrayable  $arrayable
          */
-        public function __construct(Container $container, Arrayable $arrayable)
+        public function __construct(Container $container, Collection $arrayable)
         {
             $this->app      = $container;
             $this->criteria = $arrayable;
