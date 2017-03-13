@@ -74,16 +74,6 @@
                 return new Composer($app['Filesystem']);
             });
 
-            $this->app->bind(
-                \Illuminate\Contracts\Container\Container::class,
-                \Illuminate\Container\Container::class
-            );
-
-            $this->app->bind(
-                \Illuminate\Contracts\Support\Arrayable::class,
-                \Illuminate\Support\Collection::class
-            );
-
             $this->app->singleton('RepositoryCreator', function ($app) {
                 return new RepositoryCreator($app['Filesystem']);
             });
