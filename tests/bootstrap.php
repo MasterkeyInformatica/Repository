@@ -15,7 +15,7 @@
      * Registra o container do Laravel para que os testes possam ser realizados
      * de forma bem sucedida
      */
-    $app        = new Container();
+    $app        = new Container;
     $collection = new Collection;
     Facade::setFacadeApplication($app);
 

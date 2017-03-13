@@ -2,9 +2,8 @@
 
     namespace repository_namespace;
 
-    use Masterkey\Repository\BaseRepository;
-
     use model_path\model_name;
+    use Masterkey\Repository\BaseRepository;
 
     /**
      * repository_class
