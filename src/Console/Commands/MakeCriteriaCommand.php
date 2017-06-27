@@ -20,15 +20,11 @@
     class MakeCriteriaCommand extends Command
     {
         /**
-         * Command's name
-         *
          * @var string
          */
         protected $name = 'make:criteria';
 
         /**
-         * Command's description
-         *
          * @var string
          */
         protected $description = 'Create a new criteria class';
@@ -44,8 +40,6 @@
         protected $composer;
 
         /**
-         * Class constructor
-         *
          * @param   CriteriaCreator  $creator
          */
         public function __construct(CriteriaCreator $creator)
@@ -71,8 +65,6 @@
         }
 
         /**
-         * Write the criteria.
-         *
          * @param   array  $arguments
          * @param   array  $options
          */
@@ -87,8 +79,6 @@
         }
 
         /**
-         * Get the console command arguments.
-         *
          * @return  array
          */
         protected function getArguments()
@@ -99,8 +89,6 @@
         }
 
         /**
-         * Get the console command options.
-         *
          * @return  array
          */
         protected function getOptions()
