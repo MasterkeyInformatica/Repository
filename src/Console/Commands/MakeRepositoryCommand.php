@@ -20,15 +20,11 @@
     class MakeRepositoryCommand extends Command
     {
         /**
-         * Command's name
-         *
          * @var string
          */
         protected $name = 'make:repository';
 
         /**
-         * Command's description
-         *
          * @var string
          */
         protected $description = 'Create a new repository class';
@@ -44,8 +40,6 @@
         protected $composer;
 
         /**
-         * Class Constructor
-         *
          * @param   RepositoryCreator  $creator
          */
         public function __construct(RepositoryCreator $creator)
@@ -72,8 +66,6 @@
         }
 
         /**
-         * Write a new repository class
-         *
          * @param   array  $arguments
          * @param   array  $options
          */
@@ -88,8 +80,6 @@
         }
 
         /**
-         * Return the console's args
-         *
          * @return  array
          */
         protected function getArguments()
@@ -100,8 +90,6 @@
         }
 
         /**
-         * Return the console's options
-         *
          * @return  array
          */
         protected function getOptions()
