@@ -2,6 +2,7 @@
 
     namespace Masterkey\Repository;
 
+    use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Support\Collection;
     use Illuminate\Container\Container;
     use Illuminate\Database\Eloquent\Model;
@@ -18,8 +19,8 @@
      * Classe desenvolvida para trabalhar com o padrão repository com o Laravel 5
      *
      * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version  1.2.0
-     * @since    13/03/2017
+     * @version  1.2.1
+     * @since    08/08/2017
      * @package  Masterkey\Repository
      */
     abstract class BaseRepository implements CriteriaContract, RepositoryContract
@@ -265,10 +266,8 @@
         {
             $this->applyCriteria();
 
-            $primaryKey = $this->model->getKeyName();
-
             return $this->model
-                        ->orderBy($primaryKey, 'desc')
+                        ->orderBy($this->getKeyName(), 'desc')
                         ->first();
         }
 
@@ -512,5 +511,18 @@
         public function getBuilder()
         {
             return $this->model->query();
+        }
+        
+        /**
+         * @return string
+         */
+        private function getKeyName()
+        {
+            if($this->model instanceof Builder) {
+                $model = $this->model->getModel();
+                return $model->getKeyName();
+            }
+
+            return $this->model->getKeyName();
         }
     }
