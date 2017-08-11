@@ -156,6 +156,14 @@
 
             throw new ModelNotSavedException;
         }
+        
+        /**
+         * @return  \Illuminate\Database\Eloquent\Model
+         */
+        public function firstOrNew(array $data)
+        {
+            return $this->model->firstOrNew($data);
+        }
 
         /**
          * Save a new model without mass assignement
