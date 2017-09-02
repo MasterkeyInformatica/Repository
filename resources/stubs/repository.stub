@@ -1,22 +1,22 @@
 <?php
 
-    namespace repository_namespace;
+namespace repository_namespace;
 
-    use model_path\model_name;
-    use Masterkey\Repository\BaseRepository;
+use model_path\model_name;
+use Masterkey\Repository\BaseRepository;
 
+/**
+ * repository_class
+ *
+ * @package repository_namespace
+ */
+class repository_class extends BaseRepository
+{
     /**
-     * repository_class
-     *
-     * @package repository_namespace
+     * @return  string
      */
-    class repository_class extends BaseRepository
+    public function model()
     {
-        /**
-         * @return  string
-         */
-        public function model()
-        {
-            return model_name::class;
-        }
+        return model_name::class;
     }
+}

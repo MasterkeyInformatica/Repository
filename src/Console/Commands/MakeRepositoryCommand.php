@@ -1,101 +1,102 @@
 <?php
 
-    namespace Masterkey\Repository\Console\Commands;
+namespace Masterkey\Repository\Console\Commands;
 
-    use Illuminate\Console\Command;
-    use Symfony\Component\Console\Input\InputOption;
-    use Symfony\Component\Console\Input\InputArgument;
-    use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
+use Illuminate\Support\Composer;
+use Illuminate\Console\Command;
+use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
+
+/**
+ * MakeRepositoryCommand
+ *
+ * Define commands to create a new repository class
+ *
+ * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+ * @version 3.0.0
+ * @since   02/09/2017
+ * @package Masterkey\Repository\Console\Commands
+ */
+class MakeRepositoryCommand extends Command
+{
+    /**
+     * @var string
+     */
+    protected $name = 'make:repository';
 
     /**
-     * MakeRepositoryCommand
-     *
-     * Define commands to create a new repository class
-     *
-     * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version 1.0.1
-     * @since   29/12/2016
-     * @package Masterkey\Repository\Console\Commands
+     * @var string
      */
-    class MakeRepositoryCommand extends Command
+    protected $description = 'Create a new repository class';
+
+    /**
+     * @var RepositoryCreator
+     */
+    protected $creator;
+
+    /**
+     * @var Composer
+     */
+    protected $composer;
+
+    /**
+     * @param   RepositoryCreator  $creator
+     */
+    public function __construct(RepositoryCreator $creator)
     {
-        /**
-         * @var string
-         */
-        protected $name = 'make:repository';
+        parent::__construct();
 
-        /**
-         * @var string
-         */
-        protected $description = 'Create a new repository class';
+        $this->creator  = $creator;
+        $this->composer = app()['composer'];
+    }
 
-        /**
-         * @var RepositoryCreator
-         */
-        protected $creator;
+    /**
+     * Execute the console command
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $arguments = $this->argument();
+        $options   = $this->option();
 
-        /**
-         * @var Composer
-         */
-        protected $composer;
+        $this->writeRepository($arguments, $options);
 
-        /**
-         * @param   RepositoryCreator  $creator
-         */
-        public function __construct(RepositoryCreator $creator)
-        {
-            parent::__construct();
+        $this->composer->dumpAutoloads();
+    }
 
-            $this->creator  = $creator;
-            $this->composer = app()['composer'];
-        }
+    /**
+     * @param   array  $arguments
+     * @param   array  $options
+     */
+    protected function writeRepository($arguments, $options)
+    {
+        $repository = $arguments['repository'];
+        $model      = $options['model'];
 
-        /**
-         * Execute the console command
-         *
-         * @return mixed
-         */
-        public function handle()
-        {
-            $arguments = $this->argument();
-            $options   = $this->option();
-
-            $this->writeRepository($arguments, $options);
-
-            $this->composer->dumpAutoloads();
-        }
-
-        /**
-         * @param   array  $arguments
-         * @param   array  $options
-         */
-        protected function writeRepository($arguments, $options)
-        {
-            $repository = $arguments['repository'];
-            $model      = $options['model'];
-
-            if($this->creator->create($repository, $model)) {
-                $this->info("Successfully created the repository class");
-            }
-        }
-
-        /**
-         * @return  array
-         */
-        protected function getArguments()
-        {
-            return [
-                ['repository', InputArgument::REQUIRED, 'The repository name.']
-            ];
-        }
-
-        /**
-         * @return  array
-         */
-        protected function getOptions()
-        {
-            return [
-                ['model', null, InputOption::VALUE_OPTIONAL, 'The model name.', null],
-            ];
+        if($this->creator->create($repository, $model)) {
+            $this->info("Successfully created the repository class");
         }
     }
+
+    /**
+     * @return  array
+     */
+    protected function getArguments()
+    {
+        return [
+            ['repository', InputArgument::REQUIRED, 'The repository name.']
+        ];
+    }
+
+    /**
+     * @return  array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['model', null, InputOption::VALUE_OPTIONAL, 'The model name.', null],
+        ];
+    }
+}

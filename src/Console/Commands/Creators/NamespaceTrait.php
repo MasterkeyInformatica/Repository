@@ -1,58 +1,58 @@
 <?php
 
-    namespace Masterkey\Repository\Console\Commands\Creators;
+namespace Masterkey\Repository\Console\Commands\Creators;
 
-    use Illuminate\Support\Facades\Config;
-    use stdClass;
+use Illuminate\Support\Facades\Config;
+use stdClass;
+
+/**
+ * NamespaceTrait
+ *
+ * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+ * @version 3.0.0
+ * @since   02/09/2017
+ * @package Masterkey\Repository\Console\Commands\Creators
+ */
+trait NamespaceTrait
+{
+    /**
+     * @var string
+     */
+    protected $modelNamespace;
 
     /**
-     * NamespaceTrait
-     *
-     * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
-     * @version 1.1.0
-     * @since   30/01/2016
-     * @package Masterkey\Repository\Console\Commands\Creators
+     * @param   string  $namespace
+     * @return  $this
      */
-    trait NamespaceTrait
+    public function setModelNamespace(string $namespace)
     {
-        /**
-         * @var string
-         */
-        protected $modelNamespace;
-
-        /**
-         * @param   string  $namespace
-         * @return  $this
-         */
-        public function setModelNamespace($namespace)
-        {
-            $this->modelNamespace = $namespace;
-            return $this;
-        }
-
-        /**
-         * @return  string
-         */
-        public function getModelNamespace()
-        {
-            return $this->modelNamespace;
-        }
-
-        /**
-         * Returns the namespace from string
-         *
-         * @param   string  $archive
-         * @return  array
-         */
-        public function getNamespaceOf($archive)
-        {
-            $spaces     = explode('/', $archive);
-            $className  = array_pop($spaces);
-
-            $archive = new stdClass;
-            $archive->namespace = implode('/', $spaces);
-            $archive->className = $className;
-
-            return $archive;
-        }
+        $this->modelNamespace = $namespace;
+        return $this;
     }
+
+    /**
+     * @return  string
+     */
+    public function getModelNamespace() : string
+    {
+        return $this->modelNamespace;
+    }
+
+    /**
+     * Returns the namespace from string
+     *
+     * @param   string  $archive
+     * @return  stdClass
+     */
+    public function getNamespaceOf($archive) : stdClass
+    {
+        $spaces     = explode('/', $archive);
+        $className  = array_pop($spaces);
+
+        $archive = new stdClass;
+        $archive->namespace = implode('/', $spaces);
+        $archive->className = $className;
+
+        return $archive;
+    }
+}

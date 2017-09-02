@@ -1,24 +1,24 @@
 <?php
 
-    namespace criteria_namespace;
+namespace criteria_namespace;
 
-    use Masterkey\Repository\Criteria;
-    use Masterkey\Repository\Contracts\RepositoryContract as Repository;
+use Masterkey\Repository\Criteria;
+use Masterkey\Repository\Contracts\RepositoryContract as Repository;
 
+/**
+ * criteria_class
+ *
+ * @package criteria_namespace
+ */
+class criteria_class extends Criteria
+{
     /**
-     * criteria_class
-     *
-     * @package criteria_namespace
+     * @param   \Illuminate\Database\Query\Builder  $model
+     * @param   Repository $repository
+     * @return  mixed
      */
-    class criteria_class extends Criteria
+    public function apply($model, Repository $repository)
     {
-        /**
-         * @param   \Illuminate\Database\Query\Builder  $model
-         * @param   Repository $repository
-         * @return  mixed
-         */
-        public function apply($model, Repository $repository)
-        {
-            return $model;
-        }
+        return $model;
     }
+}
