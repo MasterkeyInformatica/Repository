@@ -40,7 +40,7 @@ class UserRepositoryTest extends TestCase
         $count  = $all->toArray();
 
         $this->assertCount(1, $count['data']);
-        $this->assertInstanceOf('Illuminate\Pagination\LengthAwarePaginator', $all);
+        $this->assertInstanceOf(\Illuminate\Pagination\LengthAwarePaginator::class, $all);
     }
 
     /**
