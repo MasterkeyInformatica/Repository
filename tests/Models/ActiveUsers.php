@@ -1,24 +1,24 @@
 <?php
 
-    namespace Masterkey\Tests\Models;
+namespace Masterkey\Tests\Models;
 
-    use Masterkey\Repository\Criteria;
-    use Masterkey\Repository\Contracts\RepositoryContract as Repository;
+use Masterkey\Repository\Criteria;
+use Masterkey\Repository\Contracts\RepositoryContract as Repository;
 
+/**
+ * ActiveUsers
+ *
+ * @package Masterkey\Tests\Models
+ */
+class ActiveUsers extends Criteria
+{
     /**
-     * ActiveUsers
-     *
-     * @package Masterkey\Tests\Models
+     * @param   Builder  $model
+     * @param   Repository $repository
+     * @return  Builder
      */
-    class ActiveUsers extends Criteria
+    public function apply($model, Repository $repository)
     {
-        /**
-         * @param   Builder  $model
-         * @param   Repository $repository
-         * @return  Builder
-         */
-        public function apply($model, Repository $repository)
-        {
-            return $model->where('active', true);
-        }
+        return $model->where('active', true);
     }
+}

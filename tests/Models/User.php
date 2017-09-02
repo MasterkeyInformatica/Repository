@@ -1,18 +1,18 @@
 <?php
 
-    namespace Masterkey\Tests\Models;
+namespace Masterkey\Tests\Models;
 
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
-    class User extends Model
-    {
-        protected $connection = 'sqlite';
+class User extends Model
+{
+    protected $connection = 'sqlite';
 
-        protected $fillable = [
-            'name',
-            'active',
-            'logins'
-        ];
+    protected $fillable = [
+        'name',
+        'active',
+        'logins'
+    ];
 
-        public $timestamps = false;
-    }
+    public $timestamps = false;
+}
