@@ -22,6 +22,8 @@ use RepositoryException;
  */
 abstract class BaseRepository implements CriteriaContract, RepositoryContract
 {
+    use Traits\ClassBuilder;
+
     /**
      * @var \Illuminate\Container\Container
      */
@@ -52,8 +54,14 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     protected $preventCriteriaOverwriting = true;
 
     /**
+     * @var null
+     */
+    protected $validator = null;
+
+    /**
      * @param   Container  $container
      * @param   Collection  $criteria
+     * @throws  RepositoryException
      */
     public function __construct(Container $container, Collection $criteria)
     {
@@ -61,15 +69,23 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $this->criteria = $criteria;
 
         $this->resetScope();
-        $this->makeModel();
+
+        $this->makeModel($this->model());
+        $this->makeValidator($this->validator());
     }
 
     /**
-     * Return the model from a Repository
-     *
      * @return  mixed
      */
     public abstract function model();
+
+    /**
+     * @return  null|string
+     */
+    public function validator()
+    {
+        return null;
+    }
 
     /**
      * @param   array  $columns
@@ -316,33 +332,6 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $this->applyCriteria();
 
         return $this->model->where($attribute, '=', $value)->get($columns);
-    }
-
-    /**
-     * @return  Builder
-     * @throws  RepositoryException
-     */
-    public function makeModel()
-    {
-        return $this->setModel(
-            $this->model()
-        );
-    }
-
-    /**
-     * @param   Model  $eloquentModel
-     * @return  \Illuminate\Database\Eloquent\Builder
-     * @throws  RepositoryException
-     */
-    public function setModel($eloquentModel)
-    {
-        $model = $this->app->make($eloquentModel);
-
-        if ( ! $model instanceof Model ) {
-            throw new RepositoryException("Class {$model} must be an instance of Illuminate\\Database\\Eloquent\\Model");
-        }
-
-        return $this->model = $model;
     }
 
     /**

@@ -17,7 +17,8 @@
         "illuminate/container": "5.5.*",
         "illuminate/config": "5.5.*",
         "illuminate/database": "5.5.*",
-        "illuminate/pagination": "5.5.*"
+        "illuminate/pagination": "5.5.*",
+        "prettus/laravel-validation": "^1.1"
     },
     "autoload": {
         "psr-4": {
