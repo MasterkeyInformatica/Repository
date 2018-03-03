@@ -40,15 +40,11 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     protected $criteria;
 
     /**
-     * Skip defined criterias
-     *
      * @var boolean
      */
     protected $skipCriteria = false;
 
     /**
-     * Prevent criteria's overwriting
-     *
      * @var boolean
      */
     protected $preventCriteriaOverwriting = true;
@@ -72,12 +68,19 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
 
         $this->makeModel($this->model());
         $this->makeValidator($this->validator());
+
+        $this->boot();
     }
 
     /**
      * @return  mixed
      */
     public abstract function model();
+
+    /**
+     * @return  void
+     */
+    public function boot() {}
 
     /**
      * @return  null|string
