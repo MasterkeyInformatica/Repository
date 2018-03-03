@@ -7,9 +7,6 @@ use Masterkey\Repository\Contracts\RepositoryContract as Repository;
 /**
  * Criteria
  *
- * Classe abstrata que define a diretriz para o funcionamento das classes
- * que extenderão à esta
- *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version  3.0.0
  * @since    02/09/2017

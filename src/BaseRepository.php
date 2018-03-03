@@ -8,14 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Masterkey\Repository\Contracts\CriteriaContract;
 use Masterkey\Repository\Contracts\RepositoryContract;
-use Masterkey\Repository\Exceptions\ModelNotDeletedException;
-use Masterkey\Repository\Exceptions\ModelNotSavedException;
-use Masterkey\Repository\Exceptions\RepositoryException;
+use ModelNotSavedException;
+use ModelNotDeletedException;
+use RepositoryException;
 
 /**
  * BaseRepository
- *
- * Classe desenvolvida para trabalhar com o padrão repository com o Laravel 5
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version  3.0.0
@@ -80,6 +78,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     public function all(array $columns = ['*'])
     {
         $this->applyCriteria();
+
         return $this->model->get($columns);
     }
 
@@ -90,6 +89,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     public function with(array $relations)
     {
         $this->model = $this->model->with($relations);
+
         return $this;
     }
 
