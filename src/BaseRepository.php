@@ -94,8 +94,6 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * Create a key -> value with DB data
-     *
      * @param   string  $value
      * @param   string|null $key
      * @return  mixed
@@ -104,13 +102,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         $this->applyCriteria();
 
-        $lists = $this->model->pluck($value, $key);
-
-        if (is_array($lists)) {
-            return $lists;
-        }
-
-        return $lists->all();
+        return $this->model->pluck($value, $key)->toArray();
     }
 
     /**
@@ -134,7 +126,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         $model = $this->model->create($data);
 
-        if($model) {
+        if ( $model ) {
             return $model;
         }
 
@@ -150,7 +142,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         $model = $this->model->firstOrCreate($data);
 
-        if($model) {
+        if( $model ) {
             return $model;
         }
 
@@ -167,19 +159,17 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * Save a new model without mass assignement
-     *
      * @param   array  $data
      * @return  Model
      * @throws  ModelNotSavedException
      */
     public function save(array $data)
     {
-        foreach ($data as $k => $v) {
+        foreach ( $data as $k => $v ) {
             $this->model->$k = $v;
         }
 
-        if($this->model->save()) {
+        if ( $this->model->save() ) {
             return $this->model;
         }
 
@@ -193,9 +183,9 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      * @return  mixed
      * @throws  ModelNotSavedException
      */
-    public function massInsert(array $data) : bool
+    public function insert(array $data) : bool
     {
-        if($this->model->insert($data)) {
+        if ( $this->model->insert($data) ) {
             return true;
         }
 
@@ -205,13 +195,15 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     /**
      * @param   int  $id
      * @param   array  $data
-     * @return  bool
+     * @return  Model
      * @throws  ModelNotSavedException
      */
     public function update(int $id, array $data)
     {
-        if($this->find($id)->update($data)) {
-            return true;
+        $model = $this->find($id);
+
+        if ( $model->update($data) ) {
+            return $model;
         }
 
         throw new ModelNotSavedException('Não foi possível atualizar o registro. Tente novamente');
@@ -235,7 +227,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      */
     public function delete(int $id) : bool
     {
-        if($this->find($id)->destroy($id)) {
+        if ( $this->find($id)->destroy($id) ) {
             return true;
         }
 
@@ -253,7 +245,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         $this->applyCriteria();
 
-        if($this->model->destroy($records)) {
+        if ( $this->model->destroy($records) ) {
             return true;
         }
 
@@ -268,6 +260,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     public function find(int $id, $columns = array('*'))
     {
         $this->applyCriteria();
+
         return $this->model->findOrFail($id, $columns);
     }
 
@@ -326,18 +319,17 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * Call the factory for the model specified on the Repository
-     *
-     * @return  \Illuminate\Database\Eloquent\Builder
+     * @return  Builder
+     * @throws  RepositoryException
      */
     public function makeModel()
     {
-        return $this->setModel($this->model());
+        return $this->setModel(
+            $this->model()
+        );
     }
 
     /**
-     * Create the model's instance
-     *
      * @param   Model  $eloquentModel
      * @return  \Illuminate\Database\Eloquent\Builder
      * @throws  RepositoryException
@@ -346,7 +338,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         $model = $this->app->make($eloquentModel);
 
-        if (!$model instanceof Model) {
+        if ( ! $model instanceof Model ) {
             throw new RepositoryException("Class {$model} must be an instance of Illuminate\\Database\\Eloquent\\Model");
         }
 
@@ -354,8 +346,6 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * Reset querying's scope
-     *
      * @return   $this
      */
     public function resetScope()
@@ -366,8 +356,6 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * Skip the criteria's querying scope
-     *
      * @param   boolean  $status
      * @return  $this
      */
@@ -387,8 +375,6 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * Apply a criteria on a model
-     *
      * @param   Criteria  $criteria
      * @return  $this
      */
@@ -400,21 +386,19 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * Push Criteria into Criteria's collection
-     *
      * @param   Criteria  $criteria
      * @return  $this
      */
     public function pushCriteria(Criteria $criteria)
     {
-        if ($this->preventCriteriaOverwriting) {
+        if ( $this->preventCriteriaOverwriting ) {
             // Find existing criteria
             $key = $this->criteria->search(function ($item) use ($criteria) {
                 return (is_object($item) && (get_class($item) == get_class($criteria)));
             });
 
             // Remove old criteria
-            if (is_int($key)) {
+            if ( is_int($key) ) {
                 $this->criteria->offsetUnset($key);
             }
         }
@@ -425,18 +409,16 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * Apply a criteria on a model
-     *
      * @return   $this
      */
     public function applyCriteria()
     {
-        if ($this->skipCriteria === true){
+        if ( $this->skipCriteria === true ) {
             return $this;
         }
 
-        foreach ($this->getCriteria() as $criteria) {
-            if ($criteria instanceof Criteria) {
+        foreach ( $this->getCriteria() as $criteria ) {
+            if ( $criteria instanceof Criteria ) {
                 $this->model = $criteria->apply($this->model, $this);
             }
         }
@@ -510,8 +492,9 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      */
     private function getKeyName() : string
     {
-        if($this->model instanceof Builder) {
+        if ( $this->model instanceof Builder ) {
             $model = $this->model->getModel();
+
             return $model->getKeyName();
         }
 
