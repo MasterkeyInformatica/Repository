@@ -24,7 +24,7 @@ class UserRepositoryTest extends TestCase
     public function testInstanceOfUser()
     {
         $user = new User();
-        
+
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Model::class, $user);
     }
 
@@ -61,6 +61,7 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws ModelNotSavedException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function testCreate()
     {
@@ -76,6 +77,20 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws ModelNotSavedException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     * @expectedException   \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function testCreateValidationFail()
+    {
+        $user = $this->user->create([
+            'active'    => true,
+            'logins'    => 2
+        ]);
+    }
+
+    /**
+     * @throws ModelNotSavedException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function testSave()
     {
@@ -104,6 +119,7 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws ModelNotSavedException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function testUpdate()
     {
@@ -112,6 +128,16 @@ class UserRepositoryTest extends TestCase
         $user = $this->user->find(1);
 
         $this->assertEquals('Jonas Dawson', $user->name);
+    }
+
+    /**
+     * @throws  ModelNotSavedException
+     * @throws  \Prettus\Validator\Exceptions\ValidatorException
+     * @expectedException \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function testUpdateValidation()
+    {
+        $this->user->update(1, ['name' => null]);
     }
 
     /**

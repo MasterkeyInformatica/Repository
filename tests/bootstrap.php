@@ -14,12 +14,22 @@
      * Registra o container do Laravel para que os testes possam ser realizados
      * de forma bem sucedida
      */
-    $app        = new Container;
+    $app = new Container;
     Facade::setFacadeApplication($app);
 
     // Seta as configurações do repositório
     $app->singleton('config', function($app) use($config) {
         return new Config(['repository' => $config]);
+    });
+
+    $app->singleton(\Illuminate\Contracts\Validation\Factory::class, function ($app) {
+        return new \Illuminate\Validation\Factory(
+            new \Illuminate\Translation\Translator(
+                new \Illuminate\Translation\FileLoader(new \Illuminate\Filesystem\Filesystem(),''),
+                'en'
+            ),
+            $app
+        );
     });
 
     $capsule = new Capsule();
