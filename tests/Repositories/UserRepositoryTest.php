@@ -9,12 +9,14 @@ class UserRepositoryTest extends TestCase
 {
     protected $user;
 
+    /**
+     * @throws  RepositoryException
+     */
     public function __construct()
     {
         global $app;
-        global $collection;
 
-        $this->user = new UserRepository($app, $collection);
+        $this->user = new UserRepository($app);
 
         parent::__construct();
     }
@@ -22,6 +24,7 @@ class UserRepositoryTest extends TestCase
     public function testInstanceOfUser()
     {
         $user = new User();
+        
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Model::class, $user);
     }
 
@@ -56,6 +59,9 @@ class UserRepositoryTest extends TestCase
         $user2 = $this->user->find(3);
     }
 
+    /**
+     * @throws ModelNotSavedException
+     */
     public function testCreate()
     {
         $user = $this->user->create([
@@ -68,6 +74,9 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
     }
 
+    /**
+     * @throws ModelNotSavedException
+     */
     public function testSave()
     {
         $user = $this->user->save([
@@ -80,9 +89,12 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
     }
 
+    /**
+     * @throws ModelNotSavedException
+     */
     public function testMassInsert()
     {
-        $user = $this->user->massInsert([
+        $user = $this->user->insert([
             ['name' => 'Maria', 'active' => false, 'logins' => 5],
             ['name' => 'Sharon', 'active' => false, 'logins' => 3]
         ]);
@@ -90,6 +102,9 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals(true, $user);
     }
 
+    /**
+     * @throws ModelNotSavedException
+     */
     public function testUpdate()
     {
         $this->user->update(1, ['name' => 'Jonas Dawson']);
@@ -100,7 +115,8 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @expectedException  \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws              ModelNotDeletedException
+     * @expectedException   \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function testDelete()
     {
@@ -112,30 +128,35 @@ class UserRepositoryTest extends TestCase
     public function testCount()
     {
         $saved = $this->user->count();
+
         $this->assertEquals(5, $saved);
     }
 
     public function testMax()
     {
         $max = $this->user->max('logins');
+
         $this->assertEquals(10, $max);
     }
 
     public function testMin()
     {
         $min = $this->user->min('logins');
+
         $this->assertEquals(2, $min);
     }
 
     public function testAvg()
     {
         $avg = $this->user->avg('logins');
+
         $this->assertEquals(5.6, $avg);
     }
 
     public function testSum()
     {
         $sum = $this->user->sum('logins');
+
         $this->assertEquals(28, $sum);
     }
 

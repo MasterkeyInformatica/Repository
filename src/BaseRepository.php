@@ -56,13 +56,12 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
 
     /**
      * @param   Container  $container
-     * @param   Collection  $criteria
      * @throws  RepositoryException
      */
-    public function __construct(Container $container, Collection $criteria)
+    public function __construct(Container $container)
     {
         $this->app      = $container;
-        $this->criteria = $criteria;
+        $this->criteria = new Collection();
 
         $this->resetScope();
 

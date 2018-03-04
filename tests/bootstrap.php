@@ -6,7 +6,6 @@
     use Illuminate\Container\Container;
     use Illuminate\Database\Connection as DB;
     use Illuminate\Database\Capsule\Manager as Capsule;
-    use Illuminate\Support\Collection;
     use Illuminate\Support\Facades\Facade;
 
     $config = require_once(__DIR__ . '/../config/repository.php');
@@ -16,7 +15,6 @@
      * de forma bem sucedida
      */
     $app        = new Container;
-    $collection = new Collection;
     Facade::setFacadeApplication($app);
 
     // Seta as configurações do repositório
