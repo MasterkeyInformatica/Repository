@@ -63,4 +63,6 @@ interface RepositoryContract
     public function sum(string $column);
 
     public function getBuilder() : Builder;
+
+    public function getFieldsSearchable();
 }

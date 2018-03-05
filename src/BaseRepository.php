@@ -56,6 +56,11 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     protected $validator = null;
 
     /**
+     * @var array
+     */
+    protected $fieldsSearchable = [];
+
+    /**
      * @param   Container  $container
      * @throws  RepositoryException
      */
@@ -516,5 +521,13 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         }
 
         return $this->model->getKeyName();
+    }
+
+    /**
+     * @return array
+     */
+    public function getFieldsSearchable()
+    {
+        return $this->fieldsSearchable;
     }
 }

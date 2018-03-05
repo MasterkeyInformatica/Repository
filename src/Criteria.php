@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository;
 
+use Illuminate\Database\Query\Builder;
 use Masterkey\Repository\Contracts\RepositoryContract as Repository;
 
 /**
@@ -17,7 +18,7 @@ abstract class Criteria
     /**
      * Apply a criteria on a model
      *
-     * @param   mixed  $model
+     * @param   Builder  $model
      * @param   Repository  $repository
      * @return  mixed
      */

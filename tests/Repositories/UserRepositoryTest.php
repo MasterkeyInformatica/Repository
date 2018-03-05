@@ -5,6 +5,10 @@ use Masterkey\Tests\Models\UserRepository;
 use Masterkey\Tests\Models\ActiveUsers;
 use PHPUnit\Framework\TestCase;
 
+use Masterkey\Repository\Criteria\RequestCriteria;
+use Symfony\Component\HttpFoundation\Request as BaseRequest;
+use Illuminate\Http\Request;
+
 class UserRepositoryTest extends TestCase
 {
     protected $user;
@@ -217,5 +221,30 @@ class UserRepositoryTest extends TestCase
         $builder = $this->user->getBuilder();
 
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
+    }
+
+    public function testRequestCriteria()
+    {
+        $symfonyRequest = new BaseRequest(['search' => 'Jonas', 'searchFields' => 'name:like']);
+        $request = Request::createFromBase($symfonyRequest);
+
+        $this->user->pushCriteria(new RequestCriteria($request));
+
+        $users = $this->user->all();
+
+        $this->assertEquals(1, $users->count());
+    }
+
+    /**
+     * @expectedException   RepositoryException
+     */
+    public function testFailedRequestCriteria()
+    {
+        $symfonyRequest = new BaseRequest(['search' => '1', 'searchFields' => 'id']);
+        $request = Request::createFromBase($symfonyRequest);
+
+        $this->user->pushCriteria(new RequestCriteria($request));
+
+        $this->user->all();
     }
 }
