@@ -6,7 +6,8 @@
     use Illuminate\Container\Container;
     use Illuminate\Database\Connection as DB;
     use Illuminate\Database\Capsule\Manager as Capsule;
-    use Illuminate\Support\Facades\Facade;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Facade;
 
     $config = require_once(__DIR__ . '/../config/repository.php');
 
@@ -20,6 +21,9 @@
     // Seta as configurações do repositório
     $app->singleton('config', function($app) use($config) {
         return new Config(['repository' => $config]);
+    });
+    $app->singleton('request', function() {
+        return new Request();
     });
 
     $app->singleton(\Illuminate\Contracts\Validation\Factory::class, function ($app) {

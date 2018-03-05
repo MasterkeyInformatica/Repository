@@ -22,7 +22,9 @@ interface RepositoryContract
 
     public function pluck(string $value, $key = null);
 
-    public function paginate(int $perPage = 15, array $columns = ['*']);
+    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate');
+
+    public function simplePaginate(int $perPage = 15, array $columns = ['*']);
 
     public function create(array $data);
 

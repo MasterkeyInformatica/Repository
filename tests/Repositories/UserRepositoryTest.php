@@ -50,6 +50,15 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(\Illuminate\Pagination\LengthAwarePaginator::class, $all);
     }
 
+    public function testSimplePaginate()
+    {
+        $all    = $this->user->simplePaginate(1);
+        $count  = $all->toArray();
+
+        $this->assertCount(1, $count['data']);
+        $this->assertInstanceOf(\Illuminate\Pagination\Paginator::class, $all);
+    }
+
     /**
      * @expectedException Illuminate\Database\Eloquent\ModelNotFoundException
      */

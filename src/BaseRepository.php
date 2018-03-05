@@ -130,15 +130,29 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     }
 
     /**
-     * @param   integer  $perPage
-     * @param   array  $columns
+     * @param   integer $perPage
+     * @param   array $columns
+     * @param   string  $method
      * @return  mixed
      */
-    public function paginate(int $perPage = 15, array $columns = ['*'])
+    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate')
     {
         $this->applyCriteria();
 
-        return $this->model->paginate($perPage, $columns);
+        $results = $this->model->{$method}($perPage, $columns);
+        $results->appends($this->app->make('request')->query());
+
+        return $results;
+    }
+
+    /**
+     * @param   int  $perPage
+     * @param   array  $columns
+     * @return  mixed
+     */
+    public function simplePaginate(int $perPage = 15, array $columns = ['*'])
+    {
+        return $this->paginate($perPage, $columns, 'simplePaginate');
     }
 
     /**
