@@ -276,7 +276,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      */
     public function delete(int $id) : bool
     {
-        if ( $this->find($id)->destroy($id) ) {
+        if ( $this->model->destroy($id) ) {
             return true;
         }
 
@@ -416,7 +416,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         if ( $this->preventCriteriaOverwriting ) {
             // Find existing criteria
             $key = $this->criteria->search(function ($item) use ($criteria) {
-                return (is_object($item) && (get_class($item) == get_class($criteria)));
+                return ( is_object($item) && (get_class($item) == get_class($criteria)) );
             });
 
             // Remove old criteria
@@ -498,6 +498,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     public function sum(string $column)
     {
         $this->applyCriteria();
+
         return $this->model->sum($column);
     }
 
@@ -529,5 +530,17 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     public function getFieldsSearchable()
     {
         return $this->fieldsSearchable;
+    }
+
+    /**
+     * @param   int  $id
+     * @param   string  $relation
+     * @param   array  $attributes
+     * @param   bool  $detach
+     * @return  mixed
+     */
+    public function sync($id, $relation, $attributes, $detach = true)
+    {
+        return $this->find($id)->{$relation}()->sync($attributes, $detach);
     }
 }

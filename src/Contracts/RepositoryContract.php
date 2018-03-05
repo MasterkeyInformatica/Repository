@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
  * Interface that rules repository classes
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version  3.0.0
- * @since    02/09/2017
+ * @version  3.1.0
+ * @since    05/03/2018
  * @package  Masterkey\Repository\Contracts
  */
 interface RepositoryContract
@@ -65,4 +65,6 @@ interface RepositoryContract
     public function getBuilder() : Builder;
 
     public function getFieldsSearchable();
+
+    public function sync($id, $relation, $attributes, $detach = true);
 }
