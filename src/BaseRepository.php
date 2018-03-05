@@ -412,13 +412,13 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
 
     /**
      * @param   Criteria  $criteria
-     * @return  $this
+     * @return  Collection
      */
-    public function getByCriteria(Criteria $criteria)
+    public function getByCriteria(Criteria $criteria) : Collection
     {
-        $this->model = $criteria->apply($this->model, $this);
+        $this->pushCriteria($criteria);
 
-        return $this;
+        return $this->all();
     }
 
     /**

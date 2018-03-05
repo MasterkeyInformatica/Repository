@@ -203,10 +203,17 @@ class UserRepositoryTest extends TestCase
     {
         $all        = $this->user->count();
         $criteria   = new ActiveUsers();
-        $active     = $this->user->getByCriteria($criteria)->count();
+        $active     = $this->user->pushCriteria($criteria)->count();
 
         $this->assertEquals(5, $all);
         $this->assertEquals(3, $active);
+    }
+
+    public function testGetByCriteria()
+    {
+        $users = $this->user->getByCriteria(new ActiveUsers);
+
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $users);
     }
 
     public function testFirst()
