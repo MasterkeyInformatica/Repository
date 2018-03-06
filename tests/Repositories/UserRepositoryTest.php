@@ -90,8 +90,7 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws ModelNotSavedException
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
-     * @expectedException   \Prettus\Validator\Exceptions\ValidatorException
+     * @expectedException   \Illuminate\Validation\ValidationException
      */
     public function testCreateValidationFail()
     {
@@ -103,7 +102,6 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws ModelNotSavedException
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function testSave()
     {
@@ -132,7 +130,6 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws ModelNotSavedException
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function testUpdate()
     {
@@ -145,8 +142,7 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws  ModelNotSavedException
-     * @throws  \Prettus\Validator\Exceptions\ValidatorException
-     * @expectedException \Prettus\Validator\Exceptions\ValidatorException
+     * @expectedException   \Illuminate\Validation\ValidationException
      */
     public function testUpdateValidation()
     {

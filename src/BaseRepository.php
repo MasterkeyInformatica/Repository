@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Masterkey\Repository\Contracts\CriteriaContract;
 use Masterkey\Repository\Contracts\RepositoryContract;
+use Masterkey\Repository\Contracts\ValidatorContract;
 use ModelNotSavedException;
 use ModelNotDeletedException;
-use Prettus\Validator\Contracts\ValidatorInterface;
 use RepositoryException;
 
 /**
@@ -51,7 +51,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     protected $preventCriteriaOverwriting = true;
 
     /**
-     * @var null|ValidatorInterface
+     * @var null|ValidatorContract
      */
     protected $validator = null;
 
@@ -159,12 +159,11 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      * @param   array  $data
      * @return  mixed|bool
      * @throws  ModelNotSavedException
-     * @throws  \Prettus\Validator\Exceptions\ValidatorException
      */
     public function create(array $data)
     {
         if ( ! is_null($this->validator) ) {
-            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $this->validator->validate($data, ValidatorContract::INSERT_RULES);
         }
 
         $model = $this->model->create($data);
@@ -180,12 +179,11 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      * @param   array  $data
      * @return  Model
      * @throws  ModelNotSavedException
-     * @throws  \Prettus\Validator\Exceptions\ValidatorException
      */
     public function firstOrCreate(array $data)
     {
         if ( ! is_null($this->validator) ) {
-            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $this->validator->validate($data, ValidatorContract::INSERT_RULES);
         }
 
         $model = $this->model->firstOrCreate($data);
@@ -200,12 +198,11 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     /**
      * @param   array  $data
      * @return  Model
-     * @throws  \Prettus\Validator\Exceptions\ValidatorException
      */
     public function firstOrNew(array $data)
     {
         if ( ! is_null($this->validator) ) {
-            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $this->validator->validate($data, ValidatorContract::INSERT_RULES);
         }
 
         return $this->model->firstOrNew($data);
@@ -215,12 +212,11 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      * @param   array  $data
      * @return  Model
      * @throws  ModelNotSavedException
-     * @throws  \Prettus\Validator\Exceptions\ValidatorException
      */
     public function save(array $data)
     {
         if ( ! is_null($this->validator) ) {
-            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $this->validator->validate($data, ValidatorContract::INSERT_RULES);
         }
 
         foreach ( $data as $k => $v ) {
@@ -255,12 +251,11 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      * @param   array $data
      * @return  mixed
      * @throws  ModelNotSavedException
-     * @throws  \Prettus\Validator\Exceptions\ValidatorException
      */
     public function update(int $id, array $data)
     {
         if ( ! is_null($this->validator) ) {
-            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+            $this->validator->validate($data, ValidatorContract::UPDATE_RULES);
         }
 
         $model = $this->find($id);

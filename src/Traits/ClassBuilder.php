@@ -3,7 +3,7 @@
 namespace Masterkey\Repository\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Prettus\Validator\Contracts\ValidatorInterface;
+use Masterkey\Repository\Contracts\ValidatorContract;
 use RepositoryException;
 
 /**
@@ -40,8 +40,8 @@ trait ClassBuilder
         if ( ! is_null($validator) ) {
             $validator = $this->app->make($validator);
 
-            if ( ! $validator instanceof ValidatorInterface ) {
-                throw new RepositoryException("Class {$validator} must be a implementation of Prettus\\Validator\\Contracts\\ValidatorInterface");
+            if ( ! $validator instanceof ValidatorContract ) {
+                throw new RepositoryException("Class {$validator} must be a implementation of Masterkey\\Repository\\Contracts\\ValidatorContract");
             }
         }
 

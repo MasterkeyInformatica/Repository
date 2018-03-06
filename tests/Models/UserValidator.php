@@ -2,11 +2,14 @@
 
 namespace Masterkey\Tests\Models;
 
-use Prettus\Validator\LaravelValidator;
+use Masterkey\Repository\AbstractValidator;
 
-class UserValidator extends LaravelValidator
+class UserValidator extends AbstractValidator
 {
-    protected $rules = [
-        'name'  => 'required'
-    ];
+    public function rules() : array
+    {
+        return [
+            'name'  => 'required'
+        ];
+    }
 }

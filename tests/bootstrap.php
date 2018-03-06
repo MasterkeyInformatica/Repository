@@ -22,11 +22,12 @@ use Illuminate\Support\Facades\Facade;
     $app->singleton('config', function($app) use($config) {
         return new Config(['repository' => $config]);
     });
+
     $app->singleton('request', function() {
         return new Request();
     });
 
-    $app->singleton(\Illuminate\Contracts\Validation\Factory::class, function ($app) {
+    $app->singleton(\Illuminate\Validation\Factory::class, function ($app) {
         return new \Illuminate\Validation\Factory(
             new \Illuminate\Translation\Translator(
                 new \Illuminate\Translation\FileLoader(new \Illuminate\Filesystem\Filesystem(),''),
