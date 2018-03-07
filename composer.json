@@ -27,9 +27,8 @@
             "Masterkey\\Tests\\": "tests/"
         },
         "files": [
-            "src/Exceptions/ModelNotDeletedException.php",
-            "src/Exceptions/ModelNotSavedException.php",
-            "src/Exceptions/RepositoryException.php"
+            "src/Exceptions/RepositoryException.php",
+            "src/Exceptions/ValidationException.php"
         ]
     },
     "require-dev": {

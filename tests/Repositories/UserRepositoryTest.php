@@ -73,8 +73,8 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws ModelNotSavedException
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     * @throws RepositoryException
+     * @throws ValidationException
      */
     public function testCreate()
     {
@@ -89,8 +89,9 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws ModelNotSavedException
-     * @expectedException   \Illuminate\Validation\ValidationException
+     * @throws              RepositoryException
+     * @throws              ValidationException
+     * @expectedException   \ValidationException
      */
     public function testCreateValidationFail()
     {
@@ -101,7 +102,8 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws ModelNotSavedException
+     * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function testSave()
     {
@@ -116,7 +118,7 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws ModelNotSavedException
+     * @throws RepositoryException
      */
     public function testMassInsert()
     {
@@ -129,7 +131,8 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws ModelNotSavedException
+     * @throws RepositoryException
+     * @throws ValidationException
      */
     public function testUpdate()
     {
@@ -141,8 +144,9 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws  ModelNotSavedException
-     * @expectedException   \Illuminate\Validation\ValidationException
+     * @throws              RepositoryException
+     * @throws              ValidationException
+     * @expectedException   ValidationException
      */
     public function testUpdateValidation()
     {
@@ -150,7 +154,7 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws              ModelNotDeletedException
+     * @throws              RepositoryException
      * @expectedException   \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function testDelete()

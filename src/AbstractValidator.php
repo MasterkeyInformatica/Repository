@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository;
 
+use Illuminate\Http\Request;
 use Illuminate\Validation\Factory as ValidatorFactory;
 use Masterkey\Repository\Contracts\ValidatorContract;
 
@@ -21,11 +22,18 @@ abstract class AbstractValidator implements ValidatorContract
     protected $validatorFactory;
 
     /**
-     * @param   ValidatorFactory  $factory
+     * @var Request
      */
-    public function __construct(ValidatorFactory $factory)
+    protected $request;
+
+    /**
+     * @param   ValidatorFactory $factory
+     * @param   Request  $request
+     */
+    public function __construct(ValidatorFactory $factory, Request $request)
     {
         $this->validatorFactory = $factory;
+        $this->request = $request;
     }
 
     /**
@@ -68,16 +76,20 @@ abstract class AbstractValidator implements ValidatorContract
      * @param   array  $data
      * @param   null  $action
      * @return  bool
-     * @throws  \Illuminate\Validation\ValidationException
+     * @throws  \ValidationException
      */
     public function validate(array $data, $action = NULL)
     {
-        $this->validatorFactory->validate(
+        $validator = $this->validatorFactory->make(
             $data,
             $this->getRules($action),
             $this->messages(),
             $this->customAttributes()
         );
+
+        if ( $validator->fails() ) {
+            throw new \ValidationException($validator);
+        }
 
         return true;
     }

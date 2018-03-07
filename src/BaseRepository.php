@@ -9,9 +9,8 @@ use Illuminate\Support\Collection;
 use Masterkey\Repository\Contracts\CriteriaContract;
 use Masterkey\Repository\Contracts\RepositoryContract;
 use Masterkey\Repository\Contracts\ValidatorContract;
-use ModelNotSavedException;
-use ModelNotDeletedException;
 use RepositoryException;
+use ValidationException;
 
 /**
  * BaseRepository
@@ -23,7 +22,7 @@ use RepositoryException;
  */
 abstract class BaseRepository implements CriteriaContract, RepositoryContract
 {
-    use Traits\ClassBuilder;
+    use Traits\ClassBuilder, Traits\ShouldValidate;
 
     /**
      * @var \Illuminate\Container\Container
@@ -158,13 +157,12 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     /**
      * @param   array  $data
      * @return  mixed|bool
-     * @throws  ModelNotSavedException
+     * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function create(array $data)
     {
-        if ( ! is_null($this->validator) ) {
-            $this->validator->validate($data, ValidatorContract::INSERT_RULES);
-        }
+        $this->validateBeforeInsert($data);
 
         $model = $this->model->create($data);
 
@@ -172,19 +170,18 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
             return $model;
         }
 
-        throw new ModelNotSavedException;
+        throw new RepositoryException('Nāo foi possível salvar os dados. Tente novamente');
     }
 
     /***
-     * @param   array  $data
+     * @param   array $data
      * @return  Model
-     * @throws  ModelNotSavedException
+     * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function firstOrCreate(array $data)
     {
-        if ( ! is_null($this->validator) ) {
-            $this->validator->validate($data, ValidatorContract::INSERT_RULES);
-        }
+        $this->validateBeforeInsert($data);
 
         $model = $this->model->firstOrCreate($data);
 
@@ -192,18 +189,17 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
             return $model;
         }
 
-        throw new ModelNotSavedException;
+        throw new RepositoryException('Não foi possível salvar os dados. Tente novamente');
     }
 
     /**
      * @param   array  $data
      * @return  Model
+     * @throws  ValidationException
      */
     public function firstOrNew(array $data)
     {
-        if ( ! is_null($this->validator) ) {
-            $this->validator->validate($data, ValidatorContract::INSERT_RULES);
-        }
+        $this->validateBeforeInsert($data);
 
         return $this->model->firstOrNew($data);
     }
@@ -211,13 +207,12 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     /**
      * @param   array  $data
      * @return  Model
-     * @throws  ModelNotSavedException
+     * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function save(array $data)
     {
-        if ( ! is_null($this->validator) ) {
-            $this->validator->validate($data, ValidatorContract::INSERT_RULES);
-        }
+        $this->validateBeforeInsert($data);
 
         foreach ( $data as $k => $v ) {
             $this->model->$k = $v;
@@ -227,7 +222,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
             return $this->model;
         }
 
-        throw new ModelNotSavedException;
+        throw new RepositoryException('Nao foi possível salvar os dados, Tente Novamente');
     }
 
     /**
@@ -235,7 +230,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      *
      * @param   array  $data
      * @return  mixed
-     * @throws  ModelNotSavedException
+     * @throws  RepositoryException
      */
     public function insert(array $data) : bool
     {
@@ -243,20 +238,19 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
             return true;
         }
 
-        throw new ModelNotSavedException('Não foi possível salvar alguns registros. Tente novamente');
+        throw new RepositoryException('Não foi possível salvar alguns registros. Tente novamente');
     }
 
     /**
      * @param   int $id
      * @param   array $data
      * @return  mixed
-     * @throws  ModelNotSavedException
+     * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function update(int $id, array $data)
     {
-        if ( ! is_null($this->validator) ) {
-            $this->validator->validate($data, ValidatorContract::UPDATE_RULES);
-        }
+        $this->validateBeforeUpdate($data);
 
         $model = $this->find($id);
 
@@ -264,7 +258,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
             return $model;
         }
 
-        throw new ModelNotSavedException('Não foi possível atualizar o registro. Tente novamente');
+        throw new RepositoryException('Não foi possível atualizar o registro. Tente novamente');
     }
 
     /**
@@ -281,7 +275,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     /**
      * @param   int  $id
      * @return  bool
-     * @throws  ModelNotDeletedException
+     * @throws  RepositoryException
      */
     public function delete(int $id) : bool
     {
@@ -289,7 +283,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
             return true;
         }
 
-        throw new ModelNotDeletedException;
+        throw new RepositoryException('Não foi possível apagar o registro. Tente Novamente');
     }
 
     /**
@@ -297,7 +291,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
      *
      * @param   array  $records
      * @return  bool
-     * @throws  ModelNotDeletedException
+     * @throws  RepositoryException
      */
     public function destroy(array $records) : bool
     {
@@ -307,7 +301,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
             return true;
         }
 
-        throw new ModelNotDeletedException('Os registros não foram apagados. Tente novamente');
+        throw new RepositoryException('Os registros não foram apagados. Tente novamente');
     }
 
     /**
