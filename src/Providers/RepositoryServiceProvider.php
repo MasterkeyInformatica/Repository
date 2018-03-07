@@ -5,11 +5,11 @@ namespace Masterkey\Repository\Providers;
 use Illuminate\Support\Composer;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
+use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
+use Masterkey\Repository\Console\Commands\Creators\CriteriaCreator;
 use Masterkey\Repository\Console\Commands\Creators\ValidatorCreator;
 use Masterkey\Repository\Console\Commands\MakeCriteriaCommand;
 use Masterkey\Repository\Console\Commands\MakeRepositoryCommand;
-use Masterkey\Repository\Console\Commands\Creators\CriteriaCreator;
-use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
 use Masterkey\Repository\Console\Commands\MakeValidatorCommand;
 
 /**
@@ -70,15 +70,15 @@ class RepositoryServiceProvider extends ServiceProvider
             return new Composer($app['Filesystem']);
         });
 
-        $this->app->singleton(RepositoryCreator::class, function ($app) {
+        $this->app->singleton('RepositoryCreator', function ($app) {
             return new RepositoryCreator($app['Filesystem']);
         });
 
-        $this->app->singleton(CriteriaCreator::class, function ($app) {
+        $this->app->singleton('CriteriaCreator', function ($app) {
             return new CriteriaCreator($app['Filesystem']);
         });
 
-        $this->app->singleton(ValidatorCreator::class, function($app) {
+        $this->app->singleton('ValidatorCreator', function($app) {
             return new ValidatorCreator($app['Filesystem']);
         });
     }
