@@ -1,0 +1,21 @@
+<?php
+
+namespace validator_namespace;
+
+use Masterkey\Repository\AbstractValidator;
+
+/**
+ * validator_class
+ *
+ * @package validator_namespace
+ */
+class validator_class extends AbstractValidator
+{
+    /**
+     * @return  array
+     */
+    public function rules() : array
+    {
+        return [];
+    }
+}
