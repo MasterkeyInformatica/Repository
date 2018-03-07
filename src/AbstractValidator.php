@@ -5,6 +5,7 @@ namespace Masterkey\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Factory as ValidatorFactory;
 use Masterkey\Repository\Contracts\ValidatorContract;
+use ValidationException;
 
 /**
  * AbstractValidator
@@ -76,7 +77,7 @@ abstract class AbstractValidator implements ValidatorContract
      * @param   array  $data
      * @param   null  $action
      * @return  bool
-     * @throws  \ValidationException
+     * @throws  ValidationException
      */
     public function validate(array $data, $action = NULL)
     {
@@ -88,7 +89,7 @@ abstract class AbstractValidator implements ValidatorContract
         );
 
         if ( $validator->fails() ) {
-            throw new \ValidationException($validator);
+            throw (new ValidationException($validator))->setRequest($this->request);
         }
 
         return true;
