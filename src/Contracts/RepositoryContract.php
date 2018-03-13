@@ -69,4 +69,6 @@ interface RepositoryContract
     public function getFieldsSearchable();
 
     public function sync($id, $relation, $attributes, $detach = true);
+
+    public function limit(int $limit);
 }

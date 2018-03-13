@@ -546,4 +546,15 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         return $this->find($id)->{$relation}()->sync($attributes, $detach);
     }
+
+    /**
+     * @param   int  $limit
+     * @return  $this
+     */
+    public function limit(int $limit)
+    {
+        $this->model->limit($limit);
+
+        return $this;
+    }
 }
