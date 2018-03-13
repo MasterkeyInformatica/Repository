@@ -139,13 +139,14 @@ return [
         |
         */
         'params'             => [
-            'search'       => 'search',
-            'searchFields' => 'searchFields',
-            'filter'       => 'filter',
-            'orderBy'      => 'orderBy',
-            'sortedBy'     => 'sortedBy',
-            'with'         => 'with',
-            'searchJoin'   => 'searchJoin'
+            'search'        => 'search',
+            'searchFields'  => 'searchFields',
+            'filter'        => 'filter',
+            'orderBy'       => 'orderBy',
+            'sortedBy'      => 'sortedBy',
+            'with'          => 'with',
+            'searchJoin'    => 'searchJoin',
+            'limit'         => 'limit'
         ]
     ],
 ];

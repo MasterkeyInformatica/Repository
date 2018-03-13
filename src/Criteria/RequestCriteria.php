@@ -48,6 +48,7 @@ class RequestCriteria extends Criteria
         $sortedBy           = $this->request->get(Config::get('repository.criteria.params.sortedBy', 'sortedBy'), 'asc');
         $with               = $this->request->get(Config::get('repository.criteria.params.with', 'with'), null);
         $searchJoin         = $this->request->get(Config::get('repository.criteria.params.searchJoin', 'searchJoin'), null);
+        $limit              = $this->request->get(Config::get('repository.criteria.params.limit', 'limit'), null);
         $sortedBy           = ! empty($sortedBy) ? $sortedBy : 'asc';
 
         if ( $search && is_array($fieldsSearchable) && count($fieldsSearchable) ) {
@@ -79,7 +80,7 @@ class RequestCriteria extends Criteria
 
                     $relation = null;
 
-                    if( stripos($field, '.') ) {
+                    if ( stripos($field, '.') ) {
                         $explode    = explode('.', $field);
                         $field      = array_pop($explode);
                         $relation   = implode('.', $explode);
@@ -167,9 +168,18 @@ class RequestCriteria extends Criteria
             $model  = $model->with($with);
         }
 
+        if ( $limit ) {
+            $limit = (int) $limit;
+            $model = $model->limit($limit);
+        }
+
         return $model;
     }
 
+    /**
+     * @param   mixed  $search
+     * @return  array
+     */
     protected function parserSearchData($search)
     {
         $searchData = [];
@@ -190,6 +200,10 @@ class RequestCriteria extends Criteria
         return $searchData;
     }
 
+    /**
+     * @param   mixed  $search
+     * @return  null
+     */
     protected function parserSearchValue($search)
     {
         if ( stripos($search, ';') || stripos($search, ':') ) {
@@ -209,6 +223,12 @@ class RequestCriteria extends Criteria
         return $search;
     }
 
+    /**
+     * @param   array  $fields
+     * @param   array|null  $searchFields
+     * @return  array
+     * @throws  \RepositoryException
+     */
     protected function parserFieldsSearch(array $fields = [], array $searchFields = null)
     {
         if ( !is_null($searchFields) && count($searchFields) ) {
