@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Collection;
+use Masterkey\Repository\Contracts\CachableContract;
 use Masterkey\Repository\Contracts\CriteriaContract;
 use Masterkey\Repository\Contracts\RepositoryContract;
 use Masterkey\Repository\Contracts\ValidatorContract;
@@ -82,6 +83,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $this->makeValidator($this->validator());
 
         $this->boot();
+        $this->bootstrapCache();
     }
 
     /**

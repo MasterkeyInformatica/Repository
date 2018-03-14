@@ -22,5 +22,6 @@
         <env name="APP_ENV" value="testing"/>
         <env name="DB_CONNECTION" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>
+        <env name="CACHE_KEY_STORAGE_PATH" value="__DIR__ . '/app'"/>
     </php>
 </phpunit>

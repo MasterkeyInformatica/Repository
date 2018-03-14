@@ -5,6 +5,7 @@ namespace Masterkey\Repository\Providers;
 use Illuminate\Support\Composer;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
+use Masterkey\Repository\Cache\CacheKeyStorage;
 use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
 use Masterkey\Repository\Console\Commands\Creators\CriteriaCreator;
 use Masterkey\Repository\Console\Commands\Creators\ValidatorCreator;
@@ -64,6 +65,10 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     protected function registerBindings()
     {
+        $this->app->singleton(CacheKeyStorage::class, function () {
+            return new CacheKeyStorage(storage_key('framework/cache'));
+        });
+
         $this->app->instance('Filesystem', new Filesystem());
 
         $this->app->bind('Composer', function ($app) {

@@ -8,8 +8,9 @@
     use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Facade;
+use Masterkey\Repository\Cache\CacheKeyStorage;
 
-    $config = require_once(__DIR__ . '/../config/repository.php');
+$config = require_once(__DIR__ . '/../config/repository.php');
 
     /*
      * Registra o container do Laravel para que os testes possam ser realizados
@@ -25,6 +26,18 @@ use Illuminate\Support\Facades\Facade;
 
     $app->singleton('request', function() {
         return new Request();
+    });
+
+    $app->singleton('cache', function() {
+        $store = new \Illuminate\Cache\ArrayStore();
+
+        return new \Illuminate\Cache\Repository($store);
+    });
+
+    $app->singleton(CacheKeyStorage::class, function() {
+        return new CacheKeyStorage(
+            __DIR__ . '/../app'
+        );
     });
 
     $app->singleton(\Illuminate\Validation\Factory::class, function ($app) {
