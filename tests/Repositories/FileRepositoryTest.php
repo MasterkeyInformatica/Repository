@@ -1,0 +1,35 @@
+<?php
+
+namespace Masterkey\Tests\Repositories;
+
+use Illuminate\Cache\Repository;
+use Illuminate\Support\Collection;
+use Masterkey\Tests\Models\FileRepository;
+use PHPUnit\Framework\TestCase;
+
+class FileRepositoryTest extends TestCase
+{
+    protected $files;
+
+    /**
+     * @var Repository
+     */
+    protected $cache;
+
+    public function __construct()
+    {
+        global $app;
+
+        $this->files    = new FileRepository($app);
+        $this->cache    = $app->make('cache');
+
+        parent::__construct();
+    }
+
+    public function test_cache_of_all()
+    {
+        $all = $this->files->all();
+
+        $this->assertInstanceOf(Collection::class, $all);
+    }
+}

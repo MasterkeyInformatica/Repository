@@ -21,14 +21,20 @@ trait ShouldBeCached
      */
     protected $keyStorage;
 
-    public function bootstrapCache()
+    /**
+     * @return  void
+     */
+    public function bootShouldBeCached()
     {
-        $cache = Config::get('repository.cache.repository', 'cache');
-        $this->setCache($this->app->make($cache));
+        $this->setCache($this->app->make('cache'));
 
         $this->setKeyStorage($this->app->make(CacheKeyStorage::class));
     }
 
+    /**
+     * @param   Cache  $cache
+     * @return  $this
+     */
     public function setCache(Cache $cache)
     {
         $this->cache = $cache;
@@ -36,11 +42,18 @@ trait ShouldBeCached
         return $this;
     }
 
+    /**
+     * @return  Cache
+     */
     public function getCache() : Cache
     {
         return $this->cache;
     }
 
+    /**
+     * @param   CacheKeyStorage  $keyStorage
+     * @return  $this
+     */
     public function setKeyStorage(CacheKeyStorage $keyStorage)
     {
         $this->keyStorage = $keyStorage;
@@ -48,6 +61,10 @@ trait ShouldBeCached
         return $this;
     }
 
+    /**
+     * @param   bool  $status
+     * @return  $this
+     */
     public function skipCache(bool $status = true)
     {
         $this->skipCache = $status;
@@ -55,6 +72,9 @@ trait ShouldBeCached
         return $this;
     }
 
+    /**
+     * @return  bool
+     */
     public function isSkippedCache()
     {
         $skipped        = $this->skipCache ?? false;
@@ -68,6 +88,10 @@ trait ShouldBeCached
         return $skipped;
     }
 
+    /**
+     * @param   string  $method
+     * @return  bool
+     */
     protected function allowedCache($method)
     {
         $cacheEnabled = Config::get('repository.cache.enabled', true);
@@ -94,6 +118,11 @@ trait ShouldBeCached
         return false;
     }
 
+    /**
+     * @param   string  $method
+     * @param   mixed  $args
+     * @return  string
+     */
     public function getCacheKey($method, $args = null)
     {
         $request    = $this->app->make(Request::class);
@@ -106,6 +135,9 @@ trait ShouldBeCached
         return $key;
     }
 
+    /**
+     * @return string
+     */
     protected function serializeCriteria()
     {
         try {
@@ -117,6 +149,11 @@ trait ShouldBeCached
         }
     }
 
+    /**
+     * @param   mixed  $criterion
+     * @return  array
+     * @throws  Exception
+     */
     protected function serializeCriterion($criterion)
     {
         try {
@@ -138,11 +175,18 @@ trait ShouldBeCached
         }
     }
 
+    /**
+     * @return  int
+     */
     public function getCacheMinutes() : int
     {
         return $this->cacheMinutes ?? Config::get('repository.cache.minutes', 30);
     }
 
+    /**
+     * @param   array  $columns
+     * @return  mixed
+     */
     public function all(array $columns = ['*'])
     {
         if ( ! $this->allowedCache('all') || $this->isSkippedCache() ) {
@@ -152,7 +196,7 @@ trait ShouldBeCached
         $key        = $this->getCacheKey('all', func_get_args());
         $minutes    = $this->getCacheMinutes();
 
-        $this->getCache()->remember($key, $minutes, function () use ($columns) {
+        return $this->getCache()->remember($key, $minutes, function () use ($columns) {
             return parent::all($columns);
         });
     }

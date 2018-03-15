@@ -82,8 +82,22 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $this->makeModel($this->model());
         $this->makeValidator($this->validator());
 
+        $this->bootTraits();
         $this->boot();
-        $this->bootstrapCache();
+    }
+
+    /**
+     * @return void
+     */
+    public function bootTraits()
+    {
+        $class = $this;
+
+        foreach ( class_uses_recursive($class) as $trait ) {
+            if ( method_exists($class, $method = 'boot' . class_basename($trait)) ) {
+                $this->{$method}();
+            }
+        }
     }
 
     /**
