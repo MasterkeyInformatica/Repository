@@ -10,7 +10,7 @@ class FileRepository extends BaseRepository implements CachableContract
 {
     use ShouldBeCached;
 
-    protected $cacheOnly = ['all'];
+    protected $cacheOnly = ['all', 'paginate', 'getByCriteria', 'find', 'findBy', 'findAllBy'];
 
     public function model()
     {

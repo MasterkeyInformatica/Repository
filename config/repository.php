@@ -230,7 +230,7 @@ return [
          | Methods Allowed
          |--------------------------------------------------------------------------
          |
-         | methods cacheable : all, paginate, find, findByField, findWhere, getByCriteria
+         | methods cacheable : all, paginate [simplePaginate too], find, getByCriteria, findBy, findAllBy
          |
          | Ex:
          |

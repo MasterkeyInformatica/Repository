@@ -3,10 +3,13 @@
 namespace Masterkey\Repository\Traits;
 
 use Exception;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Http\Request;
 use Masterkey\Repository\Cache\CacheKeyStorage;
+use Masterkey\Repository\Criteria;
 use ReflectionObject;
 
 trait ShouldBeCached
@@ -107,7 +110,7 @@ trait ShouldBeCached
             return in_array($method, $cacheOnly);
         }
 
-        if ( is_array($cacheEnabled) ) {
+        if ( is_array($cacheExcept) ) {
             return ! in_array($method, $cacheExcept);
         }
 
@@ -198,6 +201,103 @@ trait ShouldBeCached
 
         return $this->getCache()->remember($key, $minutes, function () use ($columns) {
             return parent::all($columns);
+        });
+    }
+
+    /**
+     * @param   int  $perPage
+     * @param   array  $columns
+     * @param   string  $method
+     * @return  mixed
+     */
+    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate')
+    {
+        if ( ! $this->allowedCache('paginate') || $this->isSkippedCache() ) {
+            return parent::paginate($perPage, $columns, $method);
+        }
+
+        $key        = $this->getCacheKey($method, func_get_args());
+        $minutes    = $this->getCacheMinutes();
+
+        return $this->getCache()->remember($key, $minutes, function () use($perPage, $columns, $method) {
+            return parent::paginate($perPage, $columns, $method);
+        });
+    }
+
+    /**
+     * @param   Criteria  $criteria
+     * @return  Collection
+     */
+    public function getByCriteria(Criteria $criteria) : Collection
+    {
+        if ( ! $this->allowedCache('getByCriteria') || $this->isSkippedCache() ) {
+            return parent::getByCriteria($criteria);
+        }
+
+        $key        = $this->getCacheKey('getByCriteria', func_get_args());
+        $minutes    = $this->getCacheMinutes();
+
+        return $this->getCache()->remember($key, $minutes, function () use($criteria) {
+            return parent::getByCriteria($criteria);
+        });
+    }
+
+    /**
+     * @param   int  $id
+     * @param   array  $columns
+     * @return  mixed
+     */
+    public function find(int $id, $columns = ['*'])
+    {
+        if ( ! $this->allowedCache('find') || $this->isSkippedCache() ) {
+            return parent::find($id, $columns);
+        }
+
+        $key        = $this->getCacheKey('find', func_get_args());
+        $minutes    = $this->getCacheMinutes();
+
+        return $this->getCache()->remember($key, $minutes, function () use ($id, $columns) {
+            return parent::find($id, $columns);
+        });
+    }
+
+    /**
+     * @param   string  $attribute
+     * @param   mixed  $value
+     * @param   array  $columns
+     * @return  Model
+     */
+    public function findBy($attribute, $value, array $columns = ['*'])
+    {
+        if ( ! $this->allowedCache('findBy') || $this->isSkippedCache() ) {
+            return parent::findBy($attribute, $value, $columns);
+        }
+
+        $key        = $this->getCacheKey('findBy', func_get_args());
+        $minutes    = $this->getCacheMinutes();
+
+        return $this->getCache()->remember($key, $minutes, function () use ($attribute, $value, $columns) {
+            return parent::findBy($attribute, $value, $columns);
+        });
+    }
+
+    /**
+     * @param   string  $attribute
+     * @param   mixed  $value
+     * @param   array  $columns
+     * @return  Collection
+     */
+    public function findAllBy($attribute, $value, array $columns = ['*'])
+    {
+        if ( ! $this->allowedCache('findAllBy') || $this->isSkippedCache() ) {
+            return parent::findAllBy($attribute, $value, $columns);
+        }
+
+        $key        = $this->getCacheKey('findAllBy', func_get_args());
+        $minutes    = $this->getCacheMinutes();
+
+        return $this->getCache()->remember($key, $minutes, function () use ($attribute, $value, $columns) {
+            return parent::findAllBy($attribute, $value, $columns);
         });
     }
 }
