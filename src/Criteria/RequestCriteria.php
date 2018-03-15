@@ -3,7 +3,6 @@
 namespace Masterkey\Repository\Criteria;
 
 use Illuminate\Database\Query\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Masterkey\Repository\Criteria;
 use Masterkey\Repository\Contracts\RepositoryContract;
