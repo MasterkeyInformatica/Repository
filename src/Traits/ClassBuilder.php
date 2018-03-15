@@ -31,24 +31,6 @@ trait ClassBuilder
     }
 
     /**
-     * @param   null  $validator
-     * @return  null|ValidatorInterface
-     * @throws  RepositoryException
-     */
-    public function makeValidator($validator = null)
-    {
-        if ( ! is_null($validator) ) {
-            $validator = $this->app->make($validator);
-
-            if ( ! $validator instanceof ValidatorContract ) {
-                throw new RepositoryException("Class {$validator} must be a implementation of Masterkey\\Repository\\Contracts\\ValidatorContract");
-            }
-        }
-
-        return $this->validator = $validator;
-    }
-
-    /**
      * @throws  RepositoryException
      */
     public function resetModel()

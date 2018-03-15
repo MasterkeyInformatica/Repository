@@ -3,18 +3,38 @@
 namespace Masterkey\Repository\Traits;
 
 use Masterkey\Repository\Contracts\ValidatorContract;
+use RepositoryException;
 use ValidationException;
 
 /**
  * ShouldValidate
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 1.0.0
- * @since   06/03/2018
+ * @version 1.1.0
+ * @since   15/03/2018
  * @package Masterkey\Repository\Traits
  */
 trait ShouldValidate
 {
+    /**
+     * @return  void
+     * @throws  RepositoryException
+     */
+    public function bootShouldValidate()
+    {
+        $validator = $this->validator();
+
+        if ( ! is_null($validator) ) {
+            $validator = $this->app->make($validator);
+
+            if ( ! $validator instanceof ValidatorContract ) {
+                throw new RepositoryException("Class {$validator} must be a implementation of Masterkey\\Repository\\Contracts\\ValidatorContract");
+            }
+        }
+
+        $this->validator = $validator;
+    }
+
     /**
      * @param   array  $data
      * @return  bool

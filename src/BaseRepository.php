@@ -80,7 +80,6 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $this->resetScope();
 
         $this->makeModel($this->model());
-        $this->makeValidator($this->validator());
 
         $this->bootTraits();
         $this->boot();
