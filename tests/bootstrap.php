@@ -38,6 +38,10 @@ $app->singleton('cache', function() {
     return new Repository(new ArrayStore());
 });
 
+$app->singleton(Repository::class, function() {
+    return new Repository(new ArrayStore());
+});
+
 $app->singleton(CacheKeyStorage::class, function() {
     return new CacheKeyStorage(__DIR__ . '/../app');
 });

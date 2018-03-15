@@ -11,7 +11,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.0",
         "illuminate/filesystem": "5.5.*",
         "illuminate/support": "5.5.*",
         "illuminate/cache": "5.5.*",
@@ -39,7 +39,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Masterkey\\Repository\\Providers\\RepositoryServiceProvider"
+                "Masterkey\\Repository\\Providers\\RepositoryServiceProvider",
+                "Masterkey\\Repository\\Providers\\RepositoryEventsServiceProvider"
             ]
         }
     }
