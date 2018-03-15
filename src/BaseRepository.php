@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Collection;
+use Masterkey\Repository\Contracts\CachableContract;
 use Masterkey\Repository\Contracts\CriteriaContract;
 use Masterkey\Repository\Contracts\RepositoryContract;
 use Masterkey\Repository\Contracts\ValidatorContract;
@@ -81,7 +82,22 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $this->makeModel($this->model());
         $this->makeValidator($this->validator());
 
+        $this->bootTraits();
         $this->boot();
+    }
+
+    /**
+     * @return void
+     */
+    public function bootTraits()
+    {
+        $class = $this;
+
+        foreach ( class_uses_recursive($class) as $trait ) {
+            if ( method_exists($class, $method = 'boot' . class_basename($trait)) ) {
+                $this->{$method}();
+            }
+        }
     }
 
     /**
