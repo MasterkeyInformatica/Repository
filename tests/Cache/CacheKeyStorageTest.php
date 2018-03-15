@@ -7,23 +7,23 @@ use PHPUnit\Framework\TestCase;
 
 class CacheKeyStorageTest extends TestCase
 {
-    public function test_cache_key_creation()
+    protected $keyStorage;
+
+    public function __construct()
     {
-        $path = __DIR__ . '/../../app';
+        global $app;
 
-        $keyStorage = new CacheKeyStorage($path);
-        $keyStorage->storeKey('user', 'create');
+        $this->keyStorage = $app->make(CacheKeyStorage::class);
 
-        $this->assertFileExists($path . '/' . 'repository-cache-keys.json');
+        parent::__construct();
     }
 
-    public function test_read_cache_key()
+    public function test_cache_key_creation()
     {
-        $path = __DIR__ . '/../../app';
+        $this->keyStorage->storeKey('user', 'create');
+        $key = $this->keyStorage->readKeys('user');
 
-        $keyStorage = new CacheKeyStorage($path);
-        $key = $keyStorage->readKeys('user');
-
+        $this->assertFileExists(__DIR__ . '/../../app/repository-cache-keys.json');
         $this->assertEquals($key[0], 'create');
     }
 }

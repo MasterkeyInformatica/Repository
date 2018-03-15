@@ -28,12 +28,15 @@ class FileRepositoryTest extends TestCase
 
     public function test_cache_of_all()
     {
+        $key = 'Masterkey\\Tests\\Models\\FileRepository@all-f827e42a16eb250430cb3fe01ffa24bb';
+
         $all    = $this->files->all();
-        $cache  = $this->cache->has('Masterkey\\Tests\\Models\\FileRepository@all-f827e42a16eb250430cb3fe01ffa24bb');
-        $cached = $this->cache->get('Masterkey\\Tests\\Models\\FileRepository@all-f827e42a16eb250430cb3fe01ffa24bb');
+        $cache  = $this->cache->has($key);
+        $cached = $this->cache->get($key);
 
         $this->assertInstanceOf(Collection::class, $all);
         $this->assertInstanceOf(Collection::class, $cached);
+        $this->assertEquals(4, $cached->count());
         $this->assertTrue($cache);
     }
 }
