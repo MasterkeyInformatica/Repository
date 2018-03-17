@@ -17,17 +17,12 @@ use Masterkey\Repository\Console\Commands\MakeValidatorCommand;
  * RepositoryServiceProvider
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 4.0.0
- * @since   07/03/2018
+ * @version 4.0.1
+ * @since   17/03/2018
  * @package Masterkey\Repository\Providers
  */
 class RepositoryServiceProvider extends ServiceProvider
 {
-    /**
-     * @var bool
-     */
-    protected $defer = true;
-
     /**
      * @return  void
      */
