@@ -36,7 +36,7 @@ class ValidationException extends BaseValidationException
         if ( $this->request->ajax() ) {
             return response()->json([
                 'errors'  => $this->errors()
-            ], $this->getCode());
+            ], 422);
         }
 
         return redirect()->back()->withInput()->withErrors($this->errors());
