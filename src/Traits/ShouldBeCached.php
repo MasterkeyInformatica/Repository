@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Cache\Repository as Cache;
 use Illuminate\Http\Request;
 use Masterkey\Repository\Cache\CacheKeyStorage;
 use Masterkey\Repository\Criteria;
@@ -29,7 +29,7 @@ trait ShouldBeCached
      */
     public function bootShouldBeCached()
     {
-        $this->setCache($this->app->make('cache'));
+        $this->setCache($this->app->make(Cache::class));
 
         $this->setKeyStorage($this->app->make(CacheKeyStorage::class));
     }

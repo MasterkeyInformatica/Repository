@@ -26,7 +26,7 @@ class FileRepositoryTest extends TestCase
         global $app;
 
         $this->files    = new FileRepository($app);
-        $this->cache    = $app->make('cache');
+        $this->cache    = $app->make(Repository::class);
 
         parent::__construct();
     }

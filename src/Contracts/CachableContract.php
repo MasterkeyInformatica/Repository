@@ -2,7 +2,7 @@
 
 namespace Masterkey\Repository\Contracts;
 
-use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Cache\Repository as Cache;
 use Masterkey\Repository\Cache\CacheKeyStorage;
 
 /**
