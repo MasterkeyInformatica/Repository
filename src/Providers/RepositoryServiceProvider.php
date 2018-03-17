@@ -66,7 +66,7 @@ class RepositoryServiceProvider extends ServiceProvider
     protected function registerBindings()
     {
         $this->app->singleton(CacheKeyStorage::class, function () {
-            return new CacheKeyStorage(storage_key('framework/cache'));
+            return new CacheKeyStorage(storage_path('framework/cache'));
         });
 
         $this->app->instance('Filesystem', new Filesystem());
