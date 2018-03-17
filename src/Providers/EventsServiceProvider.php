@@ -8,7 +8,15 @@ use Masterkey\Repository\Events\EntityDeleted;
 use Masterkey\Repository\Events\EntityUpdated;
 use Masterkey\Repository\Listeners\ClearRepositoryCache;
 
-class RepositoryEventsServiceProvider extends ServiceProvider
+/**
+ * EventsServiceProvider
+ *
+ * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+ * @version 1.0.0
+ * @since   17/03/2018
+ * @package Masterkey\Repository\Providers
+ */
+class EventsServiceProvider extends ServiceProvider
 {
     protected $listen = [
         EntityCreated::class => [

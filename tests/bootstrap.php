@@ -8,6 +8,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection as DB;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Facade;
@@ -36,6 +37,10 @@ $app->singleton('request', function() {
 
 $app->singleton('cache', function() {
     return new Repository(new ArrayStore());
+});
+
+$app->singleton('events', function ($app) {
+    return new Dispatcher($app);
 });
 
 $app->singleton(Repository::class, function() {

@@ -5,9 +5,8 @@ namespace Masterkey\Repository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Collection;
-use Masterkey\Repository\Contracts\CachableContract;
+use Illuminate\Support\Facades\Event;
 use Masterkey\Repository\Contracts\CriteriaContract;
 use Masterkey\Repository\Contracts\RepositoryContract;
 use Masterkey\Repository\Contracts\ValidatorContract;
@@ -57,11 +56,6 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     protected $validator = null;
 
     /**
-     * @var Dispatcher
-     */
-    protected $event;
-
-    /**
      * @var array
      */
     protected $fieldsSearchable = [];
@@ -74,8 +68,6 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     {
         $this->app      = $container;
         $this->criteria = new Collection();
-
-        $this->event = new Dispatcher($container);
 
         $this->resetScope();
 
@@ -190,7 +182,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $model = $this->model->create($data);
 
         if ( $model ) {
-            $this->event->fire(new Events\EntityCreated($this, $model));
+            Event::fire(new Events\EntityCreated($this, $model));
 
             return $model;
         }
@@ -211,7 +203,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $model = $this->model->firstOrCreate($data);
 
         if( $model ) {
-            $this->event->fire(new Events\EntityCreated($this, $model));
+            Event::fire(new Events\EntityCreated($this, $model));
 
             return $model;
         }
@@ -246,7 +238,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         }
 
         if ( $this->model->save() ) {
-            $this->event->fire(new Events\EntityCreated($this, $this->model->getModel()));
+            Event::fire(new Events\EntityCreated($this, $this->model->getModel()));
 
             return $this->model;
         }
@@ -264,7 +256,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     public function insert(array $data) : bool
     {
         if ( $this->model->insert($data) ) {
-            $this->event->fire(new Events\EntityCreated($this, $this->model->getModel()));
+            Event::fire(new Events\EntityCreated($this, $this->model->getModel()));
 
             return true;
         }
@@ -287,7 +279,8 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $original   = clone $model;
 
         if ( $model->update($data) ) {
-            $this->event->fire(new Events\EntityUpdated($this, $original));
+            Event::fire(new Events\EntityUpdated($this, $original));
+
             return $model;
         }
 
@@ -305,7 +298,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $updated = $this->model->update($data);
 
         if ( $updated ) {
-            $this->event->fire(new Events\EntityUpdated($this, $this->model->getModel()));
+            Event::fire(new Events\EntityUpdated($this, $this->model->getModel()));
         }
 
         return $updated;
@@ -322,7 +315,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $original   = clone $model;
 
         if ( $model->delete() ) {
-            $this->event->fire(new Events\EntityDeleted($this, $original));
+            Event::fire(new Events\EntityDeleted($this, $original));
 
             return true;
         }
@@ -342,7 +335,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
         $this->applyCriteria();
 
         if ( $this->model->destroy($records) ) {
-            $this->event->fire(new Events\EntityDeleted($this, $this->model->getModel()));
+            Event::fire(new Events\EntityDeleted($this, $this->model->getModel()));
 
             return true;
         }

@@ -39,8 +39,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Masterkey\\Repository\\Providers\\RepositoryServiceProvider",
-                "Masterkey\\Repository\\Providers\\RepositoryEventsServiceProvider"
+                "Masterkey\\Repository\\Providers\\RepositoryServiceProvider"
             ]
         }
     }

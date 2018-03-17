@@ -38,6 +38,8 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->register(EventsServiceProvider::class);
+
         $this->registerBindings();
 
         $this->registerMakeRepositoryCommand();
