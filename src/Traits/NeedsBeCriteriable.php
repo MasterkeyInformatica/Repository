@@ -1,10 +1,22 @@
 <?php
 
 namespace Masterkey\Repository\Traits;
+use Illuminate\Support\Collection;
+use Masterkey\Repository\Criteria;
 
+/**
+ * NeedsBeCriteriable
+ *
+ * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+ * @version 1.0.0
+ * @since   24/04/2018
+ * @package Masterkey\Repository\Traits
+ */
 trait NeedsBeCriteriable
 {
-
+    /**
+     * @return  $this
+     */
     public function resetScope()
     {
         $this->skipCriteria(false);

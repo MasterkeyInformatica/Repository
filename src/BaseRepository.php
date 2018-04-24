@@ -33,6 +33,7 @@ abstract class BaseRepository implements
 {
     use Traits\ClassBuilder,
         Traits\NeedsBeCreatable,
+        Traits\NeedsBeCriteriable,
         Traits\NeedsBeSearchable,
         Traits\ShouldValidate;
 

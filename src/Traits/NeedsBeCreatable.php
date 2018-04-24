@@ -10,6 +10,14 @@ use Masterkey\Repository\Events\EntityDeleted;
 use Masterkey\Repository\Events\EntityUpdated;
 use RepositoryException;
 
+/**
+ * Trait NeedsBeCreatable
+ *
+ * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+ * @version 1.0.0
+ * @since   24/04/2018
+ * @package Masterkey\Repository\Traits
+ */
 trait NeedsBeCreatable
 {
     /**
