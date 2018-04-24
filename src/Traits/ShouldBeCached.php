@@ -190,7 +190,7 @@ trait ShouldBeCached
      * @param   array  $columns
      * @return  mixed
      */
-    public function all(array $columns = ['*'])
+    public function all(array $columns = ['*']) : Collection
     {
         if ( ! $this->allowedCache('all') || $this->isSkippedCache() ) {
             return parent::all($columns);
@@ -247,7 +247,7 @@ trait ShouldBeCached
      * @param   array  $columns
      * @return  mixed
      */
-    public function find(int $id, $columns = ['*'])
+    public function find(int $id, $columns = ['*']) : Model
     {
         if ( ! $this->allowedCache('find') || $this->isSkippedCache() ) {
             return parent::find($id, $columns);
@@ -267,7 +267,7 @@ trait ShouldBeCached
      * @param   array  $columns
      * @return  Model
      */
-    public function findBy($attribute, $value, array $columns = ['*'])
+    public function findBy($attribute, $value, array $columns = ['*']) : Model
     {
         if ( ! $this->allowedCache('findBy') || $this->isSkippedCache() ) {
             return parent::findBy($attribute, $value, $columns);
@@ -287,7 +287,7 @@ trait ShouldBeCached
      * @param   array  $columns
      * @return  Collection
      */
-    public function findAllBy($attribute, $value, array $columns = ['*'])
+    public function findAllBy($attribute, $value, array $columns = ['*']) : Collection
     {
         if ( ! $this->allowedCache('findAllBy') || $this->isSkippedCache() ) {
             return parent::findAllBy($attribute, $value, $columns);
