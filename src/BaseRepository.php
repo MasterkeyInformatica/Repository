@@ -38,6 +38,7 @@ abstract class BaseRepository implements
         Traits\NeedsBeCreatable,
         Traits\NeedsBeCriteriable,
         Traits\NeedsBeSearchable,
+        Traits\NeedsBeSortable,
         Traits\ShouldValidate;
 
     /**
@@ -152,16 +153,5 @@ abstract class BaseRepository implements
     public function getFieldsSearchable()
     {
         return $this->fieldsSearchable;
-    }
-
-    /**
-     * @param   int  $limit
-     * @return  $this
-     */
-    public function limit(int $limit)
-    {
-        $this->model->limit($limit);
-
-        return $this;
     }
 }
