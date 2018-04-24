@@ -31,7 +31,9 @@ abstract class BaseRepository implements
     SearchableInterface,
     SortableInterface
 {
-    use Traits\ClassBuilder, Traits\ShouldValidate;
+    use Traits\ClassBuilder,
+        Traits\NeedsBeSearchable,
+        Traits\ShouldValidate;
 
     /**
      * @var \Illuminate\Container\Container
@@ -115,66 +117,6 @@ abstract class BaseRepository implements
     public function validator()
     {
         return null;
-    }
-
-    /**
-     * @param   array  $columns
-     * @return  \Illuminate\Support\Collection
-     */
-    public function all(array $columns = ['*'])
-    {
-        $this->applyCriteria();
-
-        return $this->model->get($columns);
-    }
-
-    /**
-     * @param   array  $relations
-     * @return  $this
-     */
-    public function with(array $relations)
-    {
-        $this->model = $this->model->with($relations);
-
-        return $this;
-    }
-
-    /**
-     * @param   string  $value
-     * @param   string|null $key
-     * @return  mixed
-     */
-    public function pluck(string $value, $key = null)
-    {
-        $this->applyCriteria();
-
-        return $this->model->pluck($value, $key)->toArray();
-    }
-
-    /**
-     * @param   integer $perPage
-     * @param   array $columns
-     * @param   string  $method
-     * @return  mixed
-     */
-    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate')
-    {
-        $this->applyCriteria();
-
-        $results = $this->model->{$method}($perPage, $columns);
-        $results->appends($this->app->make('request')->query());
-
-        return $results;
-    }
-
-    /**
-     * @param   int  $perPage
-     * @param   array  $columns
-     * @return  mixed
-     */
-    public function simplePaginate(int $perPage = 15, array $columns = ['*'])
-    {
-        return $this->paginate($perPage, $columns, 'simplePaginate');
     }
 
     /**
@@ -351,71 +293,6 @@ abstract class BaseRepository implements
         throw new RepositoryException('Os registros não foram apagados. Tente novamente');
     }
 
-    /**
-     * @param   int   $id
-     * @param   array  $columns
-     * @return  mixed
-     */
-    public function find(int $id, $columns = array('*'))
-    {
-        $this->applyCriteria();
-
-        return $this->model->findOrFail($id, $columns);
-    }
-
-    /**
-     * @param   array  $columns
-     * @return  mixed
-     */
-    public function first(array $columns = ['*'])
-    {
-        $this->applyCriteria();
-
-        return $this->model->first($columns);
-    }
-
-    /**
-     * @param   array  $columns
-     * @return  mixed
-     */
-    public function last(array $columns = ['*'])
-    {
-        $this->applyCriteria();
-
-        return $this->model
-                    ->orderBy($this->getKeyName(), 'desc')
-                    ->first();
-    }
-
-    /**
-     * Search for a model by a column
-     *
-     * @param   string  $attribute
-     * @param   mixed  $value
-     * @param   array  $columns
-     * @return  mixed
-     */
-    public function findBy($attribute, $value, array $columns = ['*'])
-    {
-        $this->applyCriteria();
-
-        return $this->model->where($attribute, '=', $value)->first($columns);
-    }
-
-    /**
-     * Search for records by a column
-     *
-     * @param   string  $attribute
-     * @param   mixed  $value
-     * @param   array  $columns
-     * @return  mixed
-     */
-    public function findAllBy($attribute, $value, array $columns = ['*'])
-    {
-        $this->applyCriteria();
-
-        return $this->model->where($attribute, '=', $value)->get($columns);
-    }
 
     /**
      * @return   $this

@@ -57,6 +57,12 @@ interface CreatableInterface
     public function delete(int $id) : bool;
 
     /**
+     * @param   array  $records
+     * @return  bool
+     */
+    public function destroy(array $records) : bool;
+
+    /**
      * @param   int  $id
      * @param   string  $relation
      * @param   string  $attributes

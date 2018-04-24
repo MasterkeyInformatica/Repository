@@ -33,7 +33,7 @@ interface SearchableInterface
      * @param   null  $key
      * @return  array
      */
-    public function pluck(string $value, $key = null);
+    public function pluck(string $value, $key = null) : array;
 
     /**
      * @param   int  $perPage
@@ -41,20 +41,14 @@ interface SearchableInterface
      * @param   string  $method
      * @return  Paginator
      */
-    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate') : Paginator;
+    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate');
 
     /**
      * @param   int  $perPage
      * @param   array  $columns
      * @return  LengthAwarePaginator
      */
-    public function simplePaginate(int $perPage = 15, array $columns = ['*']) : LengthAwarePaginator;
-
-    /**
-     * @param   array  $records
-     * @return  bool
-     */
-    public function destroy(array $records) : bool;
+    public function simplePaginate(int $perPage = 15, array $columns = ['*']);
 
     /**
      * @param   int  $id
