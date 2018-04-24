@@ -13,13 +13,14 @@ namespace Masterkey\Repository\Traits;
 trait NeedsBeCountable
 {
     /**
+     * @param   string  $column
      * @return  integer
      */
-    public function count() : int
+    public function count(string $column = '*') : int
     {
         $this->applyCriteria();
 
-        return $this->model->count();
+        return $this->model->count($column);
     }
 
     /**

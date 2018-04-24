@@ -263,4 +263,26 @@ class UserRepositoryTest extends TestCase
 
         $this->user->all();
     }
+
+    public function testLimit()
+    {
+        $users = $this->user->limit(2)->all();
+
+        $this->assertEquals(2, $users->count());
+    }
+
+    public function testHaving()
+    {
+        $users = $this->user->having('logins' , '=', 2)->all();
+
+        $this->assertEquals(1, $users->count());
+    }
+
+    public function testOrderBy()
+    {
+        $users  = $this->user->orderBy('id', 'desc')->all();
+        $last   = $users->first();
+
+        $this->assertEquals(6, $last->id);
+    }
 }

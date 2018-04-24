@@ -13,9 +13,10 @@ namespace Masterkey\Repository\Contracts;
 interface CountableInterface
 {
     /**
-     * @return int
+     * @param   string  $column
+     * @return  int
      */
-    public function count() : int ;
+    public function count(string $column = '*') : int ;
 
     /**
      * @param   string  $column

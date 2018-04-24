@@ -18,7 +18,7 @@ trait NeedsBeSortable
      */
     public function limit(int $limit)
     {
-        $this->model->limit($limit);
+        $this->model = $this->model->limit($limit);
 
         return $this;
     }
@@ -29,7 +29,7 @@ trait NeedsBeSortable
      */
     public function offset(int $offset)
     {
-        $this->model->offset($offset);
+        $this->model = $this->model->offset($offset);
 
         return $this;
     }
@@ -42,6 +42,8 @@ trait NeedsBeSortable
      */
     public function having(string $column, string $operator, $value)
     {
+        $this->groupBy($column);
+
         $this->model = $this->model->having($column, $operator, $value);
 
         return $this;
