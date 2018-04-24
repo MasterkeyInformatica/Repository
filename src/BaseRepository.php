@@ -7,8 +7,11 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
+use Masterkey\Repository\Contracts\CreatableInterface;
 use Masterkey\Repository\Contracts\CriteriaInterface;
 use Masterkey\Repository\Contracts\RepositoryInterface;
+use Masterkey\Repository\Contracts\SearchableInterface;
+use Masterkey\Repository\Contracts\SortableInterface;
 use Masterkey\Repository\Contracts\ValidatorInterface;
 use RepositoryException;
 use ValidationException;
@@ -17,11 +20,16 @@ use ValidationException;
  * BaseRepository
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version  3.0.0
- * @since    02/09/2017
+ * @version  4.0.0
+ * @since    24/04/2018
  * @package  Masterkey\Repository
  */
-abstract class BaseRepository implements CriteriaInterface, RepositoryInterface
+abstract class BaseRepository implements
+    CreatableInterface,
+    CriteriaInterface,
+    RepositoryInterface,
+    SearchableInterface,
+    SortableInterface
 {
     use Traits\ClassBuilder, Traits\ShouldValidate;
 
