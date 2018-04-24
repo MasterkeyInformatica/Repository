@@ -3,7 +3,7 @@
 namespace Masterkey\Tests\Models;
 
 use Masterkey\Repository\Criteria;
-use Masterkey\Repository\Contracts\RepositoryContract as Repository;
+use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
  * ActiveUsers

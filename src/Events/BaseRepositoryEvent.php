@@ -3,7 +3,7 @@
 namespace Masterkey\Repository\Events;
 
 use Illuminate\Database\Eloquent\Model;
-use Masterkey\Repository\Contracts\RepositoryContract;
+use Masterkey\Repository\Contracts\RepositoryInterface;
 
 /**
  * BaseRepositoryEvents
@@ -21,7 +21,7 @@ class BaseRepositoryEvent
     protected $model;
 
     /**
-     * @var RepositoryContract
+     * @var RepositoryInterface
      */
     protected $repository;
 
@@ -31,10 +31,10 @@ class BaseRepositoryEvent
     protected $action;
 
     /**
-     * @param   RepositoryContract  $repository
+     * @param   RepositoryInterface  $repository
      * @param   Model  $model
      */
-    public function __construct(RepositoryContract $repository, Model $model)
+    public function __construct(RepositoryInterface $repository, Model $model)
     {
         $this->repository   = $repository;
         $this->model        = $model;
@@ -49,9 +49,9 @@ class BaseRepositoryEvent
     }
 
     /**
-     * @return  RepositoryContract
+     * @return  RepositoryInterface
      */
-    public function getRepository() : RepositoryContract
+    public function getRepository() : RepositoryInterface
     {
         return $this->repository;
     }

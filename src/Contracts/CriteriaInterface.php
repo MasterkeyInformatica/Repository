@@ -10,11 +10,11 @@ use Masterkey\Repository\Criteria;
  * Interface that rules using of Criteria
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version  2.0.0
- * @since    02/09/2019
+ * @version  3.0.0
+ * @since    24/04/2018
  * @package  Masterkey\Repository\Contracts
  */
-interface CriteriaContract
+interface CriteriaInterface
 {
     /**
      * @param   bool $status

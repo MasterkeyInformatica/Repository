@@ -4,7 +4,7 @@ namespace Masterkey\Repository;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Factory as ValidatorFactory;
-use Masterkey\Repository\Contracts\ValidatorContract;
+use Masterkey\Repository\Contracts\ValidatorInterface;
 use ValidationException;
 
 /**
@@ -15,7 +15,7 @@ use ValidationException;
  * @since   06/03/2018
  * @package Masterkey\Repository
  */
-abstract class AbstractValidator implements ValidatorContract
+abstract class AbstractValidator implements ValidatorInterface
 {
     /**
      * @var ValidatorFactory

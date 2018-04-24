@@ -3,7 +3,7 @@
 namespace Masterkey\Repository\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Masterkey\Repository\Contracts\ValidatorContract;
+use Masterkey\Repository\Contracts\ValidatorInterface;
 use RepositoryException;
 
 /**

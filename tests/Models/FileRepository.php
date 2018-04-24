@@ -3,10 +3,10 @@
 namespace Masterkey\Tests\Models;
 
 use Masterkey\Repository\BaseRepository;
-use Masterkey\Repository\Contracts\CachableContract;
+use Masterkey\Repository\Contracts\CachableInterface;
 use Masterkey\Repository\Traits\ShouldBeCached;
 
-class FileRepository extends BaseRepository implements CachableContract
+class FileRepository extends BaseRepository implements CachableInterface
 {
     use ShouldBeCached;
 

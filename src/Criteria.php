@@ -3,7 +3,7 @@
 namespace Masterkey\Repository;
 
 use Illuminate\Database\Query\Builder;
-use Masterkey\Repository\Contracts\RepositoryContract as Repository;
+use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
  * Criteria

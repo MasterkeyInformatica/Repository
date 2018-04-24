@@ -2,7 +2,7 @@
 
 namespace Masterkey\Tests\Models;
 
-use Masterkey\Repository\Contracts\RepositoryContract as Repository;
+use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 use Masterkey\Repository\Criteria;
 
 class OrderFileByName extends Criteria

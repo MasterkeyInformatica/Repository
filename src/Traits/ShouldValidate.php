@@ -2,7 +2,7 @@
 
 namespace Masterkey\Repository\Traits;
 
-use Masterkey\Repository\Contracts\ValidatorContract;
+use Masterkey\Repository\Contracts\ValidatorInterface;
 use RepositoryException;
 use ValidationException;
 
@@ -27,7 +27,7 @@ trait ShouldValidate
         if ( ! is_null($validator) ) {
             $validator = $this->app->make($validator);
 
-            if ( ! $validator instanceof ValidatorContract ) {
+            if ( ! $validator instanceof ValidatorInterface ) {
                 throw new RepositoryException("Class {$validator} must be a implementation of Masterkey\\Repository\\Contracts\\ValidatorContract");
             }
         }
@@ -43,7 +43,7 @@ trait ShouldValidate
     public function validateBeforeInsert(array $data)
     {
         if ( ! is_null($this->validator) ) {
-            return $this->validator->validate($data, ValidatorContract::INSERT_RULES);
+            return $this->validator->validate($data, ValidatorInterface::INSERT_RULES);
         }
 
         return true;
@@ -57,7 +57,7 @@ trait ShouldValidate
     public function validateBeforeUpdate(array $data)
     {
         if ( ! is_null($this->validator) ) {
-            return $this->validator->validate($data, ValidatorContract::UPDATE_RULES);
+            return $this->validator->validate($data, ValidatorInterface::UPDATE_RULES);
         }
 
         return true;

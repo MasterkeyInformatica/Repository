@@ -7,9 +7,9 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
-use Masterkey\Repository\Contracts\CriteriaContract;
-use Masterkey\Repository\Contracts\RepositoryContract;
-use Masterkey\Repository\Contracts\ValidatorContract;
+use Masterkey\Repository\Contracts\CriteriaInterface;
+use Masterkey\Repository\Contracts\RepositoryInterface;
+use Masterkey\Repository\Contracts\ValidatorInterface;
 use RepositoryException;
 use ValidationException;
 
@@ -21,7 +21,7 @@ use ValidationException;
  * @since    02/09/2017
  * @package  Masterkey\Repository
  */
-abstract class BaseRepository implements CriteriaContract, RepositoryContract
+abstract class BaseRepository implements CriteriaInterface, RepositoryInterface
 {
     use Traits\ClassBuilder, Traits\ShouldValidate;
 
@@ -51,7 +51,7 @@ abstract class BaseRepository implements CriteriaContract, RepositoryContract
     protected $preventCriteriaOverwriting = true;
 
     /**
-     * @var null|ValidatorContract
+     * @var null|ValidatorInterface
      */
     protected $validator = null;
 

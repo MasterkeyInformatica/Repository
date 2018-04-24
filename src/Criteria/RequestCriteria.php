@@ -5,7 +5,7 @@ namespace Masterkey\Repository\Criteria;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Masterkey\Repository\Criteria;
-use Masterkey\Repository\Contracts\RepositoryContract;
+use Masterkey\Repository\Contracts\RepositoryInterface;
 use Illuminate\Support\Facades\Config;
 
 /**
@@ -33,11 +33,11 @@ class RequestCriteria extends Criteria
 
     /**
      * @param   Builder  $model
-     * @param   RepositoryContract  $repository
+     * @param   RepositoryInterface  $repository
      * @return  $this|Builder|mixed
      * @throws  \RepositoryException
      */
-    public function apply($model, RepositoryContract $repository)
+    public function apply($model, RepositoryInterface $repository)
     {
         $fieldsSearchable   = $repository->getFieldsSearchable();
         $search             = $this->request->get(Config::get('repository.criteria.params.search', 'search'), null);
