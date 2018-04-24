@@ -186,4 +186,16 @@ trait NeedsBeCreatable
 
         throw new RepositoryException('Os registros não foram apagados. Tente novamente');
     }
+
+    /**
+     * @param   int  $id
+     * @param   string  $relation
+     * @param   array  $attributes
+     * @param   bool  $detach
+     * @return  mixed
+     */
+    public function sync($id, $relation, $attributes, $detach = true)
+    {
+        return $this->find($id)->{$relation}()->sync($attributes, $detach);
+    }
 }

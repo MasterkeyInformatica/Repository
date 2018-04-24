@@ -155,18 +155,6 @@ abstract class BaseRepository implements
     }
 
     /**
-     * @param   int  $id
-     * @param   string  $relation
-     * @param   array  $attributes
-     * @param   bool  $detach
-     * @return  mixed
-     */
-    public function sync($id, $relation, $attributes, $detach = true)
-    {
-        return $this->find($id)->{$relation}()->sync($attributes, $detach);
-    }
-
-    /**
      * @param   int  $limit
      * @return  $this
      */
