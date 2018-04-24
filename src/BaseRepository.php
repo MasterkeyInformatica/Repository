@@ -34,6 +34,7 @@ abstract class BaseRepository implements
     SortableInterface
 {
     use Traits\ClassBuilder,
+        Traits\NeedsBeCountable,
         Traits\NeedsBeCreatable,
         Traits\NeedsBeCriteriable,
         Traits\NeedsBeSearchable,
@@ -121,60 +122,6 @@ abstract class BaseRepository implements
     public function validator()
     {
         return null;
-    }
-
-    /**
-     * @return  integer
-     */
-    public function count() : int
-    {
-        $this->applyCriteria();
-
-        return $this->model->count();
-    }
-
-    /**
-     * @param   string  $column
-     * @return  int|float
-     */
-    public function max(string $column)
-    {
-        $this->applyCriteria();
-
-        return $this->model->max($column);
-    }
-
-    /**
-     * @param   string  $column
-     * @return  int|float
-     */
-    public function min(string $column)
-    {
-        $this->applyCriteria();
-
-        return $this->model->min($column);
-    }
-
-    /**
-     * @param   string  $column
-     * @return  int|float
-     */
-    public function avg(string $column)
-    {
-        $this->applyCriteria();
-
-        return $this->model->avg($column);
-    }
-
-    /**
-     * @param   string  $column
-     * @return  int|float
-     */
-    public function sum(string $column)
-    {
-        $this->applyCriteria();
-
-        return $this->model->sum($column);
     }
 
     /**
