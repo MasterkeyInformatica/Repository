@@ -42,7 +42,7 @@ trait NeedsBeSortable
      */
     public function having(string $column, string $operator, $value)
     {
-        $this->model->having($column, $operator, $value);
+        $this->model = $this->model->having($column, $operator, $value);
 
         return $this;
     }
@@ -54,7 +54,7 @@ trait NeedsBeSortable
      */
     public function orderBy(string $column, $order = 'asc')
     {
-        $this->model->orderBy($column, $order);
+        $this->model = $this->model->orderBy($column, $order);
 
         return $this;
     }
@@ -65,7 +65,7 @@ trait NeedsBeSortable
      */
     public function groupBy(...$columns)
     {
-        $this->model->groupBy($columns);
+        $this->model = $this->model->groupBy($columns);
 
         return $this;
     }

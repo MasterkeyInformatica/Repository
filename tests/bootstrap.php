@@ -69,6 +69,14 @@ $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
 // realiza o gerenciamento do PDO
+$app->singleton('db', function () use ($capsule) {
+
+    return new DB(
+        $capsule->getConnection('sqlite')->getPdo(),
+        'sqlite'
+    );
+});
+
 $pdo    = $capsule->getConnection('sqlite')->getPdo();
 $db     = new DB($pdo, 'sqlite');
 

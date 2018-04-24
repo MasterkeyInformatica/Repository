@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Config;
  * @since   24/04/2018
  * @package Masterkey\Repository\Criteria
  */
-class RequestAbstractCriteria extends AbstractCriteria
+class RequestCriteria extends AbstractCriteria
 {
     /**
      * @var Request

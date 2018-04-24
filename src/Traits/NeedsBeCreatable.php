@@ -105,15 +105,15 @@ trait NeedsBeCreatable
      */
     public function insert(array $data) : bool
     {
-        DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
             if ( $this->model->insert($data) ) {
                 Event::fire(new EntityCreated($this, $this->model->getModel()));
+
+                return true;
             }
 
             throw new RepositoryException('Não foi possível salvar alguns registros. Tente novamente');
         });
-
-        return true;
     }
 
     /**

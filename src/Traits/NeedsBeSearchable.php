@@ -34,7 +34,7 @@ trait NeedsBeSearchable
      */
     public function with(array $relations)
     {
-        $this->model->with($relations);
+        $this->model = $this->model->with($relations);
 
         return $this;
     }
@@ -109,10 +109,7 @@ trait NeedsBeSearchable
     {
         $this->applyCriteria();
 
-        $model = $this->model;
-        $model->orderBy($this->getKeyName(), 'desc');
-
-        return $model->first($columns);
+        return $this->orderBy($this->getKeyName(), 'desc')->first($columns);
     }
 
     /**
