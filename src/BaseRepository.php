@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
+use Masterkey\Repository\Contracts\CountableInterface;
 use Masterkey\Repository\Contracts\CreatableInterface;
 use Masterkey\Repository\Contracts\CriteriaInterface;
 use Masterkey\Repository\Contracts\RepositoryInterface;
@@ -25,6 +26,7 @@ use ValidationException;
  * @package  Masterkey\Repository
  */
 abstract class BaseRepository implements
+    CountableInterface,
     CreatableInterface,
     CriteriaInterface,
     RepositoryInterface,

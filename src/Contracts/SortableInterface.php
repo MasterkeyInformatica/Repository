@@ -13,31 +13,6 @@ namespace Masterkey\Repository\Contracts;
 interface SortableInterface
 {
     /**
-     * @return int
-     */
-    public function count() : int ;
-
-    /**
-     * @param   string  $column
-     */
-    public function max(string $column);
-
-    /**
-     * @param   string  $column
-     */
-    public function min(string $column);
-
-    /**
-     * @param   string  $column
-     */
-    public function avg(string $column);
-
-    /**
-     * @param   string  $column
-     */
-    public function sum(string $column);
-
-    /**
      * @param   int  $limit
      */
     public function limit(int $limit);
