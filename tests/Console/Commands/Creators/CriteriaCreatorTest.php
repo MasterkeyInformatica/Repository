@@ -15,6 +15,6 @@ class CriteriaCreatorTest extends TestCase
         $criteriaCreator->create('MoviesNotRated', 'Movie');
 
         $this->assertInstanceOf(CriteriaCreator::class, $criteriaCreator);
-        $this->assertFileExists(__DIR__ . '/../../../../app/Repositories/Criteria/Films/FilmsOverTwoHoursLength.php');
+        $this->assertFileExists(__DIR__ . '/../../../../app/Repositories/Criteria/Films/FilmsOverTwoHoursLength.phpAbstract');
     }
 }

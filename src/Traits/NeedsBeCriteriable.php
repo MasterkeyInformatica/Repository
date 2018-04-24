@@ -2,7 +2,7 @@
 
 namespace Masterkey\Repository\Traits;
 use Illuminate\Support\Collection;
-use Masterkey\Repository\Criteria;
+use Masterkey\Repository\AbstractCriteria;
 
 /**
  * NeedsBeCriteriable
@@ -44,10 +44,10 @@ trait NeedsBeCriteriable
     }
 
     /**
-     * @param   Criteria  $criteria
+     * @param   AbstractCriteria  $criteria
      * @return  Collection
      */
-    public function getByCriteria(Criteria $criteria) : Collection
+    public function getByCriteria(AbstractCriteria $criteria) : Collection
     {
         $this->pushCriteria($criteria);
 
@@ -55,10 +55,10 @@ trait NeedsBeCriteriable
     }
 
     /**
-     * @param   Criteria  $criteria
+     * @param   AbstractCriteria  $criteria
      * @return  $this
      */
-    public function pushCriteria(Criteria $criteria)
+    public function pushCriteria(AbstractCriteria $criteria)
     {
         if ( $this->preventCriteriaOverwriting ) {
             // Find existing criteria
@@ -87,7 +87,7 @@ trait NeedsBeCriteriable
         }
 
         foreach ( $this->getCriteria() as $criteria ) {
-            if ( $criteria instanceof Criteria ) {
+            if ( $criteria instanceof AbstractCriteria ) {
                 $this->model = $criteria->apply($this->model, $this);
             }
         }

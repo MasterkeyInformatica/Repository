@@ -5,7 +5,7 @@ use Masterkey\Tests\Models\UserRepository;
 use Masterkey\Tests\Models\ActiveUsers;
 use PHPUnit\Framework\TestCase;
 
-use Masterkey\Repository\Criteria\RequestCriteria;
+use Masterkey\Repository\Criteria\RequestAbstractCriteria;
 use Symfony\Component\HttpFoundation\Request as BaseRequest;
 use Illuminate\Http\Request;
 
@@ -244,7 +244,7 @@ class UserRepositoryTest extends TestCase
         $symfonyRequest = new BaseRequest(['search' => 'Jonas', 'searchFields' => 'name:like']);
         $request = Request::createFromBase($symfonyRequest);
 
-        $this->user->pushCriteria(new RequestCriteria($request));
+        $this->user->pushCriteria(new RequestAbstractCriteria($request));
 
         $users = $this->user->all();
 
@@ -259,7 +259,7 @@ class UserRepositoryTest extends TestCase
         $symfonyRequest = new BaseRequest(['search' => '1', 'searchFields' => 'id']);
         $request = Request::createFromBase($symfonyRequest);
 
-        $this->user->pushCriteria(new RequestCriteria($request));
+        $this->user->pushCriteria(new RequestAbstractCriteria($request));
 
         $this->user->all();
     }

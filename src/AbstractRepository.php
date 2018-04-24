@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Event;
 use Masterkey\Repository\Contracts\CountableInterface;
 use Masterkey\Repository\Contracts\CreatableInterface;
 use Masterkey\Repository\Contracts\CriteriaInterface;
@@ -15,7 +14,6 @@ use Masterkey\Repository\Contracts\SearchableInterface;
 use Masterkey\Repository\Contracts\SortableInterface;
 use Masterkey\Repository\Contracts\ValidatorInterface;
 use RepositoryException;
-use ValidationException;
 
 /**
  * BaseRepository
@@ -25,7 +23,7 @@ use ValidationException;
  * @since    24/04/2018
  * @package  Masterkey\Repository
  */
-abstract class BaseRepository implements
+abstract class AbstractRepository implements
     CountableInterface,
     CreatableInterface,
     CriteriaInterface,
@@ -33,8 +31,7 @@ abstract class BaseRepository implements
     SearchableInterface,
     SortableInterface
 {
-    use Traits\ClassBuilder,
-        Traits\NeedsBeCountable,
+    use Traits\NeedsBeCountable,
         Traits\NeedsBeCreatable,
         Traits\NeedsBeCriteriable,
         Traits\NeedsBeSearchable,
@@ -94,20 +91,6 @@ abstract class BaseRepository implements
     }
 
     /**
-     * @return void
-     */
-    public function bootTraits()
-    {
-        $class = $this;
-
-        foreach ( class_uses_recursive($class) as $trait ) {
-            if ( method_exists($class, $method = 'boot' . class_basename($trait)) ) {
-                $this->{$method}();
-            }
-        }
-    }
-
-    /**
      * @return  mixed
      */
     public abstract function model();
@@ -123,6 +106,43 @@ abstract class BaseRepository implements
     public function validator()
     {
         return null;
+    }
+
+    /**
+     * @param   string  $model
+     * @throws  RepositoryException
+     */
+    public function makeModel($model)
+    {
+        $model = $this->app->make($model);
+
+        if ( ! $model instanceof Model) {
+            throw new RepositoryException("Class {$model} must be an instance of Illuminate\\Database\\Eloquent\\Model");
+        }
+
+        $this->model = $model;
+    }
+
+    /**
+     * @throws  RepositoryException
+     */
+    public function resetModel()
+    {
+        $this->makeModel($this->model());
+    }
+
+    /**
+     * @return void
+     */
+    public function bootTraits()
+    {
+        $class = $this;
+
+        foreach ( class_uses_recursive($class) as $trait ) {
+            if ( method_exists($class, $method = 'boot' . class_basename($trait)) ) {
+                $this->{$method}();
+            }
+        }
     }
 
     /**

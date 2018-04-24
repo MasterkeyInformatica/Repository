@@ -2,11 +2,11 @@
 
 namespace Masterkey\Tests\Models;
 
-use Masterkey\Repository\BaseRepository;
+use Masterkey\Repository\AbstractRepository;
 use Masterkey\Repository\Contracts\CachableInterface;
 use Masterkey\Repository\Traits\ShouldBeCached;
 
-class FileRepository extends BaseRepository implements CachableInterface
+class FileRepository extends AbstractRepository implements CachableInterface
 {
     use ShouldBeCached;
 

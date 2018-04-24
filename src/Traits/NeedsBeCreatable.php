@@ -9,6 +9,7 @@ use Masterkey\Repository\Events\EntityCreated;
 use Masterkey\Repository\Events\EntityDeleted;
 use Masterkey\Repository\Events\EntityUpdated;
 use RepositoryException;
+use ValidationException;
 
 /**
  * Trait NeedsBeCreatable
@@ -21,9 +22,10 @@ use RepositoryException;
 trait NeedsBeCreatable
 {
     /**
-     * @param   array $data
-     * @return  Model
+     * @param   array  $data
+     * @return  mixed
      * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function create(array $data)
     {
@@ -41,9 +43,10 @@ trait NeedsBeCreatable
     }
 
     /**
-     * @param   array $data
+     * @param   array  $data
      * @return  Model
      * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function firstOrCreate(array $data)
     {
@@ -63,6 +66,7 @@ trait NeedsBeCreatable
     /**
      * @param   array $data
      * @return  Model
+     * @throws  ValidationException
      */
     public function firstOrNew(array $data)
     {
@@ -75,6 +79,7 @@ trait NeedsBeCreatable
      * @param   array  $data
      * @return  Model
      * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function save(array $data)
     {
@@ -116,6 +121,7 @@ trait NeedsBeCreatable
      * @param   array  $data
      * @return  Model
      * @throws  RepositoryException
+     * @throws  ValidationException
      */
     public function update(int $id, array $data)
     {

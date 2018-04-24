@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Http\Request;
 use Masterkey\Repository\Cache\CacheKeyStorage;
-use Masterkey\Repository\Criteria;
+use Masterkey\Repository\AbstractCriteria;
 use ReflectionObject;
 
 trait ShouldBeCached
@@ -225,10 +225,10 @@ trait ShouldBeCached
     }
 
     /**
-     * @param   Criteria  $criteria
+     * @param   AbstractCriteria  $criteria
      * @return  Collection
      */
-    public function getByCriteria(Criteria $criteria) : Collection
+    public function getByCriteria(AbstractCriteria $criteria) : Collection
     {
         if ( ! $this->allowedCache('getByCriteria') || $this->isSkippedCache() ) {
             return parent::getByCriteria($criteria);

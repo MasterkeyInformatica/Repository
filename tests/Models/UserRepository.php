@@ -2,10 +2,10 @@
 
 namespace Masterkey\Tests\Models;
 
-use Masterkey\Repository\BaseRepository;
+use Masterkey\Repository\AbstractRepository;
 
 
-class UserRepository extends BaseRepository
+class UserRepository extends AbstractRepository
 {
     protected $fieldsSearchable = [
         'name'

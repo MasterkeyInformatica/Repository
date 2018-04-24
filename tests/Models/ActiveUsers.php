@@ -2,7 +2,7 @@
 
 namespace Masterkey\Tests\Models;
 
-use Masterkey\Repository\Criteria;
+use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
@@ -10,7 +10,7 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  *
  * @package Masterkey\Tests\Models
  */
-class ActiveUsers extends Criteria
+class ActiveUsers extends AbstractCriteria
 {
     /**
      * @param   Builder  $model

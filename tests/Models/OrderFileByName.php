@@ -3,11 +3,11 @@
 namespace Masterkey\Tests\Models;
 
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
-use Masterkey\Repository\Criteria;
+use Masterkey\Repository\AbstractCriteria;
 
-class OrderFileByName extends Criteria
+class OrderFileByName extends AbstractCriteria
 {
-    public  function apply($model, Repository $repository)
+    public function apply($model, Repository $repository)
     {
         return $model->orderBy('file');
     }

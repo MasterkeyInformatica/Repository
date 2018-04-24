@@ -16,7 +16,23 @@ use Illuminate\Database\Eloquent\Builder;
  */
 interface RepositoryInterface
 {
+    /**
+     * @param   string  $model
+     */
+    public function makeModel($model);
+
+    /**
+     * @return Builder
+     */
     public function getBuilder() : Builder;
 
+    /**
+     * @return mixed
+     */
     public function getFieldsSearchable();
+
+    /**
+     * @return  void
+     */
+    public function bootTraits();
 }

@@ -4,7 +4,7 @@ namespace Masterkey\Repository\Criteria;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
-use Masterkey\Repository\Criteria;
+use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface;
 use Illuminate\Support\Facades\Config;
 
@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Config;
  * RequestCriteria
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 1.0.0
- * @since   04/03/2018
+ * @version 2.0.0
+ * @since   24/04/2018
  * @package Masterkey\Repository\Criteria
  */
-class RequestCriteria extends Criteria
+class RequestAbstractCriteria extends AbstractCriteria
 {
     /**
      * @var Request

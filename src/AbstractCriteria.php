@@ -6,14 +6,14 @@ use Illuminate\Database\Query\Builder;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
- * Criteria
+ * AbstractCriteria
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version  3.0.0
  * @since    02/09/2017
  * @package  Masterkey\Repository
  */
-abstract class Criteria
+abstract class AbstractCriteria
 {
     /**
      * Apply a criteria on a model
