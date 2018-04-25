@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Masterkey\Repository\Contracts\RepositoryInterface;
 
 /**
- * BaseRepositoryEvents
+ * BaseRepositoryEvent
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version 1.0.0
