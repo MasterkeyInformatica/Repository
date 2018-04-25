@@ -3,14 +3,14 @@
 namespace repository_namespace;
 
 use model_path\model_name;
-use Masterkey\Repository\BaseRepository;
+use Masterkey\Repository\AbstractRepository;
 
 /**
  * repository_class
  *
  * @package repository_namespace
  */
-class repository_class extends BaseRepository
+class repository_class extends AbstractRepository
 {
     /**
      * @return  string

@@ -2,7 +2,7 @@
 
 namespace criteria_namespace;
 
-use Masterkey\Repository\Criteria;
+use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryContract as Repository;
 
 /**
@@ -10,7 +10,7 @@ use Masterkey\Repository\Contracts\RepositoryContract as Repository;
  *
  * @package criteria_namespace
  */
-class criteria_class extends Criteria
+class criteria_class extends AbstractCriteria
 {
     /**
      * @param   \Illuminate\Database\Query\Builder  $model
