@@ -61,13 +61,13 @@ interface SearchableInterface
      * @param   array  $columns
      * @return  Model
      */
-    public function first(array $columns = ['*']) : Model;
+    public function first(array $columns = ['*']) : ?Model;
 
     /**
      * @param   array  $columns
      * @return  Model
      */
-    public function last(array $columns = ['*']) : Model;
+    public function last(array $columns = ['*']) : ?Model;
 
     /**
      * @param   string  $field
@@ -75,7 +75,7 @@ interface SearchableInterface
      * @param   array  $columns
      * @return  Model
      */
-    public function findBy($field, $value, array $columns = ['*']) : Model;
+    public function findBy($field, $value, array $columns = ['*']) : ?Model;
 
     /**
      * @param   string  $field

@@ -94,7 +94,7 @@ trait NeedsBeSearchable
      * @param   array  $columns
      * @return  Model
      */
-    public function first(array $columns = ['*']) : Model
+    public function first(array $columns = ['*']) : ?Model
     {
         $this->applyCriteria();
 
@@ -105,7 +105,7 @@ trait NeedsBeSearchable
      * @param   array  $columns
      * @return  Model
      */
-    public function last(array $columns = ['*']) : Model
+    public function last(array $columns = ['*']) : ?Model
     {
         $this->applyCriteria();
 
@@ -118,7 +118,7 @@ trait NeedsBeSearchable
      * @param   array  $columns
      * @return  Model
      */
-    public function findBy($attribute, $value, array $columns = ['*']) : Model
+    public function findBy($attribute, $value, array $columns = ['*']) : ?Model
     {
         $this->applyCriteria();
 
