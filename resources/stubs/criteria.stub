@@ -3,7 +3,7 @@
 namespace criteria_namespace;
 
 use Masterkey\Repository\AbstractCriteria;
-use Masterkey\Repository\Contracts\RepositoryContract as Repository;
+use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
  * criteria_class
