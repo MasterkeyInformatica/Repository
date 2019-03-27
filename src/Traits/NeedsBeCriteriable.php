@@ -90,6 +90,8 @@ trait NeedsBeCriteriable
 
         if ( $criterias->isNotEmpty() ) {
 
+            $this->resetModel();
+
             foreach ( $criterias as $criteria ) {
                 if ( $criteria instanceof AbstractCriteria ) {
                     $this->model = $criteria->apply($this->model, $this);
@@ -97,8 +99,6 @@ trait NeedsBeCriteriable
             }
 
             $this->criteria = collect([]);
-
-//            $this->resetModel();
         }
 
         return $this;
