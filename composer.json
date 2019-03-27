@@ -29,8 +29,7 @@
             "Masterkey\\Tests\\": "tests/"
         },
         "files": [
-            "src/Exceptions/RepositoryException.php",
-            "src/Exceptions/ValidationException.php"
+            "src/Exceptions/RepositoryException.php"
         ]
     },
     "require-dev": {

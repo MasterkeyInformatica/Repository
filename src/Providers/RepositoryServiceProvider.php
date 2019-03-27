@@ -8,10 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use Masterkey\Repository\Cache\CacheKeyStorage;
 use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
 use Masterkey\Repository\Console\Commands\Creators\CriteriaCreator;
-use Masterkey\Repository\Console\Commands\Creators\ValidatorCreator;
 use Masterkey\Repository\Console\Commands\MakeCriteriaCommand;
 use Masterkey\Repository\Console\Commands\MakeRepositoryCommand;
-use Masterkey\Repository\Console\Commands\MakeValidatorCommand;
 
 /**
  * RepositoryServiceProvider
@@ -44,12 +42,10 @@ class RepositoryServiceProvider extends ServiceProvider
 
         $this->registerMakeRepositoryCommand();
         $this->registerMakeCriteriaCommand();
-        $this->registerMakeValidatorCommand();
 
         $this->commands([
             MakeRepositoryCommand::class,
-            MakeCriteriaCommand::class,
-            MakeValidatorCommand::class
+            MakeCriteriaCommand::class
         ]);
 
         $config_path = __DIR__ . '/../../config/repository.php';
@@ -79,10 +75,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->singleton('CriteriaCreator', function ($app) {
             return new CriteriaCreator($app['Filesystem']);
         });
-
-        $this->app->singleton('ValidatorCreator', function($app) {
-            return new ValidatorCreator($app['Filesystem']);
-        });
     }
 
     protected function registerMakeRepositoryCommand()
@@ -99,13 +91,6 @@ class RepositoryServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerMakeValidatorCommand()
-    {
-        $this->app['command.validator.make'] = $this->app->singleton(MakeValidatorCommand::class, function($app) {
-            return new MakeValidatorCommand($app['ValidatorCreator'], $app['Composer']);
-        });
-    }
-
     /**
      * @return  array
      */
@@ -113,8 +98,7 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         return [
             'command.repository.make',
-            'command.criteria.make',
-            'command.validator.make'
+            'command.criteria.make'
         ];
     }
 }

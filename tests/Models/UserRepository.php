@@ -15,9 +15,4 @@ class UserRepository extends AbstractRepository
     {
         return User::class;
     }
-
-    public function validator()
-    {
-        return UserValidator::class;
-    }
 }

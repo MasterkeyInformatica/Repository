@@ -9,14 +9,13 @@ use Masterkey\Repository\Events\EntityCreated;
 use Masterkey\Repository\Events\EntityDeleted;
 use Masterkey\Repository\Events\EntityUpdated;
 use RepositoryException;
-use ValidationException;
 
 /**
  * Trait NeedsBeCreatable
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 1.0.0
- * @since   24/04/2018
+ * @version 2.0.0
+ * @since   27/03/2019
  * @package Masterkey\Repository\Traits
  */
 trait NeedsBeCreatable
@@ -25,12 +24,9 @@ trait NeedsBeCreatable
      * @param   array  $data
      * @return  mixed
      * @throws  RepositoryException
-     * @throws  ValidationException
      */
     public function create(array $data)
     {
-        $this->validateBeforeInsert($data);
-
         $model = $this->model->create($data);
 
         if ( $model ) {
@@ -46,12 +42,9 @@ trait NeedsBeCreatable
      * @param   array  $data
      * @return  Model
      * @throws  RepositoryException
-     * @throws  ValidationException
      */
     public function firstOrCreate(array $data)
     {
-        $this->validateBeforeInsert($data);
-
         $model = $this->model->firstOrCreate($data);
 
         if( $model ) {
@@ -66,12 +59,9 @@ trait NeedsBeCreatable
     /**
      * @param   array $data
      * @return  Model
-     * @throws  ValidationException
      */
     public function firstOrNew(array $data)
     {
-        $this->validateBeforeInsert($data);
-
         return $this->model->firstOrNew($data);
     }
 
@@ -79,12 +69,9 @@ trait NeedsBeCreatable
      * @param   array  $data
      * @return  Model
      * @throws  RepositoryException
-     * @throws  ValidationException
      */
     public function save(array $data)
     {
-        $this->validateBeforeInsert($data);
-
         foreach ( $data as $k => $v ) {
             $this->model->$k = $v;
         }
@@ -101,7 +88,6 @@ trait NeedsBeCreatable
     /**
      * @param   array  $data
      * @return  bool
-     * @throws  RepositoryException
      */
     public function insert(array $data) : bool
     {
@@ -121,12 +107,9 @@ trait NeedsBeCreatable
      * @param   array  $data
      * @return  Model
      * @throws  RepositoryException
-     * @throws  ValidationException
      */
     public function update(int $id, array $data)
     {
-        $this->validateBeforeUpdate($data);
-
         $model      = $this->find($id);
         $original   = clone $model;
 

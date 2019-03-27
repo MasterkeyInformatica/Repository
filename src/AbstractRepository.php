@@ -12,15 +12,14 @@ use Masterkey\Repository\Contracts\CriteriaInterface;
 use Masterkey\Repository\Contracts\RepositoryInterface;
 use Masterkey\Repository\Contracts\SearchableInterface;
 use Masterkey\Repository\Contracts\SortableInterface;
-use Masterkey\Repository\Contracts\ValidatorInterface;
 use RepositoryException;
 
 /**
  * BaseRepository
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version  4.0.0
- * @since    24/04/2018
+ * @version  6.0.0
+ * @since    23/03/2019
  * @package  Masterkey\Repository
  */
 abstract class AbstractRepository implements
@@ -31,12 +30,11 @@ abstract class AbstractRepository implements
     SearchableInterface,
     SortableInterface
 {
-    use Traits\NeedsBeCountable,
-        Traits\NeedsBeCreatable,
-        Traits\NeedsBeCriteriable,
-        Traits\NeedsBeSearchable,
-        Traits\NeedsBeSortable,
-        Traits\ShouldValidate;
+    use Traits\NeedsBeCountable;
+    use Traits\NeedsBeCreatable;
+    use Traits\NeedsBeCriteriable;
+    use Traits\NeedsBeSearchable;
+    use Traits\NeedsBeSortable;
 
     /**
      * @var \Illuminate\Container\Container
@@ -62,11 +60,6 @@ abstract class AbstractRepository implements
      * @var boolean
      */
     protected $preventCriteriaOverwriting = true;
-
-    /**
-     * @var null|ValidatorInterface
-     */
-    protected $validator = null;
 
     /**
      * @var array
@@ -99,14 +92,6 @@ abstract class AbstractRepository implements
      * @return  void
      */
     public function boot() {}
-
-    /**
-     * @return  null|string
-     */
-    public function validator()
-    {
-        return null;
-    }
 
     /**
      * @param   string  $model

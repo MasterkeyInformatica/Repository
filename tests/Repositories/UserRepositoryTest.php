@@ -74,7 +74,6 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws RepositoryException
-     * @throws ValidationException
      */
     public function testCreate()
     {
@@ -89,21 +88,7 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws              RepositoryException
-     * @throws              ValidationException
-     * @expectedException   \ValidationException
-     */
-    public function testCreateValidationFail()
-    {
-        $user = $this->user->create([
-            'active'    => true,
-            'logins'    => 2
-        ]);
-    }
-
-    /**
      * @throws  RepositoryException
-     * @throws  ValidationException
      */
     public function testSave()
     {
@@ -132,7 +117,6 @@ class UserRepositoryTest extends TestCase
 
     /**
      * @throws RepositoryException
-     * @throws ValidationException
      */
     public function testUpdate()
     {
@@ -141,16 +125,6 @@ class UserRepositoryTest extends TestCase
         $user = $this->user->find(1);
 
         $this->assertEquals('Jonas Dawson', $user->name);
-    }
-
-    /**
-     * @throws              RepositoryException
-     * @throws              ValidationException
-     * @expectedException   ValidationException
-     */
-    public function testUpdateValidation()
-    {
-        $this->user->update(1, ['name' => null]);
     }
 
     /**
