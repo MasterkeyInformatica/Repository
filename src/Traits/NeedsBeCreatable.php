@@ -30,7 +30,7 @@ trait NeedsBeCreatable
         $model = $this->model->create($data);
 
         if ( $model ) {
-            Event::fire(new EntityCreated($this, $model));
+            $this->app['events']->dispatch(new EntityCreated($this, $model));
 
             return $model;
         }
@@ -48,7 +48,7 @@ trait NeedsBeCreatable
         $model = $this->model->firstOrCreate($data);
 
         if( $model ) {
-            Event::fire(new EntityCreated($this, $model));
+            $this->app['events']->dispatch(new EntityCreated($this, $model));
 
             return $model;
         }
@@ -77,7 +77,7 @@ trait NeedsBeCreatable
         }
 
         if ( $this->model->save() ) {
-            Event::fire(new EntityCreated($this, $this->model->getModel()));
+            $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
 
             return $this->model;
         }
@@ -93,7 +93,7 @@ trait NeedsBeCreatable
     {
         return DB::transaction(function () use ($data) {
             if ( $this->model->insert($data) ) {
-                Event::fire(new EntityCreated($this, $this->model->getModel()));
+                $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
 
                 return true;
             }
@@ -114,7 +114,7 @@ trait NeedsBeCreatable
         $original   = clone $model;
 
         if ( $model->update($data) ) {
-            Event::fire(new EntityUpdated($this, $original));
+            $this->app['events']->dispatch(new EntityUpdated($this, $original));
 
             return $model;
         }
@@ -133,7 +133,7 @@ trait NeedsBeCreatable
         $updated = $this->model->update($data);
 
         if ( $updated ) {
-            Event::fire(new EntityUpdated($this, $this->model->getModel()));
+            $this->app['events']->dispatch(new EntityUpdated($this, $this->model->getModel()));
         }
 
         return $updated;
@@ -150,7 +150,7 @@ trait NeedsBeCreatable
         $original   = clone $model;
 
         if ( $model->delete() ) {
-            Event::fire(new EntityDeleted($this, $original));
+            $this->app['events']->dispatch(new EntityDeleted($this, $original));
 
             return true;
         }
@@ -168,7 +168,7 @@ trait NeedsBeCreatable
         $this->applyCriteria();
 
         if ( $this->model->destroy($records) ) {
-            Event::fire(new EntityDeleted($this, $this->model->getModel()));
+            $this->app['events']->dispatch(new EntityDeleted($this, $this->model->getModel()));
 
             return true;
         }
