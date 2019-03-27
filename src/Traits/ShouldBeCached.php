@@ -12,6 +12,14 @@ use Masterkey\Repository\Cache\CacheKeyStorage;
 use Masterkey\Repository\AbstractCriteria;
 use ReflectionObject;
 
+/**
+ * ShouldBeCached
+ *
+ * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+ * @version 1.0.0
+ * @since   27/03/2019
+ * @package Masterkey\Repository\Traits
+ */
 trait ShouldBeCached
 {
     /**
@@ -146,7 +154,8 @@ trait ShouldBeCached
         try {
             return serialize($this->getCriteria());
         } catch (Exception $e) {
-            return serialize($this->getCriteria()->map(function ($criterion) {
+            return serialize($this->getCriteria()->map(function ($criterion)
+            {
                 return $this->serializeCriterion($criterion);
             }));
         }
@@ -199,7 +208,8 @@ trait ShouldBeCached
         $key        = $this->getCacheKey('all', func_get_args());
         $minutes    = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use ($columns) {
+        return $this->getCache()->remember($key, $minutes, function () use ($columns)
+        {
             return parent::all($columns);
         });
     }
@@ -219,7 +229,8 @@ trait ShouldBeCached
         $key        = $this->getCacheKey($method, func_get_args());
         $minutes    = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use($perPage, $columns, $method) {
+        return $this->getCache()->remember($key, $minutes, function () use($perPage, $columns, $method)
+        {
             return parent::paginate($perPage, $columns, $method);
         });
     }
@@ -237,7 +248,8 @@ trait ShouldBeCached
         $key        = $this->getCacheKey('getByCriteria', func_get_args());
         $minutes    = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use($criteria) {
+        return $this->getCache()->remember($key, $minutes, function () use($criteria)
+        {
             return parent::getByCriteria($criteria);
         });
     }
@@ -256,7 +268,8 @@ trait ShouldBeCached
         $key        = $this->getCacheKey('find', func_get_args());
         $minutes    = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use ($id, $columns) {
+        return $this->getCache()->remember($key, $minutes, function () use ($id, $columns)
+        {
             return parent::find($id, $columns);
         });
     }
@@ -276,7 +289,8 @@ trait ShouldBeCached
         $key        = $this->getCacheKey('findBy', func_get_args());
         $minutes    = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use ($attribute, $value, $columns) {
+        return $this->getCache()->remember($key, $minutes, function () use ($attribute, $value, $columns)
+        {
             return parent::findBy($attribute, $value, $columns);
         });
     }
@@ -296,7 +310,8 @@ trait ShouldBeCached
         $key        = $this->getCacheKey('findAllBy', func_get_args());
         $minutes    = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use ($attribute, $value, $columns) {
+        return $this->getCache()->remember($key, $minutes, function () use ($attribute, $value, $columns)
+        {
             return parent::findAllBy($attribute, $value, $columns);
         });
     }
