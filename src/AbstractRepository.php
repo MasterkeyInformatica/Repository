@@ -99,6 +99,8 @@ abstract class AbstractRepository implements
      */
     public function makeModel($model)
     {
+        unset($this->model);
+
         $model = $this->app->make($model);
 
         if ( ! $model instanceof Model) {

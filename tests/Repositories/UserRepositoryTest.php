@@ -175,9 +175,8 @@ class UserRepositoryTest extends TestCase
 
     public function testCriteria()
     {
-        $all        = $this->user->count();
-        $criteria   = new ActiveUsers();
-        $active     = $this->user->pushCriteria($criteria)->count();
+        $all    = $this->user->count();
+        $active = $this->user->pushCriteria(new ActiveUsers())->count();
 
         $this->assertEquals(5, $all);
         $this->assertEquals(3, $active);

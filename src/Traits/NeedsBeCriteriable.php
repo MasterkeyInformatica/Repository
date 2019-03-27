@@ -86,15 +86,20 @@ trait NeedsBeCriteriable
             return $this;
         }
 
-        $this->makeModel($this->model());
+        $criterias = $this->getCriteria();
 
-        foreach ( $this->getCriteria() as $criteria ) {
-            if ( $criteria instanceof AbstractCriteria ) {
-                $this->model = $criteria->apply($this->model, $this);
+        if ( $criterias->isNotEmpty() ) {
+
+            foreach ( $criterias as $criteria ) {
+                if ( $criteria instanceof AbstractCriteria ) {
+                    $this->model = $criteria->apply($this->model, $this);
+                }
             }
-        }
 
-        $this->criteria = collect([]);
+            $this->criteria = collect([]);
+
+//            $this->resetModel();
+        }
 
         return $this;
     }
