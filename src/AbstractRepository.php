@@ -23,8 +23,7 @@ use RepositoryException;
  * BaseRepository
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version  6.0.0
- * @since    23/03/2019
+ * @version  7.0.0
  * @package  Masterkey\Repository
  */
 abstract class AbstractRepository implements
@@ -36,17 +35,17 @@ abstract class AbstractRepository implements
     SortableInterface
 {
     /**
-     * @var \Illuminate\Container\Container
+     * @var Container
      */
     protected $app;
 
     /**
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var Model|Builder
      */
     protected $model;
 
     /**
-     * @var \Illuminate\Support\Collection
+     * @var Collection
      */
     protected $criteria;
 
@@ -93,8 +92,8 @@ abstract class AbstractRepository implements
     public function boot() {}
 
     /**
-     * @param   string  $model
-     * @throws  RepositoryException
+     * @param string $model
+     * @throws RepositoryException
      */
     public function makeModel($model)
     {
@@ -110,16 +109,13 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @throws  RepositoryException
+     * @throws RepositoryException
      */
     public function resetModel()
     {
         $this->makeModel($this->model());
     }
 
-    /**
-     * @return void
-     */
     public function bootTraits()
     {
         $class = $this;
@@ -132,7 +128,7 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @return  \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function getBuilder() : Builder
     {
@@ -154,7 +150,7 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @return array
+     * @return array|mixed
      */
     public function getFieldsSearchable()
     {
@@ -162,8 +158,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $column
-     * @return  integer
+     * @param string $column
+     * @return int
+     * @throws RepositoryException
      */
     public function count(string $column = '*') : int
     {
@@ -173,8 +170,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $column
-     * @return  int|float
+     * @param string $column
+     * @return mixed
+     * @throws RepositoryException
      */
     public function max(string $column)
     {
@@ -184,8 +182,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $column
-     * @return  int|float
+     * @param string $column
+     * @return mixed
+     * @throws RepositoryException
      */
     public function min(string $column)
     {
@@ -195,8 +194,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $column
-     * @return  int|float
+     * @param string $column
+     * @return float|int
+     * @throws RepositoryException
      */
     public function avg(string $column)
     {
@@ -206,8 +206,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $column
-     * @return  int|float
+     * @param string $column
+     * @return int|float
+     * @throws RepositoryException
      */
     public function sum(string $column)
     {
@@ -217,11 +218,11 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array  $data
-     * @return  mixed
-     * @throws  RepositoryException
+     * @param array $data
+     * @return Model
+     * @throws RepositoryException
      */
-    public function create(array $data)
+    public function create(array $data) : Model
     {
         $model = $this->model->create($data);
 
@@ -235,11 +236,11 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array  $data
-     * @return  Model
-     * @throws  RepositoryException
+     * @param array $data
+     * @return Model
+     * @throws RepositoryException
      */
-    public function firstOrCreate(array $data)
+    public function firstOrCreate(array $data) : Model
     {
         $model = $this->model->firstOrCreate($data);
 
@@ -253,37 +254,38 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array $data
-     * @return  Model
+     * @param array $data
+     * @return Model
      */
-    public function firstOrNew(array $data)
+    public function firstOrNew(array $data) : Model
     {
         return $this->model->firstOrNew($data);
     }
 
     /**
-     * @param   array  $data
-     * @return  Model
-     * @throws  RepositoryException
+     * @param array $data
+     * @return Model
+     * @throws RepositoryException
      */
-    public function save(array $data)
+    public function save(array $data) : Model
     {
-        foreach ( $data as $k => $v ) {
-            $this->model->$k = $v;
-        }
+        $model = $this->model;
 
-        if ( $this->model->save() ) {
-            $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
+        $model->fill($data);
 
-            return $this->model;
+        if ( $model->save() ) {
+            $this->app['events']->dispatch(new EntityCreated($this, $model));
+
+            return $model;
         }
 
         throw new RepositoryException('Nao foi possível salvar os dados, Tente Novamente');
     }
 
     /**
-     * @param   array  $data
-     * @return  bool
+     * @param array $data
+     * @return bool
+     * @todo Retornar o número de rows affected
      */
     public function insert(array $data) : bool
     {
@@ -299,10 +301,10 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   int  $id
-     * @param   array  $data
-     * @return  Model
-     * @throws  RepositoryException
+     * @param int   $id
+     * @param array $data
+     * @return Model
+     * @throws RepositoryException
      */
     public function update(int $id, array $data)
     {
@@ -319,8 +321,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array  $data
-     * @return  bool
+     * @param array $data
+     * @return bool|int
+     * @throws RepositoryException
      */
     public function massUpdate(array $data)
     {
@@ -336,9 +339,10 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   int  $id
-     * @return  bool
-     * @throws  RepositoryException
+     * @param int $id
+     * @return bool
+     * @throws RepositoryException
+     * @throws \Exception
      */
     public function delete(int $id) : bool
     {
@@ -355,9 +359,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array  $records
-     * @return  bool
-     * @throws  RepositoryException
+     * @param array $records
+     * @return bool
+     * @throws RepositoryException
      */
     public function destroy(array $records) : bool
     {
@@ -373,11 +377,11 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   int  $id
-     * @param   string  $relation
-     * @param   array  $attributes
-     * @param   bool  $detach
-     * @return  mixed
+     * @param int    $id
+     * @param string $relation
+     * @param string $attributes
+     * @param bool   $detach
+     * @return mixed
      */
     public function sync($id, $relation, $attributes, $detach = true)
     {
@@ -385,8 +389,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array  $columns
-     * @return  Collection
+     * @param array $columns
+     * @return Collection
+     * @throws RepositoryException
      */
     public function all(array $columns = ['*']) : Collection
     {
@@ -396,8 +401,8 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array  $relations
-     * @return  $this
+     * @param array $relations
+     * @return $this
      */
     public function with(array $relations)
     {
@@ -407,9 +412,10 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $value
-     * @param   null|string  $key
-     * @return  array
+     * @param string $value
+     * @param null   $key
+     * @return array
+     * @throws RepositoryException
      */
     public function pluck(string $value, $key = null) : array
     {
@@ -419,10 +425,11 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   int  $perPage
-     * @param   array  $columns
-     * @param   string  $method
-     * @return  Paginator|LengthAwarePaginator
+     * @param int    $perPage
+     * @param array  $columns
+     * @param string $method
+     * @return Paginator
+     * @throws RepositoryException
      */
     public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate')
     {
@@ -436,9 +443,10 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   int  $perPage
-     * @param   array  $columns
-     * @return  LengthAwarePaginator
+     * @param int   $perPage
+     * @param array $columns
+     * @return LengthAwarePaginator|Paginator
+     * @throws RepositoryException
      */
     public function simplePaginate(int $perPage = 15, array $columns = ['*'])
     {
@@ -446,9 +454,10 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   int  $id
-     * @param   array  $columns
-     * @return  Model
+     * @param int   $id
+     * @param array $columns
+     * @return Model
+     * @throws RepositoryException
      */
     public function find(int $id, $columns = array('*')) : Model
     {
@@ -458,8 +467,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array  $columns
-     * @return  Model
+     * @param array $columns
+     * @return Model|null
+     * @throws RepositoryException
      */
     public function first(array $columns = ['*']) : ?Model
     {
@@ -469,8 +479,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   array  $columns
-     * @return  Model
+     * @param array $columns
+     * @return Model|null
+     * @throws RepositoryException
      */
     public function last(array $columns = ['*']) : ?Model
     {
@@ -480,10 +491,11 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $attribute
-     * @param   mixed  $value
-     * @param   array  $columns
-     * @return  Model
+     * @param string $attribute
+     * @param mixed  $value
+     * @param array  $columns
+     * @return Model|null
+     * @throws RepositoryException
      */
     public function findBy($attribute, $value, array $columns = ['*']) : ?Model
     {
@@ -493,10 +505,11 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $attribute
-     * @param   mixed  $value
-     * @param   array  $columns
-     * @return  Collection
+     * @param string $attribute
+     * @param mixed  $value
+     * @param array  $columns
+     * @return Collection
+     * @throws RepositoryException
      */
     public function findAllBy($attribute, $value, array $columns = ['*']) : Collection
     {
@@ -506,8 +519,8 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   int  $limit
-     * @return  $this
+     * @param int $limit
+     * @return $this
      */
     public function limit(int $limit)
     {
@@ -517,8 +530,8 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   int  $offset
-     * @return  $this
+     * @param int $offset
+     * @return $this
      */
     public function offset(int $offset)
     {
@@ -528,10 +541,10 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $column
-     * @param   string  $operator
-     * @param   mixed  $value
-     * @return  $this
+     * @param string $column
+     * @param string $operator
+     * @param mixed  $value
+     * @return $this
      */
     public function having(string $column, string $operator, $value)
     {
@@ -543,9 +556,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   string  $column
-     * @param   string  $order
-     * @return  $this
+     * @param string $column
+     * @param string $order
+     * @return $this
      */
     public function orderBy(string $column, $order = 'asc')
     {
@@ -555,8 +568,8 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   mixed ...$columns
-     * @return  $this
+     * @param mixed ...$columns
+     * @return $this
      */
     public function groupBy(...$columns)
     {
@@ -566,7 +579,7 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
     public function resetScope()
     {
@@ -576,10 +589,10 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   boolean  $status
-     * @return  $this
+     * @param bool $status
+     * @return $this|CriteriaInterface
      */
-    public function skipCriteria($status = true)
+    public function skipCriteria(bool $status = true)
     {
         $this->skipCriteria = $status;
 
@@ -587,7 +600,7 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @return   \Illuminate\Support\Collection
+     * @return Collection|mixed
      */
     public function getCriteria()
     {
@@ -595,8 +608,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   AbstractCriteria  $criteria
-     * @return  Collection
+     * @param AbstractCriteria $criteria
+     * @return Collection
+     * @throws RepositoryException
      */
     public function getByCriteria(AbstractCriteria $criteria) : Collection
     {
@@ -606,8 +620,8 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param   AbstractCriteria  $criteria
-     * @return  $this
+     * @param AbstractCriteria $criteria
+     * @return $this|CriteriaInterface
      */
     public function pushCriteria(AbstractCriteria $criteria)
     {
@@ -629,7 +643,8 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @return   $this
+     * @return $this
+     * @throws RepositoryException
      */
     public function applyCriteria()
     {
