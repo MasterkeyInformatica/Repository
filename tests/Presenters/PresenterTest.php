@@ -7,6 +7,7 @@ use League\Fractal\Resource\Item;
 use Masterkey\Repository\AbstractPresenter;
 use Masterkey\Tests\Models\User;
 use Masterkey\Tests\Models\UserRepository;
+use Masterkey\Tests\Models\UserTransform;
 use PHPUnit\Framework\TestCase;
 
 class PresenterTest extends TestCase
@@ -170,5 +171,20 @@ class PresenterTest extends TestCase
 
         $this->assertNull($data['tentativas']);
         $this->assertFalse($data['ativo']);
+    }
+
+    public function testTransformUse()
+    {
+        $manager    = $this->getPresenter();
+        $users      = $this->getUsers();
+
+        $resource = new Item($users->first(), new UserTransform);
+
+        $data = $manager->toArray($resource);
+
+        $this->assertArrayHasKey('nome', $data);
+        $this->assertArrayHasKey('ativo', $data);
+        $this->assertArrayHasKey('tentativas', $data);
+        $this->assertArrayNotHasKey('data', $data);
     }
 }
