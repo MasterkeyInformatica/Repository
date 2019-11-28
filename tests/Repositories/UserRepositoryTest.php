@@ -258,4 +258,14 @@ class UserRepositoryTest extends TestCase
 
         $this->assertEquals(6, $last->id);
     }
+
+    public function testTransaction()
+    {
+        $user = $this->user->transaction(function()
+        {
+            return $this->user->create(['name' => 'Marcos', 'active' => false, 'logins' => 3]);
+        });
+
+        $this->assertInstanceOf(User::class, $user);
+    }
 }

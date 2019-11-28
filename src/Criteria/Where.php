@@ -7,14 +7,13 @@ use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
- * WhereClause
+ * Where
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version 1.0.0
- * @since   29/03/2019
  * @package Masterkey\Repository\Criteria
  */
-class WhereClause extends AbstractCriteria
+class Where extends AbstractCriteria
 {
     /**
      * @var string|Closure
