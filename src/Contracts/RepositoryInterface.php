@@ -2,7 +2,10 @@
 
 namespace Masterkey\Repository\Contracts;
 
+use Closure;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
+use PDO;
 
 /**
  * RepositoryContract
@@ -35,4 +38,30 @@ interface RepositoryInterface
      * @return  void
      */
     public function bootTraits();
+
+    /**
+     * @return Connection
+     */
+    public function getConnection() : Connection;
+
+    /**
+     * @return PDO
+     */
+    public function getPDO() : PDO;
+
+    /**
+     * @return bool
+     */
+    public function enableAutoCommit() : bool;
+
+    /**
+     * @return bool
+     */
+    public function disableAutoCommit() : bool;
+
+    /**
+     * @param Closure $closure
+     * @return mixed
+     */
+    public function transaction(Closure $closure);
 }

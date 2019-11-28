@@ -2,7 +2,10 @@
 
 namespace Masterkey\Repository;
 
+use Closure;
 use Illuminate\Container\Container;
+use Illuminate\Database\Connection;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,6 +20,7 @@ use Masterkey\Repository\Contracts\{
     SearchableInterface,
     SortableInterface};
 use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
+use PDO;
 use RepositoryException;
 
 /**
@@ -668,5 +672,47 @@ abstract class AbstractRepository implements
         }
 
         return $this;
+    }
+
+    /**
+     * @return Connection
+     */
+    public function getConnection() : Connection
+    {
+        return $this->model->getConnection();
+    }
+
+    /**
+     * @return PDO
+     */
+    public function getPDO() : PDO
+    {
+        return $this->getConnection()->getPdo();
+    }
+
+    /**
+     * @return bool
+     */
+    public function enableAutoCommit() : bool
+    {
+        return $this->getPDO()->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
+    }
+
+    /**
+     * @return bool
+     */
+    public function disableAutoCommit() : bool
+    {
+        return $this->getPDO()->setAttribute(PDO::ATTR_AUTOCOMMIT, 0);
+    }
+
+    /**
+     * @param Closure $closure
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function transaction(Closure $closure)
+    {
+        return $this->getConnection()->transaction($closure);
     }
 }

@@ -11,6 +11,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
+        "ext-pdo": "*",
         "php": ">=7.1.0",
         "illuminate/filesystem": "^5.5",
         "illuminate/support": "^5.5",
