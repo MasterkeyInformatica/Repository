@@ -6,26 +6,32 @@ use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
- * GroupByClause
+ * OrderBy
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 1.0.0
- * @since   29/03/2019
+ * @version 2.0.0
  * @package Masterkey\Repository\Criteria
  */
-class GroupByClause extends AbstractCriteria
+class OrderBy extends AbstractCriteria
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $groups;
+    protected $column;
 
     /**
-     * @param   mixed ...$groups
+     * @var string
      */
-    public function __construct(...$groups)
+    protected $direction;
+
+    /**
+     * @param   string  $column
+     * @param   string  $direction
+     */
+    public function __construct(string $column, string $direction = 'asc')
     {
-        $this->groups = $groups;
+        $this->column = $column;
+        $this->direction = $direction;
     }
 
     /**
@@ -35,6 +41,6 @@ class GroupByClause extends AbstractCriteria
      */
     public function apply($model, Repository $repository)
     {
-        return $model->groupBy($this->groups);
+        return $model->orderBy($this->column, $this->direction);
     }
 }

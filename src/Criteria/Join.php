@@ -6,14 +6,13 @@ use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
- * JoinClause
+ * Join
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 1.0.0
- * @since   28/03/2019
+ * @version 2.0.0
  * @package Masterkey\Repository\Criteria
  */
-class JoinClause extends AbstractCriteria
+class Join extends AbstractCriteria
 {
     /**
      * @var string

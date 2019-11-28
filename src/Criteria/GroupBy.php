@@ -6,15 +6,27 @@ use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
- * DistinctClause
+ * GroupBy
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 1.0.0
- * @since   29/03/2019
+ * @version 2.0.0
  * @package Masterkey\Repository\Criteria
  */
-class DistinctClause extends AbstractCriteria
+class GroupBy extends AbstractCriteria
 {
+    /**
+     * @var array
+     */
+    protected $groups;
+
+    /**
+     * @param   mixed ...$groups
+     */
+    public function __construct(...$groups)
+    {
+        $this->groups = $groups;
+    }
+
     /**
      * @param   \Illuminate\Database\Query\Builder $model
      * @param   Repository $repository
@@ -22,6 +34,6 @@ class DistinctClause extends AbstractCriteria
      */
     public function apply($model, Repository $repository)
     {
-        return $model->distinct();
+        return $model->groupBy($this->groups);
     }
 }

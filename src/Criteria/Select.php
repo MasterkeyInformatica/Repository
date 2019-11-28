@@ -6,14 +6,13 @@ use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
- * SelectClause
+ * Select
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 1.0.0
- * @since   28/03/2019
+ * @version 2.0.0
  * @package Masterkey\Repository\Criteria
  */
-class SelectClause extends AbstractCriteria
+class Select extends AbstractCriteria
 {
     /**
      * @var array

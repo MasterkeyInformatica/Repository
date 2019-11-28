@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Config;
  * RequestCriteria
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 2.0.0
- * @since   24/04/2018
+ * @version 3.0.0
  * @package Masterkey\Repository\Criteria
  */
 class RequestCriteria extends AbstractCriteria
