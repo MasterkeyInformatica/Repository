@@ -5,6 +5,7 @@ namespace Masterkey\Tests\Presenters;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use Masterkey\Repository\AbstractPresenter;
+use Masterkey\Repository\AbstractTransformer;
 use Masterkey\Tests\Models\User;
 use Masterkey\Tests\Models\UserRepository;
 use Masterkey\Tests\Models\UserTransform;
@@ -175,12 +176,15 @@ class PresenterTest extends TestCase
 
     public function testTransformUse()
     {
-        $manager    = $this->getPresenter();
-        $users      = $this->getUsers();
+        $manager        = $this->getPresenter();
+        $users          = $this->getUsers();
+        $transformer    = new UserTransform;
 
-        $resource = new Item($users->first(), new UserTransform);
+        $resource = new Item($users->first(), $transformer);
 
         $data = $manager->toArray($resource);
+
+        $this->assertInstanceOf(AbstractTransformer::class, $transformer);
 
         $this->assertArrayHasKey('nome', $data);
         $this->assertArrayHasKey('ativo', $data);

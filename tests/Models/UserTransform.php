@@ -2,9 +2,9 @@
 
 namespace Masterkey\Tests\Models;
 
-use League\Fractal\TransformerAbstract;
+use Masterkey\Repository\AbstractTransformer;
 
-class UserTransform extends TransformerAbstract
+class UserTransform extends AbstractTransformer
 {
     public function transform(User $user)
     {
