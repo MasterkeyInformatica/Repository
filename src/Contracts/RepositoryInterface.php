@@ -5,6 +5,7 @@ namespace Masterkey\Repository\Contracts;
 use Closure;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
+use Masterkey\Repository\AbstractPresenter;
 use PDO;
 
 /**
@@ -20,9 +21,15 @@ use PDO;
 interface RepositoryInterface
 {
     /**
-     * @param   string  $model
+     * @param string $model
      */
     public function makeModel($model);
+
+    /**
+     * @param string|null $presenter
+     * @return mixed
+     */
+    public function makePresenter(string $presenter = null);
 
     /**
      * @return Builder

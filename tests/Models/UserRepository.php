@@ -15,4 +15,9 @@ class UserRepository extends AbstractRepository
     {
         return User::class;
     }
+
+    public function presenter()
+    {
+        return UserPresenter::class;
+    }
 }

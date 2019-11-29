@@ -20,6 +20,7 @@ use Masterkey\Repository\Contracts\{
 use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
 use PDO;
 use RepositoryException;
+use RuntimeException;
 
 /**
  * BaseRepository
@@ -67,8 +68,13 @@ abstract class AbstractRepository implements
     protected $fieldsSearchable = [];
 
     /**
-     * @param   Container  $container
-     * @throws  RepositoryException
+     * @var AbstractPresenter
+     */
+    protected $presenter;
+
+    /**
+     * @param Container $container
+     * @throws RepositoryException
      */
     public function __construct(Container $container)
     {
@@ -78,6 +84,7 @@ abstract class AbstractRepository implements
         $this->resetScope();
 
         $this->makeModel($this->model());
+        $this->makePresenter($this->presenter());
 
         $this->bootTraits();
         $this->boot();
@@ -87,6 +94,14 @@ abstract class AbstractRepository implements
      * @return  mixed
      */
     public abstract function model();
+
+    /**
+     * @return string|null
+     */
+    public function presenter()
+    {
+        return null;
+    }
 
     /**
      * @return  void
@@ -108,6 +123,25 @@ abstract class AbstractRepository implements
         }
 
         $this->model = $model;
+    }
+
+    /**
+     * @param string|null $presenter
+     * @throws RuntimeException
+     */
+    public function makePresenter(string $presenter = null)
+    {
+        unset($this->presenter);
+
+        if ( ! is_null($presenter) ) {
+            $presenter = $this->app->make($presenter);
+
+            if ( ! $presenter instanceof AbstractPresenter ) {
+                throw new RuntimeException("Class {$presenter} must be an instance of Masterkey\\Repository\\AbstractPresenter");
+            }
+
+            $this->presenter = $presenter;
+        }
     }
 
     /**
