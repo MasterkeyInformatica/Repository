@@ -10,7 +10,6 @@ use stdClass;
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version 3.0.0
- * @since   02/09/2017
  * @package Masterkey\Repository\Console\Commands\Creators
  */
 trait NamespaceTrait
@@ -21,17 +20,18 @@ trait NamespaceTrait
     protected $modelNamespace;
 
     /**
-     * @param   string  $namespace
-     * @return  $this
+     * @param string $namespace
+     * @return $this
      */
     public function setModelNamespace(string $namespace)
     {
         $this->modelNamespace = $namespace;
+
         return $this;
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getModelNamespace() : string
     {
@@ -39,10 +39,8 @@ trait NamespaceTrait
     }
 
     /**
-     * Returns the namespace from string
-     *
-     * @param   string  $archive
-     * @return  stdClass
+     * @param $archive
+     * @return stdClass
      */
     public function getNamespaceOf($archive) : stdClass
     {

@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Config;
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version 3.0.0
- * @since   02/09/2017
  * @package Masterkey\Repository\Console\Commands\Creators
  */
 class RepositoryCreator
@@ -41,7 +40,7 @@ class RepositoryCreator
     protected $repositoryNamespace;
 
     /**
-     * @param   Filesystem  $files
+     * @param Filesystem $files
      */
     public function __construct(Filesystem $files)
     {
@@ -49,8 +48,8 @@ class RepositoryCreator
     }
 
     /**
-     * @param   string  $namespace
-     * @return  $this
+     * @param string $namespace
+     * @return $this
      */
     public function setRepositoryNamespace(string $namespace)
     {
@@ -60,7 +59,7 @@ class RepositoryCreator
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getRepositoryNamespace() : string
     {
@@ -68,7 +67,7 @@ class RepositoryCreator
     }
 
     /**
-     * @return  mixed
+     * @return string
      */
     public function getRepository() : string
     {
@@ -76,17 +75,18 @@ class RepositoryCreator
     }
 
     /**
-     * @param   mixed  $repository
-     * @return  $this
+     * @param string $repository
+     * @return $this
      */
     public function setRepository(string  $repository)
     {
         $this->repository = $repository;
+
         return $this;
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getModel() : string
     {
@@ -94,8 +94,8 @@ class RepositoryCreator
     }
 
     /**
-     * @param   string  $model
-     * @return  $this
+     * @param string $model
+     * @return $this
      */
     public function setModel(string $model)
     {
@@ -105,11 +105,9 @@ class RepositoryCreator
     }
 
     /**
-     * Create the repository.
-     *
-     * @param   string  $repository
-     * @param   string  $model
-     * @return  bool
+     * @param $repository
+     * @param $model
+     * @return bool
      */
     public function create($repository, $model) : bool
     {
@@ -125,13 +123,13 @@ class RepositoryCreator
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
     protected function createDirectory()
     {
         $directory = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getRepositoryNamespace();
 
-        if(!$this->files->isDirectory($directory)) {
+        if ( ! $this->files->isDirectory($directory) ) {
             $this->files->makeDirectory($directory, 0755, true);
         }
 
@@ -139,7 +137,7 @@ class RepositoryCreator
     }
 
     /**
-     * @return  string
+     * @return string
      */
     protected function getDirectory() : string
     {
@@ -147,13 +145,13 @@ class RepositoryCreator
     }
 
     /**
-     * @return  string
+     * @return string
      */
     protected function getRepositoryName() : string
     {
         $repository_name = $this->getRepository();
 
-        if(!strpos($repository_name, 'Repository') !== false) {
+        if ( ! strpos($repository_name, 'Repository') !== false ) {
             $repository_name .= 'Repository';
         }
 
@@ -167,7 +165,7 @@ class RepositoryCreator
     {
         $model = $this->getModel();
 
-        if(isset($model) && !empty($model)) {
+        if ( isset($model) && !empty($model) ) {
             $model_name = $model;
         } else {
             $model_name = Inflector::singularize($this->stripRepositoryName());
@@ -177,7 +175,7 @@ class RepositoryCreator
     }
 
     /**
-     * @return  string
+     * @return string
      */
     protected function stripRepositoryName() : string
     {
@@ -188,7 +186,7 @@ class RepositoryCreator
     }
 
     /**
-     * @return  array
+     * @return array
      */
     protected function getPopulateData() : array
     {
@@ -197,11 +195,11 @@ class RepositoryCreator
         $model_path             = Config::get('repository.model_namespace');
         $model_name             = $this->getModelName();
 
-        if($this->getRepositoryNamespace() != '') {
+        if ( $this->getRepositoryNamespace() != '' ) {
             $repository_namespace .= '\\' . str_replace('/', '\\', $this->getRepositoryNamespace());
         }
 
-        if($this->getModelNamespace() !== '') {
+        if ( $this->getModelNamespace() !== '' ) {
             $model_path .= '\\' . str_replace('/', '\\', $this->getModelNamespace());
         }
 
@@ -219,12 +217,13 @@ class RepositoryCreator
     protected function getPath() : string
     {
         $directory = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getRepositoryNamespace();
+
         return $directory . DIRECTORY_SEPARATOR . $this->getRepositoryName() . '.php';
     }
 
     /**
-     * @return  string
-     * @throws  \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function getStub() : string
     {
@@ -240,14 +239,15 @@ class RepositoryCreator
     }
 
     /**
-     * @return  string
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function populateStub() : string
     {
         $populate_data  = $this->getPopulateData();
         $stub           = $this->getStub();
 
-        foreach ($populate_data as $key => $value) {
+        foreach ( $populate_data as $key => $value ) {
             $stub = str_replace($key, $value, $stub);
         }
 
@@ -255,7 +255,8 @@ class RepositoryCreator
     }
 
     /**
-     * @return  bool
+     * @return bool
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function createClass() : bool
     {
