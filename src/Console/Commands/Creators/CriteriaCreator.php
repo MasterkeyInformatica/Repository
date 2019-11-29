@@ -13,11 +13,10 @@ use Doctrine\Common\Inflector\Inflector;
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version 3.0.0
- * @since   02/09/2017
  * @package Masterkey\Repository\Console\Commands\Creators
  */
-class CriteriaCreator {
-
+class CriteriaCreator
+{
     /**
      * @var Filesystem
      */
@@ -34,7 +33,7 @@ class CriteriaCreator {
     protected $model;
 
     /**
-     * @param   Filesystem  $files
+     * @param Filesystem $files
      */
     public function __construct(Filesystem $files)
     {
@@ -42,7 +41,7 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getCriteria() : string
     {
@@ -50,8 +49,8 @@ class CriteriaCreator {
     }
 
     /**
-     * @param   string  $criteria
-     * @return  $this
+     * @param string $criteria
+     * @return $this
      */
     public function setCriteria(string $criteria)
     {
@@ -61,7 +60,7 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getModel() : string
     {
@@ -69,8 +68,8 @@ class CriteriaCreator {
     }
 
     /**
-     * @param   string  $model
-     * @return  $this
+     * @param string $model
+     * @return $this
      */
     public function setModel(string $model)
     {
@@ -80,11 +79,9 @@ class CriteriaCreator {
     }
 
     /**
-     * Create the criteria.
-     *
-     * @param   string  $criteria
-     * @param   string  $model
-     * @return  bool
+     * @param string $criteria
+     * @param string $model
+     * @return bool
      */
     public function create(string $criteria, string $model) : bool
     {
@@ -94,15 +91,14 @@ class CriteriaCreator {
                     ->createClass();
     }
 
-
     /**
-     * @return  $this
+     * @return $this
      */
     public function createDirectory()
     {
         $directory = $this->getDirectory();
 
-        if(!$this->files->isDirectory($directory)) {
+        if ( ! $this->files->isDirectory($directory) ) {
             $this->files->makeDirectory($directory, 0755, true);
         }
 
@@ -110,23 +106,22 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getDirectory() : string
     {
         $model      = $this->getModel();
         $directory  = Config::get('repository.criteria_path');
 
-        if(isset($model) && !empty($model)) {
+        if ( isset($model) && ! empty($model) ) {
             $directory .= DIRECTORY_SEPARATOR . $this->pluralizeModel();
         }
 
         return $directory;
     }
 
-
     /**
-     * @return  array
+     * @return array
      */
     protected function getPopulateData() : array
     {
@@ -136,7 +131,7 @@ class CriteriaCreator {
         $criteria_namespace = Config::get('repository.criteria_namespace');
         $criteria_class     = $criteria;
 
-        if(isset($model) && !empty($model)) {
+        if ( isset($model) && ! empty($model) ) {
             $criteria_namespace .= '\\' . str_replace('/', '\\', $model);
         }
 
@@ -147,7 +142,7 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  string
+     * @return string
      */
     protected function getPath() : string
     {
@@ -155,8 +150,8 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  string
-     * @throws  \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function getStub() : string
     {
@@ -164,7 +159,7 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  string
+     * @return string
      */
     protected function getStubPath() : string
     {
@@ -172,14 +167,15 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  string
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function populateStub() : string
     {
         $populate_data  = $this->getPopulateData();
         $stub           = $this->getStub();
 
-        foreach ($populate_data as $search => $replace) {
+        foreach ( $populate_data as $search => $replace ) {
             $stub = str_replace($search, $replace, $stub);
         }
 
@@ -187,7 +183,8 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  bool
+     * @return bool
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function createClass() : bool
     {
@@ -195,7 +192,7 @@ class CriteriaCreator {
     }
 
     /**
-     * @return  string
+     * @return string
      */
     protected function pluralizeModel() : string
     {

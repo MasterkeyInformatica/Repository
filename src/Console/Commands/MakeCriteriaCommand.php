@@ -74,7 +74,7 @@ class MakeCriteriaCommand extends Command
         $criteria = $arguments['criteria'];
         $model    = $options['model'];
 
-        if($this->creator->create($criteria, $model)) {
+        if ( $this->creator->create($criteria, $model) ) {
             $this->info("Succesfully created the criteria class.");
         }
     }

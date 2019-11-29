@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version 3.0.0
- * @since   02/09/2017
  * @package Masterkey\Repository\Console\Commands
  */
 class MakeRepositoryCommand extends Command
@@ -75,7 +74,7 @@ class MakeRepositoryCommand extends Command
         $repository = $arguments['repository'];
         $model      = $options['model'];
 
-        if($this->creator->create($repository, $model)) {
+        if ( $this->creator->create($repository, $model) ) {
             $this->info("Successfully created the repository class");
         }
     }
