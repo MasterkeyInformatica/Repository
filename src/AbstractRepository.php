@@ -5,13 +5,11 @@ namespace Masterkey\Repository;
 use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Masterkey\Repository\Contracts\{
     CountableInterface,
     CreatableInterface,
@@ -27,7 +25,7 @@ use RepositoryException;
  * BaseRepository
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version  7.0.0
+ * @version  7.0.1
  * @package  Masterkey\Repository
  */
 abstract class AbstractRepository implements
@@ -136,7 +134,7 @@ abstract class AbstractRepository implements
      */
     public function getBuilder() : Builder
     {
-        return $this->model->query();
+        return $this->model->newQuery();
     }
 
     /**
@@ -289,11 +287,12 @@ abstract class AbstractRepository implements
     /**
      * @param array $data
      * @return bool
+     * @throws \Throwable
      * @todo Retornar o número de rows affected
      */
     public function insert(array $data) : bool
     {
-        return DB::transaction(function () use ($data) {
+        return $this->transaction(function () use ($data) {
             if ( $this->model->insert($data) ) {
                 $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
 
@@ -326,20 +325,26 @@ abstract class AbstractRepository implements
 
     /**
      * @param array $data
-     * @return bool|int
+     * @return int
      * @throws RepositoryException
+     * @throws \Throwable
      */
     public function massUpdate(array $data)
     {
         $this->applyCriteria();
 
-        $updated = $this->model->update($data);
+        $affectedRows = $this->transaction(function() use ($data)
+        {
+            return $this->getBuilder()->update($data);
+        });
 
-        if ( $updated ) {
+        if ( $affectedRows > 0 ) {
             $this->app['events']->dispatch(new EntityUpdated($this, $this->model->getModel()));
         }
 
-        return $updated;
+        $this->resetModel();
+
+        return $affectedRows;
     }
 
     /**
