@@ -161,17 +161,25 @@ class PresenterTest extends TestCase
 
         $resource = new Item(null, function($user)
         {
+            if ( empty($user) ) {
+                return [
+                    'nome' => null,
+                    'ativo' => null,
+                    'tentativas' => null
+                ];
+            }
+
             return [
-                'nome'          => strtoupper($user['name']),
-                'ativo'         => (bool) $user['active'],
-                'tentativas'    => $user['logins']
+                'nome' => strtoupper($user['name']),
+                'ativo' => (bool) $user['active'],
+                'tentativas' => $user['logins']
             ];
         });
 
         $data = $manager->toArray($resource);
 
         $this->assertNull($data['tentativas']);
-        $this->assertFalse($data['ativo']);
+        $this->assertNull($data['ativo']);
     }
 
     public function testTransformUse()
