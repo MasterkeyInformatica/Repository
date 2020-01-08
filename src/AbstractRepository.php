@@ -16,14 +16,16 @@ use Masterkey\Repository\Contracts\{
     CriteriaInterface,
     RepositoryInterface,
     SearchableInterface,
-    SortableInterface};
+    SortableInterface
+};
 use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
+use Illuminate\Support\Str;
 use PDO;
 use RepositoryException;
 use RuntimeException;
 
 /**
- * BaseRepository
+ * AbstractRepository
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version  7.0.1
@@ -670,7 +672,8 @@ abstract class AbstractRepository implements
     {
         if ( $this->preventCriteriaOverwriting ) {
             // Find existing criteria
-            $key = $this->criteria->search(function ($item) use ($criteria) {
+            $key = $this->criteria->search(function ($item) use ($criteria)
+            {
                 return ( is_object($item) && (get_class($item) == get_class($criteria)) );
             });
 
@@ -716,7 +719,7 @@ abstract class AbstractRepository implements
     /**
      * @return Connection
      */
-    public function getConnection() : Connection
+    public function connection() : Connection
     {
         return $this->model->getConnection();
     }
@@ -726,7 +729,7 @@ abstract class AbstractRepository implements
      */
     public function getPDO() : PDO
     {
-        return $this->getConnection()->getPdo();
+        return $this->connection()->getPdo();
     }
 
     /**
@@ -752,6 +755,45 @@ abstract class AbstractRepository implements
      */
     public function transaction(Closure $closure)
     {
-        return $this->getConnection()->transaction($closure);
+        return $this->connection()->transaction($closure);
+    }
+
+    /**
+     * @return void
+     */
+    public function enableQueryLog()
+    {
+        $this->connection()->enableQueryLog();
+    }
+
+    /**
+     * @return void
+     */
+    public function disableQueryLog()
+    {
+        $this->connection()->disableQueryLog();
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueryLog() : array
+    {
+        return $this->connection()->getQueryLog();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastQuery() : ? string
+    {
+        $logs = $this->getQueryLog();
+        $last = array_pop($logs);
+
+        if ( is_null($last) ) {
+            return null;
+        }
+
+        return Str::replaceArray('?', $last['bindings'], $last['query']);
     }
 }

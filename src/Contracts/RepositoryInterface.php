@@ -49,7 +49,7 @@ interface RepositoryInterface
     /**
      * @return Connection
      */
-    public function getConnection() : Connection;
+    public function connection() : Connection;
 
     /**
      * @return PDO
@@ -71,4 +71,24 @@ interface RepositoryInterface
      * @return mixed
      */
     public function transaction(Closure $closure);
+
+    /**
+     * @return void
+     */
+    public function enableQueryLog();
+
+    /**
+     * @return void
+     */
+    public function disableQueryLog();
+
+    /**
+     * @return array
+     */
+    public function getQueryLog() : array;
+
+    /**
+     * @return string|null
+     */
+    public function getLastQuery() : ? string ;
 }
