@@ -1,5 +1,10 @@
 <?php
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Masterkey\Tests\Models\InactiveUsers;
 use Masterkey\Tests\Models\User;
 use Masterkey\Tests\Models\UserRepository;
@@ -30,7 +35,7 @@ class UserRepositoryTest extends TestCase
     {
         $user = new User();
 
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Model::class, $user);
+        $this->assertInstanceOf(Model::class, $user);
     }
 
     public function testAll()
@@ -39,7 +44,7 @@ class UserRepositoryTest extends TestCase
         $received   = $all->toArray();
 
         $this->assertCount(2, $received);
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $all);
+        $this->assertInstanceOf(Collection::class, $all);
     }
 
     public function testPaginate()
@@ -48,7 +53,7 @@ class UserRepositoryTest extends TestCase
         $count  = $all->toArray();
 
         $this->assertCount(1, $count['data']);
-        $this->assertInstanceOf(\Illuminate\Pagination\LengthAwarePaginator::class, $all);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $all);
     }
 
     public function testSimplePaginate()
@@ -57,7 +62,7 @@ class UserRepositoryTest extends TestCase
         $count  = $all->toArray();
 
         $this->assertCount(1, $count['data']);
-        $this->assertInstanceOf(\Illuminate\Pagination\Paginator::class, $all);
+        $this->assertInstanceOf(Paginator::class, $all);
     }
 
     /**
@@ -210,7 +215,7 @@ class UserRepositoryTest extends TestCase
     {
         $builder = $this->user->getBuilder();
 
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Builder::class, $builder);
+        $this->assertInstanceOf(Builder::class, $builder);
     }
 
     public function testRequestCriteria()
@@ -287,5 +292,36 @@ class UserRepositoryTest extends TestCase
 
         $this->assertEquals($countActive, $affectedRows);
         $this->assertEquals($this->user->count(), $countInactive);
+    }
+
+    public function testQueryLog()
+    {
+        $this->user->enableQueryLog();
+
+        $this->user->all();
+
+        $queryLog = $this->user->getQueryLog();
+        $lastQuery = $this->user->getLastQuery();
+
+        $this->user->disableQueryLog();
+
+        $this->assertArrayHasKey('query', $queryLog[0]);
+        $this->assertArrayHasKey('bindings', $queryLog[0]);
+        $this->assertEquals('select * from "users"', $lastQuery);
+    }
+
+    public function testLastQueryWithCriteria()
+    {
+        $sql = 'select count(*) as aggregate from "users" where "active" = 1';
+
+        $this->user->enableQueryLog();
+
+        $this->user->pushCriteria(new ActiveUsers)->count();
+
+        $lastQuery = $this->user->getLastQuery();
+
+        $this->user->disableQueryLog();
+
+        $this->assertEquals($sql, $lastQuery);
     }
 }
