@@ -17,7 +17,6 @@ use ReflectionObject;
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version 1.0.0
- * @since   27/03/2019
  * @package Masterkey\Repository\Traits
  */
 trait ShouldBeCached

@@ -5,7 +5,6 @@ namespace Masterkey\Repository\Contracts;
 use Closure;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
-use Masterkey\Repository\AbstractPresenter;
 use PDO;
 
 /**
@@ -14,8 +13,7 @@ use PDO;
  * Interface that rules repository classes
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version  3.1.0
- * @since    05/03/2018
+ * @version  3.1.1
  * @package  Masterkey\Repository\Contracts
  */
 interface RepositoryInterface
