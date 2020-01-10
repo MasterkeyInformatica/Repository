@@ -35,7 +35,7 @@ class WhereRaw extends AbstractCriteria
      * @param array  $bindings
      * @param string $boolean
      */
-    public function __construct(string $query, array $bindings, string $boolean = 'and')
+    public function __construct(string $query, array $bindings = [], string $boolean = 'and')
     {
         $this->query = $query;
         $this->bindings = $bindings;
