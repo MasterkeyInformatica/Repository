@@ -328,15 +328,26 @@ abstract class AbstractRepository implements
      */
     public function insert(array $data) : bool
     {
-        return $this->transaction(function () use ($data) {
-            if ( $this->model->insert($data) ) {
-                $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
-
-                return true;
+        $response = $this->transaction(function () use ($data)
+        {
+            if ( $this->driver() == 'firebird' ) {
+                foreach ($data as $row) {
+                    $this->create($row);
+                }
+            } else {
+                $this->model->insert($data);
             }
 
-            throw new RepositoryException('Não foi possível salvar alguns registros. Tente novamente');
+            return true;
         });
+
+        if ( $response ) {
+            $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
+
+            return true;
+        }
+
+        throw new RepositoryException('Não foi possível salvar os registros. Tente novamente');
     }
 
     /**
@@ -755,6 +766,16 @@ abstract class AbstractRepository implements
      */
     public function transaction(Closure $closure)
     {
+        if ( $this->driver() == 'firebird' ) {
+            $this->disableAutoCommit();
+
+            $response = $this->transaction($closure);
+
+            $this->enableAutoCommit();
+
+            return $response;
+        }
+
         return $this->connection()->transaction($closure);
     }
 
@@ -795,5 +816,13 @@ abstract class AbstractRepository implements
         }
 
         return Str::replaceArray('?', $last['bindings'], $last['query']);
+    }
+
+    /**
+     * @return string
+     */
+    protected function driver()
+    {
+        return $this->connection()->getDriverName();
     }
 }
