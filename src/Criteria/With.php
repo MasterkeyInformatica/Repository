@@ -6,34 +6,34 @@ use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
- * Select
+ * With
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
  * @version 2.0.0
  * @package Masterkey\Repository\Criteria
  */
-class Select extends AbstractCriteria
+class With extends AbstractCriteria
 {
     /**
      * @var array
      */
-    protected $columns;
+    protected $with;
 
     /**
-     * @param   mixed ...$columns
+     * @param array ...$with
      */
-    public function __construct(...$columns)
+    public function __construct(...$with)
     {
-        $this->columns = $columns;
+        $this->with = $with;
     }
 
     /**
-     * @param   \Illuminate\Database\Query\Builder  $model
-     * @param   Repository  $repository
-     * @return  \Illuminate\Database\Query\Builder|mixed
+     * @param   \Illuminate\Database\Query\Builder $model
+     * @param   Repository $repository
+     * @return  \Illuminate\Database\Query\Builder
      */
     public function apply($model, Repository $repository)
     {
-        return $model->select($this->columns);
+        return $model->with($this->with);
     }
 }

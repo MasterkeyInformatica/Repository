@@ -6,34 +6,34 @@ use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
- * Select
+ * Limit
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 2.0.0
+ * @version 1.0.0
  * @package Masterkey\Repository\Criteria
  */
-class Select extends AbstractCriteria
+class Limit extends AbstractCriteria
 {
     /**
-     * @var array
+     * @var int
      */
-    protected $columns;
+    protected $limit;
 
     /**
-     * @param   mixed ...$columns
+     * @param   int  $limit
      */
-    public function __construct(...$columns)
+    public function __construct(int $limit = 15)
     {
-        $this->columns = $columns;
+        $this->limit = $limit;
     }
 
     /**
      * @param   \Illuminate\Database\Query\Builder  $model
      * @param   Repository  $repository
-     * @return  \Illuminate\Database\Query\Builder|mixed
+     * @return  \Illuminate\Database\Query\Builder
      */
     public function apply($model, Repository $repository)
     {
-        return $model->select($this->columns);
+        return $model->take($this->limit);
     }
 }
