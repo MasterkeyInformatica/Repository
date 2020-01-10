@@ -769,7 +769,7 @@ abstract class AbstractRepository implements
         if ( $this->driver() == 'firebird' ) {
             $this->disableAutoCommit();
 
-            $response = $this->transaction($closure);
+            $response = $this->connection()->transaction($closure);
 
             $this->enableAutoCommit();
 
