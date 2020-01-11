@@ -133,7 +133,7 @@ class UserRepositoryTest extends TestCase
 
         $this->assertEquals('Jonas Dawson', $user->name);
     }
-    
+
     public function testDelete()
     {
         $this->user->delete(2);
