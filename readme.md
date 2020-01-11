@@ -16,6 +16,8 @@ no arquivo `config/app.php`
 
 Para utilização com o Laravel 5.4, verifique o *branch* **2.0**
 
+Para utilização com o Laravel, versão 5.5 atá a versão 5.7, utilize a versão 7.6
+
 Feito isso, publique o arquivo de configuração do repositório:
 
 ```sh
@@ -35,16 +37,21 @@ php artisan make:repository Users/Users --model=Models/Users
 ```
 para utilização:
 ```php
-protected $user;
+<?php
 
-public function __construct(\App\Repositories\UserRepository $user)
-{
-    $this->user = $user;
-}
+class MyController { 
 
-public function index()
-{
-    return $this->user->all(['column_a', 'column_b']);
+    protected $user;
+    
+    public function __construct(\App\Repositories\UserRepository $user)
+    {
+        $this->user = $user;
+    }
+    
+    public function index()
+    {
+        return $this->user->all(['column_a', 'column_b']);
+    }
 }
 ```
 
