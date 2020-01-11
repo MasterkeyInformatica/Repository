@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Illuminate\Support\Arr;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
@@ -9,7 +10,7 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  * Select
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 2.0.0
+ * @version 2.0.1
  * @package Masterkey\Repository\Criteria
  */
 class Select extends AbstractCriteria
@@ -20,10 +21,16 @@ class Select extends AbstractCriteria
     protected $columns;
 
     /**
-     * @param   mixed ...$columns
+     * @param array ...$columns
      */
     public function __construct(...$columns)
     {
+        $columns = Arr::collapse($columns);
+
+        if ( empty($columns) ) {
+            $columns = ['*'];
+        }
+
         $this->columns = $columns;
     }
 

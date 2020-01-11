@@ -16,8 +16,6 @@ no arquivo `config/app.php`
 
 Para utilização com o Laravel 5.4, verifique o *branch* **2.0**
 
-Para utilização com o Laravel, versão 5.5 atá a versão 5.7, utilize a versão 7.6
-
 Feito isso, publique o arquivo de configuração do repositório:
 
 ```sh

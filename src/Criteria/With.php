@@ -4,6 +4,7 @@ namespace Masterkey\Repository\Criteria;
 
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
+use Masterkey\Repository\MultiArray;
 
 /**
  * With
@@ -14,6 +15,8 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 class With extends AbstractCriteria
 {
+    use MultiArray;
+
     /**
      * @var array
      */
@@ -24,7 +27,7 @@ class With extends AbstractCriteria
      */
     public function __construct(...$with)
     {
-        $this->with = $with;
+        $this->with = $this->variadicToArray($with);
     }
 
     /**

@@ -6,6 +6,13 @@ use Illuminate\Database\Query\Builder;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
+/**
+ * WhereIn
+ *
+ * @author Matheus Lopes Santos <fale_com_lopez@hotmail.com>
+ * @version 1.0.0
+ * @package Masterkey\Repository\Criteria
+ */
 class WhereIn extends AbstractCriteria
 {
     /**

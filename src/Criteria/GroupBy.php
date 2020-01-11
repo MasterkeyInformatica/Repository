@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Illuminate\Support\Arr;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
@@ -9,7 +10,7 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  * GroupBy
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 2.0.0
+ * @version 2.0.1
  * @package Masterkey\Repository\Criteria
  */
 class GroupBy extends AbstractCriteria
@@ -24,7 +25,7 @@ class GroupBy extends AbstractCriteria
      */
     public function __construct(...$groups)
     {
-        $this->groups = $groups;
+        $this->groups = Arr::collapse($groups);
     }
 
     /**

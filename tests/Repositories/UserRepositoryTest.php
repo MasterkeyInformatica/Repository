@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Masterkey\Repository\Criteria\Select;
 use Masterkey\Tests\Models\InactiveUsers;
 use Masterkey\Tests\Models\User;
 use Masterkey\Tests\Models\UserRepository;
@@ -323,5 +324,16 @@ class UserRepositoryTest extends TestCase
         $this->user->disableQueryLog();
 
         $this->assertEquals($sql, $lastQuery);
+    }
+
+    public function testSelect()
+    {
+        $select = new Select(['name', 'active']);
+        $this->user->pushCriteria($select);
+
+        $user = $this->user->first();
+
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertNull($user->logins);
     }
 }
