@@ -55,7 +55,14 @@ interface SearchableInterface
      * @param   array  $columns
      * @return  Model
      */
-    public function find(int $id, $columns = ['*']) : Model;
+    public function find(int $id, $columns = ['*']) : ? Model;
+
+    /**
+     * @param int   $id
+     * @param array $columns
+     * @return Model
+     */
+    public function findOrFail(int $id, $columns = ['*']) : Model;
 
     /**
      * @param   array  $columns

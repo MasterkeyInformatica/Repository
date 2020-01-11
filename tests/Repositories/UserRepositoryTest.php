@@ -72,11 +72,11 @@ class UserRepositoryTest extends TestCase
     public function testFind()
     {
         $user1 = $this->user->find(1);
+        $user2 = $this->user->findOrFail(3);
 
         $this->assertEquals('Jonas', $user1->name);
         $this->assertInstanceOf(User::class, $user1);
-
-        $user2 = $this->user->find(3);
+        $this->assertNull($this->user->find(3));
     }
 
     /**
@@ -133,16 +133,12 @@ class UserRepositoryTest extends TestCase
 
         $this->assertEquals('Jonas Dawson', $user->name);
     }
-
-    /**
-     * @throws              RepositoryException
-     * @expectedException   \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
+    
     public function testDelete()
     {
         $this->user->delete(2);
 
-        $this->user->find(2);
+        $this->assertNull($this->user->find(2));
     }
 
     public function testCount()

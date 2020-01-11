@@ -512,10 +512,23 @@ abstract class AbstractRepository implements
     /**
      * @param int   $id
      * @param array $columns
+     * @return Model|null
+     * @throws RepositoryException
+     */
+    public function find(int $id, $columns = array('*')) : ? Model
+    {
+        $this->applyCriteria();
+
+        return $this->model->find($id, $columns);
+    }
+
+    /**
+     * @param int   $id
+     * @param array $columns
      * @return Model
      * @throws RepositoryException
      */
-    public function find(int $id, $columns = array('*')) : Model
+    public function findOrFail(int $id, $columns = ['*']) : Model
     {
         $this->applyCriteria();
 
