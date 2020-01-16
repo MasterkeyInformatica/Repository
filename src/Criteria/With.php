@@ -2,21 +2,19 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Illuminate\Support\Arr;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
-use Masterkey\Repository\MultiArray;
 
 /**
  * With
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 2.0.0
+ * @version 2.0.1
  * @package Masterkey\Repository\Criteria
  */
 class With extends AbstractCriteria
 {
-    use MultiArray;
-
     /**
      * @var array
      */
@@ -27,7 +25,7 @@ class With extends AbstractCriteria
      */
     public function __construct(...$with)
     {
-        $this->with = $this->variadicToArray($with);
+        $this->with = Arr::collapse($with);
     }
 
     /**
