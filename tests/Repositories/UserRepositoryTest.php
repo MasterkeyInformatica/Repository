@@ -350,4 +350,30 @@ class UserRepositoryTest extends TestCase
 
         $this->assertTrue($this->user->doesntExists());
     }
+
+    public function testIncrement()
+    {
+        $user = $this->user->first();
+        $logins = $user->logins;
+
+        $this->user->pushCriteria(
+            new \Masterkey\Repository\Criteria\Where('id', 1)
+        )->increment('logins');
+
+        $user = $user->fresh();
+
+        $this->assertEquals($logins + 1, $user->logins);
+    }
+
+    public function testDecrement()
+    {
+        $user = $this->user->first();
+        $logins = $user->logins;
+
+        $this->user->pushCriteria(
+            new \Masterkey\Repository\Criteria\Where('id', 1)
+        )->decrement('logins', 3);
+
+        $this->assertEquals($logins - 3, $user->fresh()->logins);
+    }
 }

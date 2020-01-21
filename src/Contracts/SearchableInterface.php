@@ -102,4 +102,20 @@ interface SearchableInterface
      * @return bool
      */
     public function doesntExists() : bool;
+
+    /**
+     * @param string $column
+     * @param int    $amount
+     * @param array  $extra
+     * @return mixed
+     */
+    public function increment(string $column, $amount = 1, array $extra = []);
+
+    /**
+     * @param string $column
+     * @param int    $amount
+     * @param array  $extra
+     * @return mixed
+     */
+    public function decrement(string $column, $amount = 1, array $extra = []);
 }

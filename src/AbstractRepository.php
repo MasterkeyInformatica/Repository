@@ -860,4 +860,32 @@ abstract class AbstractRepository implements
 
         return $this->model->doesntExist();
     }
+
+    /**
+     * @param string $column
+     * @param int    $amount
+     * @param array  $extra
+     * @return int
+     * @throws RepositoryException
+     */
+    public function increment(string $column, $amount = 1, array $extra = [])
+    {
+        $this->applyCriteria();
+
+        return $this->model->increment($column, $amount, $extra);
+    }
+
+    /**
+     * @param string $column
+     * @param int    $amount
+     * @param array  $extra
+     * @return int
+     * @throws RepositoryException
+     */
+    public function decrement(string $column, $amount = 1, array $extra = [])
+    {
+        $this->applyCriteria();
+
+        return $this->model->decrement($column, $amount, $extra);
+    }
 }
