@@ -5,21 +5,16 @@ namespace Masterkey\Repository;
 use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
-use Masterkey\Repository\Contracts\{
-    CountableInterface,
+use Illuminate\Database\Eloquent\{Builder, Model};
+use Illuminate\Pagination\{LengthAwarePaginator, Paginator};
+use Illuminate\Support\{Collection, Str};
+use Masterkey\Repository\Contracts\{CountableInterface,
     CreatableInterface,
     CriteriaInterface,
     RepositoryInterface,
     SearchableInterface,
-    SortableInterface
-};
+    SortableInterface};
 use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
-use Illuminate\Support\Str;
 use PDO;
 use RepositoryException;
 use RuntimeException;
@@ -28,7 +23,7 @@ use RuntimeException;
  * AbstractRepository
  *
  * @author   Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version  7.0.1
+ * @version  7.1.0
  * @package  Masterkey\Repository
  */
 abstract class AbstractRepository implements
@@ -77,6 +72,7 @@ abstract class AbstractRepository implements
     /**
      * @param Container $container
      * @throws RepositoryException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __construct(Container $container)
     {
@@ -113,6 +109,7 @@ abstract class AbstractRepository implements
     /**
      * @param string $model
      * @throws RepositoryException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function makeModel($model)
     {
@@ -130,6 +127,7 @@ abstract class AbstractRepository implements
     /**
      * @param string|null $presenter
      * @throws RuntimeException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function makePresenter(string $presenter = null)
     {
@@ -148,6 +146,7 @@ abstract class AbstractRepository implements
 
     /**
      * @throws RepositoryException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function resetModel()
     {

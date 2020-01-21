@@ -88,5 +88,5 @@ interface RepositoryInterface
     /**
      * @return string|null
      */
-    public function getLastQuery() : ? string ;
+    public function getLastQuery() : ? string;
 }

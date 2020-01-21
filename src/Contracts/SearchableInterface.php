@@ -2,7 +2,6 @@
 
 namespace Masterkey\Repository\Contracts;
 
-use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
