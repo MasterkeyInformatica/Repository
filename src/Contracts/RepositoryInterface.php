@@ -111,7 +111,7 @@ interface RepositoryInterface
     /**
      * @param string $query
      * @param array  $bindings
-     * @return mixed
+     * @return bool
      */
-    public function statement(string $query, array $bindings);
+    public function statement(string $query, array $bindings) : bool;
 }

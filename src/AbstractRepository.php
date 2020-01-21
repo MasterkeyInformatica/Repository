@@ -921,9 +921,9 @@ abstract class AbstractRepository implements
     /**
      * @param string $query
      * @param array  $bindings
-     * @return bool|mixed
+     * @return bool
      */
-    public function statement(string $query, array $bindings)
+    public function statement(string $query, array $bindings) : bool
     {
         return $this->connection()->statement($query, $bindings);
     }

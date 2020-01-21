@@ -396,4 +396,17 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(Model::class, $result);
         $this->assertTrue($result->exists);
     }
+
+    public function testStatement()
+    {
+        $loginGraterThanThree = User::where('logins', '>', 3)->count();
+        $all = User::count();
+
+        $sql = 'delete from users where logins > :logins';
+
+        $result = $this->user->statement($sql, ['logins' => 3]);
+
+        $this->assertTrue($result);
+        $this->assertEquals(3, $all - $loginGraterThanThree);
+    }
 }
