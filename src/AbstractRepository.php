@@ -887,4 +887,44 @@ abstract class AbstractRepository implements
 
         return $this->model->decrement($column, $amount, $extra);
     }
+
+    /**
+     * @param string $query
+     * @param array  $bindings
+     * @param bool   $useReadPdo
+     * @return Collection
+     */
+    public function select(string $query, array $bindings, bool $useReadPdo = true) : Collection
+    {
+        return $this->model->newCollection(
+            $this->connection()->select($query, $bindings, $useReadPdo)
+        );
+    }
+
+    /**
+     * @param string $query
+     * @param array  $bindings
+     * @param bool   $useReadPdo
+     * @return Model|null
+     */
+    public function selectOne(string $query, array $bindings, bool $useReadPdo = true) : ? Model
+    {
+        if ( $result = $this->connection()->selectOne($query, $bindings, $useReadPdo) ) {
+            return $this->model->newInstance(
+                json_decode(json_encode($result), true), true
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $query
+     * @param array  $bindings
+     * @return bool|mixed
+     */
+    public function statement(string $query, array $bindings)
+    {
+        return $this->connection()->statement($query, $bindings);
+    }
 }

@@ -376,4 +376,24 @@ class UserRepositoryTest extends TestCase
 
         $this->assertEquals($logins - 3, $user->fresh()->logins);
     }
+
+    public function testSelectRaw()
+    {
+        $sql = 'select * from users where logins > :logins';
+
+        $results = $this->user->select($sql, ['logins' => 1]);
+
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $results);
+        $this->assertTrue($results->isNotEmpty());
+    }
+
+    public function testSelectOneRaw()
+    {
+        $sql = 'select * from users where logins > :logins order by id desc';
+
+        $result = $this->user->selectOne($sql, ['logins' => 1]);
+
+        $this->assertInstanceOf(Model::class, $result);
+        $this->assertTrue($result->exists);
+    }
 }

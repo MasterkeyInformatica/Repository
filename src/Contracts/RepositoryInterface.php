@@ -5,6 +5,8 @@ namespace Masterkey\Repository\Contracts;
 use Closure;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use PDO;
 
 /**
@@ -89,4 +91,27 @@ interface RepositoryInterface
      * @return string|null
      */
     public function getLastQuery() : ? string;
+
+    /**
+     * @param string $query
+     * @param array  $bindings
+     * @param bool   $useReadPdo
+     * @return Collection
+     */
+    public function select(string $query, array $bindings, bool $useReadPdo = true) : Collection;
+
+    /**
+     * @param string $query
+     * @param array  $bindings
+     * @param bool   $useReadPdo
+     * @return Model|null
+     */
+    public function selectOne(string $query, array $bindings, bool $useReadPdo = true) : ? Model;
+
+    /**
+     * @param string $query
+     * @param array  $bindings
+     * @return mixed
+     */
+    public function statement(string $query, array $bindings);
 }
