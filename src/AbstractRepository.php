@@ -838,4 +838,26 @@ abstract class AbstractRepository implements
     {
         return $this->connection()->getDriverName();
     }
+
+    /**
+     * @return bool
+     * @throws RepositoryException
+     */
+    public function exists() : bool
+    {
+        $this->applyCriteria();
+
+        return $this->model->exists();
+    }
+
+    /**
+     * @return bool
+     * @throws RepositoryException
+     */
+    public function doesntExists() : bool
+    {
+        $this->applyCriteria();
+
+        return $this->model->doesntExist();
+    }
 }

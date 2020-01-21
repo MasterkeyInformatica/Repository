@@ -332,4 +332,22 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertNull($user->logins);
     }
+
+    public function testExists()
+    {
+        $this->user->pushCriteria(
+            new \Masterkey\Repository\Criteria\Where('logins', '>', 150)
+        );
+
+        $this->assertFalse($this->user->exists());
+    }
+
+    public function testDoesntExists()
+    {
+        $this->user->pushCriteria(
+            new \Masterkey\Repository\Criteria\Where('logins', '>', 150)
+        );
+
+        $this->assertTrue($this->user->doesntExists());
+    }
 }
