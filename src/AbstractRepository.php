@@ -896,6 +896,8 @@ abstract class AbstractRepository implements
      */
     public function select(string $query, array $bindings, bool $useReadPdo = true) : Collection
     {
+        $this->resetModel();
+
         return $this->model->newCollection(
             $this->connection()->select($query, $bindings, $useReadPdo)
         );
@@ -909,6 +911,8 @@ abstract class AbstractRepository implements
      */
     public function selectOne(string $query, array $bindings, bool $useReadPdo = true) : ? Model
     {
+        $this->resetModel();
+
         if ( $result = $this->connection()->selectOne($query, $bindings, $useReadPdo) ) {
             return $this->model->newInstance(
                 json_decode(json_encode($result), true), true
