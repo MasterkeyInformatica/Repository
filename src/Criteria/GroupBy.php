@@ -10,7 +10,7 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  * GroupBy
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 2.0.1
+ * @version 2.0.2
  * @package Masterkey\Repository\Criteria
  */
 class GroupBy extends AbstractCriteria
@@ -21,11 +21,11 @@ class GroupBy extends AbstractCriteria
     protected $groups;
 
     /**
-     * @param   mixed ...$groups
+     * @param mixed ...$groups
      */
     public function __construct(...$groups)
     {
-        $this->groups = Arr::collapse($groups);
+        $this->groups = Arr::flatten($groups);
     }
 
     /**

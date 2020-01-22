@@ -25,7 +25,7 @@ class Select extends AbstractCriteria
      */
     public function __construct(...$columns)
     {
-        $columns = Arr::collapse($columns);
+        $columns = Arr::flatten($columns);
 
         if ( empty($columns) ) {
             $columns = ['*'];
