@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\{Builder, Model};
+use Illuminate\Database\Query\Expression;
 use Illuminate\Pagination\{LengthAwarePaginator, Paginator};
 use Illuminate\Support\{Collection, Str};
 use Masterkey\Repository\Contracts\{CountableInterface,
@@ -930,5 +931,14 @@ abstract class AbstractRepository implements
     public function statement(string $query, array $bindings) : bool
     {
         return $this->connection()->statement($query, $bindings);
+    }
+
+    /**
+     * @param string $value
+     * @return Expression
+     */
+    public function raw(string $value) : Expression
+    {
+        return $this->connection()->raw($value);
     }
 }

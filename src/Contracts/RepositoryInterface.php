@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Collection;
 use PDO;
 
@@ -114,4 +115,10 @@ interface RepositoryInterface
      * @return bool
      */
     public function statement(string $query, array $bindings) : bool;
+
+    /**
+     * @param string $query
+     * @return Expression
+     */
+    public function raw(string $value) : Expression;
 }

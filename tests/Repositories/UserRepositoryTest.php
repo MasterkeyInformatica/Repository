@@ -3,6 +3,7 @@
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Masterkey\Repository\Criteria\Select;
@@ -408,5 +409,13 @@ class UserRepositoryTest extends TestCase
 
         $this->assertTrue($result);
         $this->assertEquals(3, $all - $loginGraterThanThree);
+    }
+
+    public function testRawMethod()
+    {
+        $result = $this->user->raw('where date > current_date');
+
+        $this->assertInstanceOf(Expression::class, $result);
+        $this->assertInternalType('string', $result->getValue());
     }
 }
