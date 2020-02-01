@@ -99,7 +99,7 @@ interface RepositoryInterface
      * @param bool   $useReadPdo
      * @return Collection
      */
-    public function select(string $query, array $bindings, bool $useReadPdo = true) : Collection;
+    public function select(string $query, array $bindings = [], bool $useReadPdo = true) : Collection;
 
     /**
      * @param string $query
@@ -107,17 +107,17 @@ interface RepositoryInterface
      * @param bool   $useReadPdo
      * @return Model|null
      */
-    public function selectOne(string $query, array $bindings, bool $useReadPdo = true) : ? Model;
+    public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true) : ? Model;
 
     /**
      * @param string $query
      * @param array  $bindings
      * @return bool
      */
-    public function statement(string $query, array $bindings) : bool;
+    public function statement(string $query, array $bindings = []) : bool;
 
     /**
-     * @param string $query
+     * @param string $value
      * @return Expression
      */
     public function raw(string $value) : Expression;

@@ -894,8 +894,10 @@ abstract class AbstractRepository implements
      * @param array  $bindings
      * @param bool   $useReadPdo
      * @return Collection
+     * @throws RepositoryException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function select(string $query, array $bindings, bool $useReadPdo = true) : Collection
+    public function select(string $query, array $bindings = [], bool $useReadPdo = true) : Collection
     {
         $this->resetModel();
 
@@ -909,8 +911,10 @@ abstract class AbstractRepository implements
      * @param array  $bindings
      * @param bool   $useReadPdo
      * @return Model|null
+     * @throws RepositoryException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function selectOne(string $query, array $bindings, bool $useReadPdo = true) : ? Model
+    public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true) : ? Model
     {
         $this->resetModel();
 
@@ -928,7 +932,7 @@ abstract class AbstractRepository implements
      * @param array  $bindings
      * @return bool
      */
-    public function statement(string $query, array $bindings) : bool
+    public function statement(string $query, array $bindings = []) : bool
     {
         return $this->connection()->statement($query, $bindings);
     }
