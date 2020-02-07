@@ -100,6 +100,8 @@ class UserRepositoryTest extends TestCase
      */
     public function testSave()
     {
+        $countUsers = $this->user->count();
+
         $user = $this->user->save([
             'name'      => 'Penelope',
             'active'    => true,
