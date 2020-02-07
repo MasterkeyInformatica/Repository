@@ -73,7 +73,6 @@ abstract class AbstractRepository implements
     /**
      * @param Container $container
      * @throws RepositoryException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __construct(Container $container)
     {
@@ -103,14 +102,13 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @return  void
+     * @return void
      */
     public function boot() {}
 
     /**
      * @param string $model
      * @throws RepositoryException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function makeModel($model)
     {
@@ -128,7 +126,6 @@ abstract class AbstractRepository implements
     /**
      * @param string|null $presenter
      * @throws RuntimeException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function makePresenter(string $presenter = null)
     {
@@ -147,7 +144,6 @@ abstract class AbstractRepository implements
 
     /**
      * @throws RepositoryException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function resetModel()
     {
@@ -247,6 +243,7 @@ abstract class AbstractRepository implements
      * @param string $column
      * @return int|float
      * @throws RepositoryException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function sum(string $column)
     {
@@ -307,6 +304,10 @@ abstract class AbstractRepository implements
      */
     public function save(array $data) : Model
     {
+        if ( $this->model instanceof Builder ) {
+            $this->resetModel();
+        }
+
         $model = $this->model;
 
         $model->fill($data);
@@ -438,6 +439,7 @@ abstract class AbstractRepository implements
      * @param string $attributes
      * @param bool   $detach
      * @return mixed
+     * @throws RepositoryException
      */
     public function sync($id, $relation, $attributes, $detach = true)
     {
@@ -468,8 +470,8 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param string $value
-     * @param null   $key
+     * @param string     $value
+     * @param mixed|null $key
      * @return array
      * @throws RepositoryException
      */
@@ -713,7 +715,7 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @return $this
+     * @return $this|CriteriaInterface
      * @throws RepositoryException
      */
     public function applyCriteria()
@@ -895,7 +897,6 @@ abstract class AbstractRepository implements
      * @param bool   $useReadPdo
      * @return Collection
      * @throws RepositoryException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function select(string $query, array $bindings = [], bool $useReadPdo = true) : Collection
     {
@@ -912,7 +913,6 @@ abstract class AbstractRepository implements
      * @param bool   $useReadPdo
      * @return Model|null
      * @throws RepositoryException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true) : ? Model
     {
