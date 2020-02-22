@@ -11,7 +11,8 @@ class User extends Model
     protected $fillable = [
         'name',
         'active',
-        'logins'
+        'logins',
+        'failed_logins'
     ];
 
     public $timestamps = false;

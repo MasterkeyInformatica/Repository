@@ -433,4 +433,17 @@ class UserRepositoryTest extends TestCase
             $this->user->getBuilder()->toSql()
         );
     }
+
+    public function testWhereColumn()
+    {
+        $user = $this->user->first();
+        $user->failed_logins = 14;
+        $user->save();
+
+        $count = $this->user
+                      ->pushCriteria(new \Masterkey\Repository\Criteria\WhereColumn('failed_logins', '>', 'logins'))
+                      ->count();
+
+        $this->assertEquals(1, $count);
+    }
 }
