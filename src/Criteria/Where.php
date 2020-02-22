@@ -21,12 +21,12 @@ class Where extends AbstractCriteria
     protected $column;
 
     /**
-     * @var null
+     * @var string|null
      */
     protected $operator;
 
     /**
-     * @var null
+     * @var string|null
      */
     protected $value;
 
@@ -36,10 +36,10 @@ class Where extends AbstractCriteria
     protected $boolean;
 
     /**
-     * @param   string|Closure $column
-     * @param   null $operator
-     * @param   null $value
-     * @param   string $boolean
+     * @param string|Closure $column
+     * @param string|null    $operator
+     * @param string|null    $value
+     * @param string         $boolean
      */
     public function __construct($column, $operator = null, $value = null, $boolean = 'and')
     {
@@ -50,9 +50,9 @@ class Where extends AbstractCriteria
     }
 
     /**
-     * @param   \Illuminate\Database\Query\Builder $model
-     * @param   Repository $repository
-     * @return  \Illuminate\Database\Query\Builder|mixed
+     * @param \Illuminate\Database\Query\Builder $model
+     * @param Repository                         $repository
+     * @return \Illuminate\Database\Query\Builder
      */
     public function apply($model, Repository $repository)
     {

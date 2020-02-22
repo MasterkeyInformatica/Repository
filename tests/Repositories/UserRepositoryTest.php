@@ -420,4 +420,17 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(Expression::class, $result);
         $this->assertInternalType('string', $result->getValue());
     }
+
+    public function testOrWhereMethod()
+    {
+        $this->user->pushCriteria(new \Masterkey\Repository\Criteria\Where('logins', '>', 3));
+        $this->user->pushCriteria(new \Masterkey\Repository\Criteria\OrWhere('logins', '=', 1));
+
+        $this->user->applyCriteria();
+
+        $this->assertEquals(
+            'select * from "users" where "logins" > ? or "logins" = ?',
+            $this->user->getBuilder()->toSql()
+        );
+    }
 }
