@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Contracts;
 
+use Illuminate\Support\Collection;
 use Masterkey\Repository\AbstractCriteria;
 
 /**
@@ -22,10 +23,7 @@ interface CriteriaInterface
      */
     public function skipCriteria(bool $status = true);
 
-    /**
-     * @return  mixed
-     */
-    public function getCriteria();
+    public function getCriteria() : Collection;
 
     /**
      * @param   AbstractCriteria  $criteria

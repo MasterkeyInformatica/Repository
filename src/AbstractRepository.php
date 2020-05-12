@@ -127,9 +127,6 @@ abstract class AbstractRepository implements
         $this->model = $model;
     }
 
-    /**
-     * @return  mixed
-     */
     public abstract function model();
 
     /**
@@ -185,11 +182,6 @@ abstract class AbstractRepository implements
         return $this->fieldsSearchable;
     }
 
-    /**
-     * @param string $column
-     * @return int
-     * @throws RepositoryException
-     */
     public function count(string $column = '*') : int
     {
         $this->applyCriteria();
@@ -225,18 +217,12 @@ abstract class AbstractRepository implements
         return $this;
     }
 
-    /**
-     * @return Collection|mixed
-     */
-    public function getCriteria()
+    public function getCriteria() : Collection
     {
         return $this->criteria;
     }
 
-    /**
-     * @throws RepositoryException
-     */
-    public function resetModel()
+    public function resetModel() : void
     {
         $this->makeModel($this->model());
     }
@@ -744,10 +730,6 @@ abstract class AbstractRepository implements
         return $this;
     }
 
-    /**
-     * @param mixed ...$columns
-     * @return $this
-     */
     public function groupBy(...$columns)
     {
         $this->model = $this->model->groupBy($columns);
@@ -755,11 +737,6 @@ abstract class AbstractRepository implements
         return $this;
     }
 
-    /**
-     * @param AbstractCriteria $criteria
-     * @return Collection
-     * @throws RepositoryException
-     */
     public function getByCriteria(AbstractCriteria $criteria) : Collection
     {
         $this->pushCriteria($criteria);
@@ -790,11 +767,6 @@ abstract class AbstractRepository implements
         return $this;
     }
 
-    /**
-     * @param array $columns
-     * @return Collection
-     * @throws RepositoryException
-     */
     public function all(array $columns = ['*']) : Collection
     {
         $this->applyCriteria();
@@ -802,25 +774,16 @@ abstract class AbstractRepository implements
         return $this->model->get($columns);
     }
 
-    /**
-     * @return void
-     */
-    public function enableQueryLog()
+    public function enableQueryLog() : void
     {
         $this->connection()->enableQueryLog();
     }
 
-    /**
-     * @return void
-     */
-    public function disableQueryLog()
+    public function disableQueryLog() : void
     {
         $this->connection()->disableQueryLog();
     }
 
-    /**
-     * @return string|null
-     */
     public function getLastQuery() : ?string
     {
         $logs = $this->getQueryLog();
@@ -833,18 +796,11 @@ abstract class AbstractRepository implements
         return Str::replaceArray('?', $last['bindings'], $last['query']);
     }
 
-    /**
-     * @return array
-     */
     public function getQueryLog() : array
     {
         return $this->connection()->getQueryLog();
     }
 
-    /**
-     * @return bool
-     * @throws RepositoryException
-     */
     public function exists() : bool
     {
         $this->applyCriteria();
@@ -852,10 +808,6 @@ abstract class AbstractRepository implements
         return $this->model->exists();
     }
 
-    /**
-     * @return bool
-     * @throws RepositoryException
-     */
     public function doesntExists() : bool
     {
         $this->applyCriteria();
@@ -864,9 +816,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param string $column
-     * @param int    $amount
-     * @param array  $extra
+     * @param string    $column
+     * @param int|float $amount
+     * @param array     $extra
      * @return int
      * @throws RepositoryException
      */
@@ -878,9 +830,9 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param string $column
-     * @param int    $amount
-     * @param array  $extra
+     * @param string    $column
+     * @param int|float $amount
+     * @param array     $extra
      * @return int
      * @throws RepositoryException
      */
@@ -891,13 +843,6 @@ abstract class AbstractRepository implements
         return $this->model->decrement($column, $amount, $extra);
     }
 
-    /**
-     * @param string $query
-     * @param array  $bindings
-     * @param bool   $useReadPdo
-     * @return Collection
-     * @throws RepositoryException
-     */
     public function select(string $query, array $bindings = [], bool $useReadPdo = true) : Collection
     {
         $this->resetModel();
@@ -907,13 +852,6 @@ abstract class AbstractRepository implements
         );
     }
 
-    /**
-     * @param string $query
-     * @param array  $bindings
-     * @param bool   $useReadPdo
-     * @return Model|null
-     * @throws RepositoryException
-     */
     public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true) : ?Model
     {
         $this->resetModel();
@@ -927,20 +865,11 @@ abstract class AbstractRepository implements
         return null;
     }
 
-    /**
-     * @param string $query
-     * @param array  $bindings
-     * @return bool
-     */
     public function statement(string $query, array $bindings = []) : bool
     {
         return $this->connection()->statement($query, $bindings);
     }
 
-    /**
-     * @param string $value
-     * @return Expression
-     */
     public function raw(string $value) : Expression
     {
         return $this->connection()->raw($value);

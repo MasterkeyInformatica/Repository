@@ -76,12 +76,12 @@ interface RepositoryInterface
     /**
      * @return void
      */
-    public function enableQueryLog();
+    public function enableQueryLog() : void;
 
     /**
      * @return void
      */
-    public function disableQueryLog();
+    public function disableQueryLog() : void;
 
     /**
      * @return array
