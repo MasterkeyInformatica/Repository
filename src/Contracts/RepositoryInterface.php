@@ -121,4 +121,8 @@ interface RepositoryInterface
      * @return Expression
      */
     public function raw(string $value) : Expression;
+
+    public function chunk(int $count, callable $callback);
+
+    public function chunkById(int $count, callable $callback, string $column = null, string $alias = null);
 }
