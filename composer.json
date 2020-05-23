@@ -24,8 +24,7 @@
         "illuminate/pagination": "^6.0",
         "illuminate/http": "^6.0",
         "illuminate/validation": "^6.0",
-        "league/fractal": "^0.18.0",
-        "doctrine/inflector": "^2.0"
+        "league/fractal": "^0.18.0"
     },
     "autoload": {
         "psr-4": {
