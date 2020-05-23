@@ -55,7 +55,7 @@ class PresenterTest extends TestCase
             ];
         });
 
-        $this->assertInternalType('array', $manager->toArray($resource));
+        $this->assertIsArray($manager->toArray($resource));
     }
 
     public function testCollection()
@@ -136,11 +136,10 @@ class PresenterTest extends TestCase
         $this->assertArrayNotHasKey('data', $data);
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testEmptyItem()
     {
+        $this->expectException(\TypeError::class);
+
         $manager = $this->getPresenter();
 
         $resource = new Item(null, function(User $user)

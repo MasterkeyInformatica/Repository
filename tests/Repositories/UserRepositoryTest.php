@@ -67,11 +67,10 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(Paginator::class, $all);
     }
 
-    /**
-     * @expectedException Illuminate\Database\Eloquent\ModelNotFoundException
-     */
     public function testFind()
     {
+        $this->expectException(Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
         $user1 = $this->user->find(1);
         $user2 = $this->user->findOrFail(3);
 
@@ -230,11 +229,10 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals(1, $users->count());
     }
 
-    /**
-     * @expectedException   RepositoryException
-     */
     public function testFailedRequestCriteria()
     {
+        $this->expectException(RepositoryException::class);
+
         $symfonyRequest = new BaseRequest(['search' => '1', 'searchFields' => 'id']);
         $request = Request::createFromBase($symfonyRequest);
 
@@ -418,7 +416,7 @@ class UserRepositoryTest extends TestCase
         $result = $this->user->raw('where date > current_date');
 
         $this->assertInstanceOf(Expression::class, $result);
-        $this->assertInternalType('string', $result->getValue());
+        $this->assertIsString($result->getValue());
     }
 
     public function testOrWhereMethod()

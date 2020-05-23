@@ -12,8 +12,12 @@ class RepositoryWithPresenterTest extends TestCase
     {
         global $app;
 
-        $repository = new UserRepository($app);
+        $repo = new UserRepository($app);
 
-        $this->assertAttributeInstanceOf(UserPresenter::class, 'presenter', $repository);
+        $reflection = new \ReflectionClass($repo);
+        $presenter = $reflection->getProperty('presenter');
+        $presenter->setAccessible(true);
+
+        $this->assertInstanceOf(UserPresenter::class, $presenter->getValue($repo));
     }
 }
