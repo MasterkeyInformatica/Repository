@@ -71,6 +71,8 @@ abstract class AbstractRepository implements
      */
     protected $presenter;
 
+    protected $skipPresenter = false;
+
     /**
      * @param Container $container
      * @throws RepositoryException
@@ -887,5 +889,24 @@ abstract class AbstractRepository implements
         $this->applyCriteria();
 
         return $this->model->chunkById($count, $callback, $column, $alias);
+    }
+
+    public function skipPresenter() : AbstractRepository
+    {
+        $this->skipPresenter = true;
+
+        return $this;
+    }
+
+    public function presenterSkipped() : bool
+    {
+        return $this->skipPresenter;
+    }
+
+    public function enablePresenter() : AbstractRepository
+    {
+        $this->skipPresenter = false;
+
+        return $this;
     }
 }
