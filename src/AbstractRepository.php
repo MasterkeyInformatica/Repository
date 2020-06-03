@@ -445,7 +445,7 @@ abstract class AbstractRepository implements
     public function update(int $id, array $data)
     {
         $this->resetModel();
-        
+
         $model = $this->find($id);
         $original = clone $model;
 
@@ -511,7 +511,7 @@ abstract class AbstractRepository implements
     public function delete(int $id) : bool
     {
         $this->resetModel();
-        
+
         $model = $this->find($id);
         $original = clone $model;
 
@@ -553,7 +553,7 @@ abstract class AbstractRepository implements
     public function sync($id, $relation, $attributes, $detach = true)
     {
         $this->resetModel();
-        
+
         return $this->find($id)->{$relation}()->sync($attributes, $detach);
     }
 
@@ -914,5 +914,15 @@ abstract class AbstractRepository implements
         $this->skipPresenter = false;
 
         return $this;
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function cursor()
+    {
+        $this->applyCriteria();
+
+        return $this->model->cursor();
     }
 }
