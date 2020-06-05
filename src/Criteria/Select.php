@@ -16,12 +16,12 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 class Select extends AbstractCriteria
 {
     /**
-     * @var array
+     * @var array|mixed
      */
     protected $columns;
 
     /**
-     * @param array ...$columns
+     * @param array|mixed ...$columns
      */
     public function __construct(...$columns)
     {
