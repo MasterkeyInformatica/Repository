@@ -71,12 +71,11 @@ abstract class AbstractRepository implements
      */
     protected $presenter;
 
+    /**
+     * @var bool
+     */
     protected $skipPresenter = false;
 
-    /**
-     * @param Container $container
-     * @throws RepositoryException
-     */
     public function __construct(Container $container)
     {
         $this->app = $container;
@@ -158,7 +157,7 @@ abstract class AbstractRepository implements
         return null;
     }
 
-    public function bootTraits()
+    public function bootTraits() : void
     {
         $class = $this;
 
@@ -169,10 +168,7 @@ abstract class AbstractRepository implements
         }
     }
 
-    /**
-     * @return void
-     */
-    public function boot()
+    public function boot() : void
     {
     }
 
@@ -337,7 +333,8 @@ abstract class AbstractRepository implements
      */
     public function insert(array $data) : bool
     {
-        $response = $this->transaction(function () use ($data) {
+        $response = $this->transaction(function () use ($data)
+        {
             if ( $this->driver() == 'firebird' ) {
                 foreach ( $data as $row ) {
                     $this->create($row);
@@ -437,25 +434,41 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param int   $id
-     * @param array $data
-     * @return Model
+     * @param int         $id
+     * @param array       $data
+     * @param string|null $attribute
+     * @return Model|int
      * @throws RepositoryException
      */
-    public function update(int $id, array $data)
+    public function update(array $data, $id = null, string $attribute = null)
     {
         $this->resetModel();
 
-        $model = $this->find($id);
-        $original = clone $model;
+        $key = $attribute ?? $this->model->getKeyName();
 
-        if ( $model->update($data) ) {
-            $this->app['events']->dispatch(new EntityUpdated($this, $original));
-
-            return $model;
+        if ( is_null($id) && $this->criteria->isEmpty() ) {
+            throw new RepositoryException('Para atualização de dados, é necessário identificar os registros a serem atualizados');
         }
 
-        throw new RepositoryException('Não foi possível atualizar o registro. Tente novamente');
+        $this->applyCriteria();
+
+        $builder = $this->getBuilder();
+        $builder->when($id, function (Builder $query, $id) use ($key)
+        {
+            return $query->where($key, '=', $id);
+        });
+
+        try {
+            $update = $builder->update($data);
+
+            $this->resetModel();
+            $this->app['events']->dispatch(new EntityUpdated($this, $this->model));
+
+            return ( $id ) ? $this->find($id) : $update;
+
+        } catch ( \Throwable $e ) {
+            throw new RepositoryException('Não foi possível atualizar o registro. Tente novamente');
+        }
     }
 
     /**
@@ -464,7 +477,7 @@ abstract class AbstractRepository implements
      * @return Model|null
      * @throws RepositoryException
      */
-    public function find(int $id, $columns = array('*')) : ?Model
+    public function find(int $id, $columns = ['*']) : ?Model
     {
         $this->applyCriteria();
 
@@ -481,7 +494,8 @@ abstract class AbstractRepository implements
     {
         $this->applyCriteria();
 
-        $affectedRows = $this->transaction(function () use ($data) {
+        $affectedRows = $this->transaction(function () use ($data)
+        {
             return $this->getBuilder()->update($data);
         });
 
@@ -760,7 +774,8 @@ abstract class AbstractRepository implements
     {
         if ( $this->preventCriteriaOverwriting ) {
             // Find existing criteria
-            $key = $this->criteria->search(function ($item) use ($criteria) {
+            $key = $this->criteria->search(function ($item) use ($criteria)
+            {
                 return ( is_object($item) && ( get_class($item) == get_class($criteria) ) );
             });
 

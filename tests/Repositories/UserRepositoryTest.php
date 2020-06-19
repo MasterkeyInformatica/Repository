@@ -130,7 +130,7 @@ class UserRepositoryTest extends TestCase
      */
     public function testUpdate()
     {
-        $this->user->update(1, ['name' => 'Jonas Dawson']);
+        $this->user->update(['name' => 'Jonas Dawson'], 1);
 
         $user = $this->user->find(1);
 
@@ -445,5 +445,13 @@ class UserRepositoryTest extends TestCase
                       ->count();
 
         $this->assertEquals(1, $count);
+    }
+
+    public function testUpdateWithCriteria()
+    {
+        $inativos    = $this->user->pushCriteria(new InactiveUsers())->count();
+        $affectedRows = $this->user->pushCriteria(new InactiveUsers())->update(['active' => 1]);
+
+        $this->assertEquals($inativos, $affectedRows);
     }
 }
