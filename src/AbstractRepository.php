@@ -157,7 +157,7 @@ abstract class AbstractRepository implements
         return null;
     }
 
-    public function bootTraits() : void
+    public function bootTraits()
     {
         $class = $this;
 
@@ -168,7 +168,7 @@ abstract class AbstractRepository implements
         }
     }
 
-    public function boot() : void
+    public function boot()
     {
     }
 
