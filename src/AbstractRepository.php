@@ -437,22 +437,34 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param int   $id
-     * @param array $data
-     * @return Model
+     * @param array    $data
+     * @param int|null $id
+     * @return Model|int|null
      * @throws RepositoryException
      */
-    public function update(int $id, array $data)
+    public function update(array $data, int $id = null)
     {
         $this->resetModel();
 
-        $model = $this->find($id);
-        $original = clone $model;
+        $key = $this->model->getKeyName();
 
-        if ( $model->update($data) ) {
-            $this->app['events']->dispatch(new EntityUpdated($this, $original));
+        if ( is_null($id) && $this->criteria->isEmpty() ) {
+            throw new RepositoryException('Para atualização de dados, é necessário identificar os registros a serem atualizados');
+        }
 
-            return $model;
+        $this->applyCriteria();
+
+        $builder = $this->getBuilder();
+        $builder->when($id, function (Builder $query, $id) use ($key)
+        {
+            return $query->where($key, '=', $id);
+        });
+
+        if ( $update = $builder->update($data) ) {
+            $this->resetModel();
+            $this->app['events']->dispatch(new EntityUpdated($this, $this->model));
+
+            return ( $id ) ? $this->find($id) : $update;
         }
 
         throw new RepositoryException('Não foi possível atualizar o registro. Tente novamente');

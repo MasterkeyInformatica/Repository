@@ -444,4 +444,12 @@ class UserRepositoryTest extends TestCase
 
         $this->assertEquals(1, $count);
     }
+
+    public function testUpdateWithCriteria()
+    {
+        $inativos    = $this->user->pushCriteria(new InactiveUsers())->count();
+        $affectedRows = $this->user->pushCriteria(new InactiveUsers())->update(['active' => 1]);
+
+        $this->assertEquals($inativos, $affectedRows);
+    }
 }
