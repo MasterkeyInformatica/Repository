@@ -129,7 +129,7 @@ class UserRepositoryTest extends TestCase
      */
     public function testUpdate()
     {
-        $this->user->update(1, ['name' => 'Jonas Dawson']);
+        $this->user->update(['name' => 'Jonas Dawson'], 1);
 
         $user = $this->user->find(1);
 
@@ -416,7 +416,7 @@ class UserRepositoryTest extends TestCase
         $result = $this->user->raw('where date > current_date');
 
         $this->assertInstanceOf(Expression::class, $result);
-        $this->assertIsString($result->getValue());
+        $this->assertInternalType('string', $result->getValue());
     }
 
     public function testOrWhereMethod()

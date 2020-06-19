@@ -55,7 +55,7 @@ class PresenterTest extends TestCase
             ];
         });
 
-        $this->assertIsArray($manager->toArray($resource));
+        $this->assertInternalType('array', $manager->toArray($resource));
     }
 
     public function testCollection()
