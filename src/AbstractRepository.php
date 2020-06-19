@@ -457,17 +457,14 @@ abstract class AbstractRepository implements
             return $query->where($key, '=', $id);
         });
 
-        try {
-            $update = $builder->update($data);
-
+        if ( $update = $builder->update($data) ) {
             $this->resetModel();
             $this->app['events']->dispatch(new EntityUpdated($this, $this->model));
 
             return ( $id ) ? $this->find($id) : $update;
-
-        } catch ( \Throwable $e ) {
-            throw new RepositoryException('Não foi possível atualizar o registro. Tente novamente');
         }
+
+        throw new RepositoryException('Não foi possível atualizar o registro. Tente novamente');
     }
 
     /**
