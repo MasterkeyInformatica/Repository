@@ -434,17 +434,16 @@ abstract class AbstractRepository implements
     }
 
     /**
-     * @param int         $id
-     * @param array       $data
-     * @param string|null $attribute
-     * @return Model|int
+     * @param array    $data
+     * @param int|null $id
+     * @return Model|int|null
      * @throws RepositoryException
      */
-    public function update(array $data, $id = null, string $attribute = null)
+    public function update(array $data,int $id = null)
     {
         $this->resetModel();
 
-        $key = $attribute ?? $this->model->getKeyName();
+        $key = $this->model->getKeyName();
 
         if ( is_null($id) && $this->criteria->isEmpty() ) {
             throw new RepositoryException('Para atualização de dados, é necessário identificar os registros a serem atualizados');

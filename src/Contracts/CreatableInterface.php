@@ -39,7 +39,7 @@ interface CreatableInterface
      */
     public function insert(array $data) : bool;
 
-    public function update(array $data, $id = null, string $attribute = null);
+    public function update(array $data, int $id = null);
 
     /**
      * @param   array  $data
