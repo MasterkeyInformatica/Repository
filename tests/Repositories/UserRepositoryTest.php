@@ -416,7 +416,7 @@ class UserRepositoryTest extends TestCase
         $result = $this->user->raw('where date > current_date');
 
         $this->assertInstanceOf(Expression::class, $result);
-        $this->assertInternalType('string', $result->getValue());
+        $this->assertIsString($result->getValue());
     }
 
     public function testOrWhereMethod()
