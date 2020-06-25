@@ -273,25 +273,6 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
     }
 
-    public function testMassUpdateWithCriteria()
-    {
-        $countActive    = $this->user->pushCriteria(new ActiveUsers)->count();
-        $affectedRows   = $this->user->massUpdate(['active' => 0]);
-
-        $this->assertEquals($countActive, $affectedRows);
-    }
-
-    public function testMassUpdate()
-    {
-        $countActive    = $this->user->pushCriteria(new ActiveUsers)->count();
-        $affectedRows   = $this->user->massUpdate(['active' => '0']);
-
-        $countInactive  = $this->user->pushCriteria(new InactiveUsers)->count();
-
-        $this->assertEquals($countActive, $affectedRows);
-        $this->assertEquals($this->user->count(), $countInactive);
-    }
-
     public function testQueryLog()
     {
         $this->user->enableQueryLog();
