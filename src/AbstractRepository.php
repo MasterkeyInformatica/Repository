@@ -71,6 +71,9 @@ abstract class AbstractRepository implements
      */
     protected $presenter;
 
+    /**
+     * @var bool
+     */
     protected $skipPresenter = false;
 
     /**
@@ -333,11 +336,11 @@ abstract class AbstractRepository implements
      * @param array $data
      * @return bool
      * @throws \Throwable
-     * @todo Retornar o número de rows affected
      */
     public function insert(array $data) : bool
     {
-        $response = $this->transaction(function () use ($data) {
+        $response = $this->transaction(function () use ($data)
+        {
             if ( $this->driver() == 'firebird' ) {
                 foreach ( $data as $row ) {
                     $this->create($row);
@@ -480,34 +483,11 @@ abstract class AbstractRepository implements
      * @return Model|null
      * @throws RepositoryException
      */
-    public function find(int $id, $columns = array('*')) : ?Model
+    public function find(int $id, $columns = ['*']) : ?Model
     {
         $this->applyCriteria();
 
         return $this->model->find($id, $columns);
-    }
-
-    /**
-     * @param array $data
-     * @return int
-     * @throws RepositoryException
-     * @throws \Throwable
-     */
-    public function massUpdate(array $data)
-    {
-        $this->applyCriteria();
-
-        $affectedRows = $this->transaction(function () use ($data) {
-            return $this->getBuilder()->update($data);
-        });
-
-        if ( $affectedRows > 0 ) {
-            $this->app['events']->dispatch(new EntityUpdated($this, $this->model->getModel()));
-        }
-
-        $this->resetModel();
-
-        return $affectedRows;
     }
 
     /**
@@ -776,7 +756,8 @@ abstract class AbstractRepository implements
     {
         if ( $this->preventCriteriaOverwriting ) {
             // Find existing criteria
-            $key = $this->criteria->search(function ($item) use ($criteria) {
+            $key = $this->criteria->search(function ($item) use ($criteria)
+            {
                 return ( is_object($item) && ( get_class($item) == get_class($criteria) ) );
             });
 

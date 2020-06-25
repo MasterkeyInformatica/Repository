@@ -25,8 +25,6 @@ interface CreatableInterface
 
     public function update(array $data, int $id);
 
-    public function massUpdate(array $data);
-
     public function delete(int $id) : bool;
 
     public function destroy(array $records) : bool;
