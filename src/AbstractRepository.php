@@ -363,6 +363,7 @@ abstract class AbstractRepository implements
 
     /**
      * @param Closure $closure
+     * @param int     $attempts
      * @return mixed
      * @throws \Throwable
      */

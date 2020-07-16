@@ -69,9 +69,10 @@ interface RepositoryInterface
 
     /**
      * @param Closure $closure
+     * @param int     $attempts
      * @return mixed
      */
-    public function transaction(Closure $closure);
+    public function transaction(Closure $closure, int $attempts = 1);
 
     /**
      * @return void
