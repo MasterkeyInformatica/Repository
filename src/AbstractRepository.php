@@ -366,19 +366,19 @@ abstract class AbstractRepository implements
      * @return mixed
      * @throws \Throwable
      */
-    public function transaction(Closure $closure)
+    public function transaction(Closure $closure, int $attempts = 1)
     {
         if ( $this->driver() == 'firebird' ) {
             $this->disableAutoCommit();
 
-            $response = $this->connection()->transaction($closure);
+            $response = $this->connection()->transaction($closure, $attempts);
 
             $this->enableAutoCommit();
 
             return $response;
         }
 
-        return $this->connection()->transaction($closure);
+        return $this->connection()->transaction($closure, $attempts);
     }
 
     /**
