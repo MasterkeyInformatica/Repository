@@ -326,6 +326,9 @@ abstract class AbstractRepository implements
     }
 
     /**
+     * É extremamente recomendado o uso de transaction
+     * neste método
+     *
      * @param array $data
      * @return bool
      * @throws \Throwable
@@ -333,26 +336,17 @@ abstract class AbstractRepository implements
      */
     public function insert(array $data) : bool
     {
-        $response = $this->transaction(function () use ($data)
-        {
-            if ( $this->driver() == 'firebird' ) {
-                foreach ( $data as $row ) {
-                    $this->create($row);
-                }
-            } else {
-                $this->model->insert($data);
+        if ( $this->driver() == 'firebird' ) {
+            foreach ( $data as $row ) {
+                $this->create($row);
             }
-
-            return true;
-        });
-
-        if ( $response ) {
-            $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
-
-            return true;
+        } else {
+            $this->model->insert($data);
         }
 
-        throw new RepositoryException('Não foi possível salvar os registros. Tente novamente');
+        $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
+
+        return true;
     }
 
     /**
