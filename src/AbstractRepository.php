@@ -20,6 +20,7 @@ use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
 use PDO;
 use RepositoryException;
 use RuntimeException;
+use Throwable;
 
 /**
  * AbstractRepository
@@ -330,24 +331,25 @@ abstract class AbstractRepository implements
     }
 
     /**
+     * É extremamente recomendado o uso de transaction
+     * neste método
+     *
      * @param array $data
      * @return bool
-     * @throws \Throwable
+     * @throws Throwable
      * @todo Retornar o número de rows affected
      */
     public function insert(array $data) : bool
     {
-        $response = $this->transaction(function () use ($data) {
-            if ( $this->driver() == 'firebird' ) {
-                foreach ( $data as $row ) {
-                    $this->create($row);
-                }
-            } else {
-                $this->model->insert($data);
-            }
+        $response = true;
 
-            return true;
-        });
+        if ( $this->driver() == 'firebird' ) {
+            foreach ( $data as $row ) {
+                $this->create($row);
+            }
+        } else {
+            $response = $this->model->insert($data);
+        }
 
         if ( $response ) {
             $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
@@ -362,7 +364,7 @@ abstract class AbstractRepository implements
      * @param Closure $closure
      * @param int     $attempts
      * @return mixed
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function transaction(Closure $closure, int $attempts = 1)
     {
@@ -492,7 +494,7 @@ abstract class AbstractRepository implements
      * @param array $data
      * @return int
      * @throws RepositoryException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function massUpdate(array $data)
     {
