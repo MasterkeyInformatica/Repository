@@ -20,6 +20,7 @@ use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
 use PDO;
 use RepositoryException;
 use RuntimeException;
+use Throwable;
 
 /**
  * AbstractRepository
@@ -331,22 +332,28 @@ abstract class AbstractRepository implements
      *
      * @param array $data
      * @return bool
-     * @throws \Throwable
+     * @throws Throwable
      * @todo Retornar o número de rows affected
      */
     public function insert(array $data) : bool
     {
+        $response = true;
+
         if ( $this->driver() == 'firebird' ) {
             foreach ( $data as $row ) {
                 $this->create($row);
             }
         } else {
-            $this->model->insert($data);
+            $response = $this->model->insert($data);
         }
 
-        $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
+        if ( $response ) {
+            $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
 
-        return true;
+            return true;
+        }
+
+        throw new RepositoryException('Não foi possível salvar os registros. Tente novamente');
     }
 
     /**
