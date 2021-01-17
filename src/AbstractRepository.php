@@ -9,13 +9,7 @@ use Illuminate\Database\Eloquent\{Builder, Model};
 use Illuminate\Database\Query\Expression;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\{Collection, LazyCollection, Str};
-use Masterkey\Repository\Contracts\{CountableInterface,
-    CreatableInterface,
-    CriteriaInterface,
-    RepositoryInterface,
-    SearchableInterface,
-    SortableInterface
-};
+use Masterkey\Repository\Contracts\{CriteriaInterface, RepositoryInterface};
 use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
 use PDO;
 use RepositoryException;
@@ -28,13 +22,7 @@ use Throwable;
  * @version  7.1.0
  * @package  Masterkey\Repository
  */
-abstract class AbstractRepository implements
-    CountableInterface,
-    CreatableInterface,
-    CriteriaInterface,
-    RepositoryInterface,
-    SearchableInterface,
-    SortableInterface
+abstract class AbstractRepository implements RepositoryInterface, CriteriaInterface
 {
     protected Container $app;
 
