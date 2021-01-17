@@ -12,8 +12,5 @@ namespace Masterkey\Repository\Events;
  */
 class EntityDeleted extends BaseRepositoryEvent
 {
-    /**
-     * @var string
-     */
-    protected $action = 'delete';
+    protected string $action = 'delete';
 }

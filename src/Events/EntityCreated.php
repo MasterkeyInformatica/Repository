@@ -12,8 +12,5 @@ namespace Masterkey\Repository\Events;
  */
 class EntityCreated extends BaseRepositoryEvent
 {
-    /**
-     * @var string
-     */
-    protected $action = 'create';
+    protected string $action = 'create';
 }

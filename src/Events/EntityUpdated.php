@@ -12,8 +12,5 @@ namespace Masterkey\Repository\Events;
  */
 class EntityUpdated extends BaseRepositoryEvent
 {
-    /**
-     * @var string
-     */
-    protected $action = 'update';
+    protected string $action = 'update';
 }
