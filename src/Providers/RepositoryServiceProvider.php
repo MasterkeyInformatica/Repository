@@ -6,35 +6,28 @@ use Illuminate\Support\Composer;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Masterkey\Repository\Cache\CacheKeyStorage;
-use Masterkey\Repository\Console\Commands\Creators\RepositoryCreator;
-use Masterkey\Repository\Console\Commands\Creators\CriteriaCreator;
-use Masterkey\Repository\Console\Commands\MakeCriteriaCommand;
-use Masterkey\Repository\Console\Commands\MakeRepositoryCommand;
+use Masterkey\Repository\Console\Commands\{Creators\RepositoryCreator,
+    Creators\CriteriaCreator,
+    MakeCriteriaCommand,
+    MakeRepositoryCommand};
 
 /**
  * RepositoryServiceProvider
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 4.0.1
- * @since   17/03/2018
+ * @version 5.0.0
  * @package Masterkey\Repository\Providers
  */
 class RepositoryServiceProvider extends ServiceProvider
 {
-    /**
-     * @return  void
-     */
-    public function boot()
+    public function boot(): void
     {
         $config_path = __DIR__  . '/../../config/repository.php';
 
         $this->publishes([$config_path => config_path('repository.php')], 'repositories');
     }
 
-    /**
-     * @return  void
-     */
-    public function register()
+    public function register(): void
     {
         $this->app->register(EventsServiceProvider::class);
 
@@ -53,10 +46,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->mergeConfigFrom($config_path, 'repositories');
     }
 
-    /**
-     * @return  void
-     */
-    protected function registerBindings()
+    protected function registerBindings(): void
     {
         $this->app->singleton(CacheKeyStorage::class, function () {
             return new CacheKeyStorage(storage_path('framework/cache'));
@@ -77,28 +67,25 @@ class RepositoryServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerMakeRepositoryCommand()
+    protected function registerMakeRepositoryCommand(): void
     {
-        $this->app['command.repository.make'] = $this->app->singleton(MakeRepositoryCommand::class, function($app) {
-            return new MakeRepositoryCommand($app['RepositoryCreator'], $app['Composer']);
+        $this->app->singleton(MakeRepositoryCommand::class, function($app) {
+            return new MakeRepositoryCommand($app['RepositoryCreator']);
         });
     }
 
     protected function registerMakeCriteriaCommand()
     {
-        $this->app['command.criteria.make'] = $this->app->singleton(MakeCriteriaCommand::class, function($app) {
-            return new MakeCriteriaCommand($app['CriteriaCreator'], $app['Composer']);
+        $this->app->singleton(MakeCriteriaCommand::class, function($app) {
+            return new MakeCriteriaCommand($app['CriteriaCreator']);
         });
     }
 
-    /**
-     * @return  array
-     */
-    public function provides()
+    public function provides(): array
     {
         return [
-            'command.repository.make',
-            'command.criteria.make'
+            MakeRepositoryCommand::class,
+            MakeCriteriaCommand::class
         ];
     }
 }
