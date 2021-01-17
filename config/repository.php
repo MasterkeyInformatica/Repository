@@ -50,7 +50,7 @@ return [
     | The model namespace.
     |
     */
-    'model_namespace' => 'App',
+    'model_namespace' => 'App\Models',
 
     /*
     |--------------------------------------------------------------------------
