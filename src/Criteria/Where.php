@@ -27,7 +27,7 @@ class Where extends AbstractCriteria
 
     protected string $boolean;
 
-    public function __construct($column, $operator = null, $value = null, $boolean = 'and')
+    public function __construct($column, $operator = null, $value = null, string $boolean = 'and')
     {
         $this->column   = $column;
         $this->operator = $operator;
