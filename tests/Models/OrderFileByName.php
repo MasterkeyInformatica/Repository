@@ -3,12 +3,17 @@
 namespace Masterkey\Tests\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 use Masterkey\Repository\AbstractCriteria;
+use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 class OrderFileByName extends AbstractCriteria
 {
-    public function apply(Builder $model, Repository $repository): Builder
+    /**
+     * @param Builder    $model
+     * @param Repository $repository
+     * @return Builder
+     */
+    public function apply($model, Repository $repository): Builder
     {
         return $model->orderBy('file');
     }
