@@ -198,7 +198,7 @@ class UserRepositoryTest extends TestCase
 
     public function testLast()
     {
-        $user = $this->user->find(6);
+        $user = $this->user->find(2);
         $last = $this->user->last();
 
         $this->assertEquals($user->name, $last->name);
@@ -428,7 +428,6 @@ class UserRepositoryTest extends TestCase
             'failed_logins' => 12,
         ]);
 
-        dd($this->user->all());
         $inativos     = $this->user->pushCriteria(new InactiveUsers())->count();
 
         $affectedRows = $this->user->pushCriteria(new InactiveUsers())->update(['active' => 1]);

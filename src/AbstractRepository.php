@@ -422,12 +422,12 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
         $this->resetModel();
         $this->applyCriteria();
 
-        return $this->orderBy($this->getKeyName(), 'desc')->first($columns);
+        return $this->orderBy($this->getKeyName(), 'desc')
+                    ->first($columns);
     }
 
     public function first(array $columns = ['*']): ?Model
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->first($columns);
