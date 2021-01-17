@@ -3,56 +3,47 @@
 namespace Masterkey\Repository\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Masterkey\Repository\Events\EntityCreated;
-use Masterkey\Repository\Events\EntityDeleted;
-use Masterkey\Repository\Events\EntityUpdated;
+use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
 use Masterkey\Repository\Listeners\ClearRepositoryCache;
 
 /**
  * EventsServiceProvider
  *
  * @author  Matheus Lopes Santos <fale_com_lopez@hotmail.com>
- * @version 1.0.0
- * @since   17/03/2018
+ * @version 2.0.0
  * @package Masterkey\Repository\Providers
  */
 class EventsServiceProvider extends ServiceProvider
 {
-    protected $listen = [
+    protected array $listen = [
         EntityCreated::class => [
-            ClearRepositoryCache::class
+            ClearRepositoryCache::class,
         ],
         EntityUpdated::class => [
-            ClearRepositoryCache::class
+            ClearRepositoryCache::class,
         ],
         EntityDeleted::class => [
-            ClearRepositoryCache::class
-        ]
+            ClearRepositoryCache::class,
+        ],
     ];
 
     public function boot()
     {
-        $events = app('events');
+        $events = $this->app->make('events');
 
-        foreach ( $this->listen as $event => $listeners ) {
-            foreach ( $listeners as $listener ) {
+        foreach ($this->listen as $event => $listeners) {
+            foreach ($listeners as $listener) {
                 $events->listen($event, $listener);
             }
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function register()
+    public function register(): void
     {
-
+        //
     }
 
-    /**
-     * @return array
-     */
-    public function listens()
+    public function listens(): array
     {
         return $this->listen;
     }
