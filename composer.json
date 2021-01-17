@@ -13,7 +13,7 @@
     "require": {
         "ext-pdo": "*",
         "ext-json": "*",
-        "php": "^7.3|^8.0",
+        "php": "^7.4|^8.0",
         "illuminate/filesystem": "^8.0",
         "illuminate/support": "^8.0",
         "illuminate/cache": "^8.0",
