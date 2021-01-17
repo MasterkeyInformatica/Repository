@@ -387,7 +387,7 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
         return $this->paginate($perPage, $columns, 'simplePaginate');
     }
 
-    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate'): AbstractPaginator
+    public function paginate(int $perPage = 15, array $columns = ['*'], string $method = 'paginate'): AbstractPaginator
     {
         $this->applyCriteria();
 
