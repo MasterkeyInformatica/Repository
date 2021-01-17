@@ -15,50 +15,28 @@ use Masterkey\Repository\Contracts\RepositoryInterface;
  */
 class BaseRepositoryEvent
 {
-    /**
-     * @var Model
-     */
-    protected $model;
+    protected Model $model;
 
-    /**
-     * @var RepositoryInterface
-     */
-    protected $repository;
+    protected RepositoryInterface $repository;
 
-    /**
-     * @var
-     */
-    protected $action;
+    protected string $action;
 
-    /**
-     * @param   RepositoryInterface  $repository
-     * @param   Model  $model
-     */
     public function __construct(RepositoryInterface $repository, Model $model)
     {
         $this->repository   = $repository;
         $this->model        = $model;
     }
 
-    /**
-     * @return  Model
-     */
     public function getModel() : Model
     {
         return $this->model;
     }
 
-    /**
-     * @return  RepositoryInterface
-     */
     public function getRepository() : RepositoryInterface
     {
         return $this->repository;
     }
 
-    /**
-     * @return  string
-     */
     public function getAction() : string
     {
         return $this->action;
