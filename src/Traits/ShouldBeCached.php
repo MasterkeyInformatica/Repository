@@ -3,13 +3,13 @@
 namespace Masterkey\Repository\Traits;
 
 use Exception;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Cache\Repository as Cache;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Masterkey\Repository\Cache\CacheKeyStorage;
+use Illuminate\Pagination\AbstractPaginator;
+use Illuminate\Support\{Collection, Facades\Config};
 use Masterkey\Repository\AbstractCriteria;
+use Masterkey\Repository\Cache\CacheKeyStorage;
 use ReflectionObject;
 
 /**
@@ -21,49 +21,17 @@ use ReflectionObject;
  */
 trait ShouldBeCached
 {
-    /**
-     * @var Cache
-     */
-    protected $cache;
+    protected Cache $cache;
 
-    /**
-     * @var CacheKeyStorage
-     */
-    protected $keyStorage;
+    protected CacheKeyStorage $keyStorage;
 
-    /**
-     * @return  void
-     */
-    public function bootShouldBeCached()
+    public function bootShouldBeCached(): void
     {
         $this->setCache($this->app->make(Cache::class));
 
         $this->setKeyStorage($this->app->make(CacheKeyStorage::class));
     }
 
-    /**
-     * @param   Cache  $cache
-     * @return  $this
-     */
-    public function setCache(Cache $cache)
-    {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * @return  Cache
-     */
-    public function getCache() : Cache
-    {
-        return $this->cache;
-    }
-
-    /**
-     * @param   CacheKeyStorage  $keyStorage
-     * @return  $this
-     */
     public function setKeyStorage(CacheKeyStorage $keyStorage)
     {
         $this->keyStorage = $keyStorage;
@@ -71,10 +39,6 @@ trait ShouldBeCached
         return $this;
     }
 
-    /**
-     * @param   bool  $status
-     * @return  $this
-     */
     public function skipCache(bool $status = true)
     {
         $this->skipCache = $status;
@@ -82,90 +46,83 @@ trait ShouldBeCached
         return $this;
     }
 
-    /**
-     * @return  bool
-     */
-    public function isSkippedCache()
+    public function all(array $columns = ['*']): Collection
     {
-        $skipped        = $this->skipCache ?? false;
-        $request        = $this->app->make(Request::class);
-        $skipCacheParam = Config::get('repository.cache.params.skipCache', 'skipCache');
-
-        if ( $request->has($skipCacheParam) ) {
-            $skipped = true;
+        if (!$this->allowedCache('all') || $this->isSkippedCache()) {
+            return parent::all($columns);
         }
 
-        return $skipped;
+        $key     = $this->getCacheKey('all', func_get_args());
+        $minutes = $this->getCacheMinutes();
+
+        return $this->getCache()->remember($key, $minutes, function () use ($columns) {
+            return parent::all($columns);
+        });
     }
 
-    /**
-     * @param   string  $method
-     * @return  bool
-     */
-    protected function allowedCache($method)
+    protected function allowedCache(string $method): bool
     {
         $cacheEnabled = Config::get('repository.cache.enabled', true);
 
-        if ( ! $cacheEnabled ) {
+        if (!$cacheEnabled) {
             return false;
         }
 
-        $cacheOnly      = $this->cacheOnly ?? Config::get('repository.cache.allowed.only', null);
-        $cacheExcept    = $this->cacheExcept ?? Config::get('repository.cache.allowed.except', null);
+        $cacheOnly   = $this->cacheOnly ?? Config::get('repository.cache.allowed.only', null);
+        $cacheExcept = $this->cacheExcept ?? Config::get('repository.cache.allowed.except', null);
 
-        if ( is_array($cacheOnly) ) {
+        if (is_array($cacheOnly)) {
             return in_array($method, $cacheOnly);
         }
 
-        if ( is_array($cacheExcept) ) {
-            return ! in_array($method, $cacheExcept);
+        if (is_array($cacheExcept)) {
+            return !in_array($method, $cacheExcept);
         }
 
-        if ( is_null($cacheOnly) && is_null($cacheExcept) ) {
+        if (is_null($cacheOnly) && is_null($cacheExcept)) {
             return true;
         }
 
         return false;
     }
 
-    /**
-     * @param   string  $method
-     * @param   mixed  $args
-     * @return  string
-     */
-    public function getCacheKey($method, $args = null)
+    public function isSkippedCache(): bool
     {
-        $request    = $this->app->make(Request::class);
-        $args       = serialize($args);
-        $criteria   = $this->serializeCriteria();
-        $key        = sprintf('%s@%s-%s', get_called_class(), $method, md5($args . $criteria . $request->fullUrl()));
+        $skipped        = $this->skipCache ?? false;
+        $request        = $this->app->make(Request::class);
+        $skipCacheParam = Config::get('repository.cache.params.skipCache', 'skipCache');
+
+        if ($request->has($skipCacheParam)) {
+            $skipped = true;
+        }
+
+        return $skipped;
+    }
+
+    public function getCacheKey(string $method, $args = null): string
+    {
+        $request  = $this->app->make(Request::class);
+        $args     = serialize($args);
+        $criteria = $this->serializeCriteria();
+        $key      = sprintf('%s@%s-%s', get_called_class(), $method, md5($args . $criteria . $request->fullUrl()));
 
         $this->keyStorage->storeKey(get_called_class(), $key);
 
         return $key;
     }
 
-    /**
-     * @return string
-     */
-    protected function serializeCriteria()
+    protected function serializeCriteria(): string
     {
         try {
             return serialize($this->getCriteria());
         } catch (Exception $e) {
-            return serialize($this->getCriteria()->map(function ($criterion)
-            {
+            return serialize($this->getCriteria()->map(function ($criterion) {
                 return $this->serializeCriterion($criterion);
             }));
         }
     }
 
-    /**
-     * @param   mixed  $criterion
-     * @return  array
-     * @throws  Exception
-     */
-    protected function serializeCriterion($criterion)
+    protected function serializeCriterion($criterion): array
     {
         try {
             serialize($criterion);
@@ -180,138 +137,96 @@ trait ShouldBeCached
             $r = new ReflectionObject($criterion);
 
             return [
-                'hash' => md5((string) $r),
+                'hash'       => md5((string)$r),
                 'properties' => $r->getProperties(),
             ];
         }
     }
 
-    /**
-     * @return  int
-     */
-    public function getCacheMinutes() : int
+    public function getCacheMinutes(): int
     {
         return $this->cacheMinutes ?? Config::get('repository.cache.minutes', 30);
     }
 
-    /**
-     * @param   array  $columns
-     * @return  mixed
-     */
-    public function all(array $columns = ['*']) : Collection
+    public function getCache(): Cache
     {
-        if ( ! $this->allowedCache('all') || $this->isSkippedCache() ) {
-            return parent::all($columns);
-        }
-
-        $key        = $this->getCacheKey('all', func_get_args());
-        $minutes    = $this->getCacheMinutes();
-
-        return $this->getCache()->remember($key, $minutes, function () use ($columns)
-        {
-            return parent::all($columns);
-        });
+        return $this->cache;
     }
 
-    /**
-     * @param   int  $perPage
-     * @param   array  $columns
-     * @param   string  $method
-     * @return  mixed
-     */
-    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate')
+    public function setCache(Cache $cache)
     {
-        if ( ! $this->allowedCache('paginate') || $this->isSkippedCache() ) {
+        $this->cache = $cache;
+
+        return $this;
+    }
+
+    public function paginate(int $perPage = 15, array $columns = ['*'], string $method = 'paginate'): AbstractPaginator
+    {
+        if (!$this->allowedCache('paginate') || $this->isSkippedCache()) {
             return parent::paginate($perPage, $columns, $method);
         }
 
-        $key        = $this->getCacheKey($method, func_get_args());
-        $minutes    = $this->getCacheMinutes();
+        $key     = $this->getCacheKey($method, func_get_args());
+        $minutes = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use($perPage, $columns, $method)
-        {
+        return $this->getCache()->remember($key, $minutes, function () use ($perPage, $columns, $method) {
             return parent::paginate($perPage, $columns, $method);
         });
     }
 
-    /**
-     * @param   AbstractCriteria  $criteria
-     * @return  Collection
-     */
-    public function getByCriteria(AbstractCriteria $criteria) : Collection
+    public function getByCriteria(AbstractCriteria $criteria): Collection
     {
-        if ( ! $this->allowedCache('getByCriteria') || $this->isSkippedCache() ) {
+        if (!$this->allowedCache('getByCriteria') || $this->isSkippedCache()) {
             return parent::getByCriteria($criteria);
         }
 
-        $key        = $this->getCacheKey('getByCriteria', func_get_args());
-        $minutes    = $this->getCacheMinutes();
+        $key     = $this->getCacheKey('getByCriteria', func_get_args());
+        $minutes = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use($criteria)
-        {
+        return $this->getCache()->remember($key, $minutes, function () use ($criteria) {
             return parent::getByCriteria($criteria);
         });
     }
 
-    /**
-     * @param   int  $id
-     * @param   array  $columns
-     * @return  mixed
-     */
-    public function find(int $id, $columns = ['*']) : Model
+    public function find(int $id, $columns = ['*']): ?Model
     {
-        if ( ! $this->allowedCache('find') || $this->isSkippedCache() ) {
+        if (!$this->allowedCache('find') || $this->isSkippedCache()) {
             return parent::find($id, $columns);
         }
 
-        $key        = $this->getCacheKey('find', func_get_args());
-        $minutes    = $this->getCacheMinutes();
+        $key     = $this->getCacheKey('find', func_get_args());
+        $minutes = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use ($id, $columns)
-        {
+        return $this->getCache()->remember($key, $minutes, function () use ($id, $columns) {
             return parent::find($id, $columns);
         });
     }
 
-    /**
-     * @param   string  $attribute
-     * @param   mixed  $value
-     * @param   array  $columns
-     * @return  Model
-     */
-    public function findBy($attribute, $value, array $columns = ['*']) : Model
+    public function findBy(string $field, $value, array $columns = ['*']): ?Model
     {
-        if ( ! $this->allowedCache('findBy') || $this->isSkippedCache() ) {
-            return parent::findBy($attribute, $value, $columns);
+        if (!$this->allowedCache('findBy') || $this->isSkippedCache()) {
+            return parent::findBy($field, $value, $columns);
         }
 
-        $key        = $this->getCacheKey('findBy', func_get_args());
-        $minutes    = $this->getCacheMinutes();
+        $key     = $this->getCacheKey('findBy', func_get_args());
+        $minutes = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use ($attribute, $value, $columns)
-        {
-            return parent::findBy($attribute, $value, $columns);
+        return $this->getCache()->remember($key, $minutes, function () use ($field, $value, $columns) {
+            return parent::findBy($field, $value, $columns);
         });
     }
 
-    /**
-     * @param   string  $attribute
-     * @param   mixed  $value
-     * @param   array  $columns
-     * @return  Collection
-     */
-    public function findAllBy($attribute, $value, array $columns = ['*']) : Collection
+    public function findAllBy($field, $value, array $columns = ['*']): Collection
     {
-        if ( ! $this->allowedCache('findAllBy') || $this->isSkippedCache() ) {
-            return parent::findAllBy($attribute, $value, $columns);
+        if (!$this->allowedCache('findAllBy') || $this->isSkippedCache()) {
+            return parent::findAllBy($field, $value, $columns);
         }
 
-        $key        = $this->getCacheKey('findAllBy', func_get_args());
-        $minutes    = $this->getCacheMinutes();
+        $key     = $this->getCacheKey('findAllBy', func_get_args());
+        $minutes = $this->getCacheMinutes();
 
-        return $this->getCache()->remember($key, $minutes, function () use ($attribute, $value, $columns)
-        {
-            return parent::findAllBy($attribute, $value, $columns);
+        return $this->getCache()->remember($key, $minutes, function () use ($field, $value, $columns) {
+            return parent::findAllBy($field, $value, $columns);
         });
     }
 }
