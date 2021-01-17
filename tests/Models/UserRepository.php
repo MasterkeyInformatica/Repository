@@ -4,20 +4,14 @@ namespace Masterkey\Tests\Models;
 
 use Masterkey\Repository\AbstractRepository;
 
-
 class UserRepository extends AbstractRepository
 {
-    protected $fieldsSearchable = [
+    protected array $fieldsSearchable = [
         'name'
     ];
 
-    public function model()
+    public function model(): string
     {
         return User::class;
-    }
-
-    public function presenter()
-    {
-        return UserPresenter::class;
     }
 }

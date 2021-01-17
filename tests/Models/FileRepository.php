@@ -12,7 +12,7 @@ class FileRepository extends AbstractRepository implements CachableInterface
 
     protected $cacheOnly = ['all', 'paginate', 'getByCriteria', 'find', 'findBy', 'findAllBy'];
 
-    public function model()
+    public function model(): string
     {
         return File::class;
     }
