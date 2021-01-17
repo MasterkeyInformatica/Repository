@@ -29,5 +29,5 @@ interface CreatableInterface
 
     public function destroy(array $records) : bool;
 
-    public function sync($id, $relation, $attributes, $detach = true);
+    public function sync(int $id, string $relation, string $attributes, bool $detach = true);
 }

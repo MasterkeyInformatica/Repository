@@ -7,8 +7,8 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\{Builder, Model};
 use Illuminate\Database\Query\Expression;
-use Illuminate\Pagination\{LengthAwarePaginator, Paginator};
-use Illuminate\Support\{Collection, Str};
+use Illuminate\Pagination\AbstractPaginator;
+use Illuminate\Support\{Collection, LazyCollection, Str};
 use Masterkey\Repository\Contracts\{CountableInterface,
     CreatableInterface,
     CriteriaInterface,
@@ -19,7 +19,6 @@ use Masterkey\Repository\Contracts\{CountableInterface,
 use Masterkey\Repository\Events\{EntityCreated, EntityDeleted, EntityUpdated};
 use PDO;
 use RepositoryException;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -37,182 +36,102 @@ abstract class AbstractRepository implements
     SearchableInterface,
     SortableInterface
 {
-    /**
-     * @var Container
-     */
-    protected $app;
+    protected Container $app;
 
-    /**
-     * @var Model|Builder
-     */
+    /** @var Model|Builder */
     protected $model;
 
-    /**
-     * @var Collection
-     */
-    protected $criteria;
+    protected Collection $criteria;
 
-    /**
-     * @var boolean
-     */
-    protected $skipCriteria = false;
+    protected bool $skipCriteria = false;
 
-    /**
-     * @var boolean
-     */
-    protected $preventCriteriaOverwriting = true;
+    protected bool $preventCriteriaOverwriting = true;
 
-    /**
-     * @var array
-     */
-    protected $fieldsSearchable = [];
+    protected array $fieldsSearchable = [];
 
-    /**
-     * @var AbstractPresenter
-     */
-    protected $presenter;
-
-    /**
-     * @var bool
-     */
-    protected $skipPresenter = false;
-
-    /**
-     * @param Container $container
-     * @throws RepositoryException
-     */
     public function __construct(Container $container)
     {
-        $this->app = $container;
+        $this->app      = $container;
         $this->criteria = new Collection();
 
         $this->resetScope();
 
         $this->makeModel($this->model());
-        $this->makePresenter($this->presenter());
 
         $this->bootTraits();
         $this->boot();
     }
 
-    /**
-     * @return $this
-     */
-    public function resetScope()
+    public function resetScope(): AbstractRepository
     {
         $this->skipCriteria(false);
 
         return $this;
     }
 
-    /**
-     * @param bool $status
-     * @return $this|CriteriaInterface
-     */
-    public function skipCriteria(bool $status = true)
+    public function skipCriteria(bool $status = true): AbstractRepository
     {
         $this->skipCriteria = $status;
 
         return $this;
     }
 
-    /**
-     * @param string $model
-     * @throws RepositoryException
-     */
-    public function makeModel($model)
+    public function makeModel(string $model)
     {
         unset($this->model);
 
         $model = $this->app->make($model);
 
-        if ( ! $model instanceof Model ) {
+        if (!$model instanceof Model) {
             throw new RepositoryException("Class {$model} must be an instance of Illuminate\\Database\\Eloquent\\Model");
         }
 
         $this->model = $model;
     }
 
-    public abstract function model();
+    public abstract function model(): string;
 
-    /**
-     * @param string|null $presenter
-     * @throws RuntimeException
-     */
-    public function makePresenter(string $presenter = null)
-    {
-        unset($this->presenter);
-
-        if ( ! is_null($presenter) ) {
-            $presenter = $this->app->make($presenter);
-
-            if ( ! $presenter instanceof AbstractPresenter ) {
-                throw new RuntimeException("Class {$presenter} must be an instance of Masterkey\\Repository\\AbstractPresenter");
-            }
-
-            $this->presenter = $presenter;
-        }
-    }
-
-    /**
-     * @return string|null
-     */
-    public function presenter()
-    {
-        return null;
-    }
-
-    public function bootTraits()
+    public function bootTraits(): void
     {
         $class = $this;
 
-        foreach ( class_uses_recursive($class) as $trait ) {
-            if ( method_exists($class, $method = 'boot' . class_basename($trait)) ) {
+        foreach (class_uses_recursive($class) as $trait) {
+            if (method_exists($class, $method = 'boot' . class_basename($trait))) {
                 $this->{$method}();
             }
         }
     }
 
-    /**
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
     }
 
-    /**
-     * @return array|mixed
-     */
-    public function getFieldsSearchable()
+    public function getFieldsSearchable(): array
     {
         return $this->fieldsSearchable;
     }
 
-    public function count(string $column = '*') : int
+    public function count(string $column = '*'): int
     {
         $this->applyCriteria();
 
         return $this->model->count($column);
     }
 
-    /**
-     * @return $this|CriteriaInterface
-     * @throws RepositoryException
-     */
-    public function applyCriteria()
+    public function applyCriteria(): AbstractRepository
     {
-        if ( $this->skipCriteria === true ) {
+        if ($this->skipCriteria === true) {
             return $this;
         }
 
         $criterias = $this->getCriteria();
 
-        if ( $criterias->isNotEmpty() ) {
+        if ($criterias->isNotEmpty()) {
 
             $this->resetModel();
 
-            foreach ( $criterias as $criteria ) {
-                if ( $criteria instanceof AbstractCriteria ) {
+            foreach ($criterias as $criteria) {
+                if ($criteria instanceof AbstractCriteria) {
                     $this->model = $criteria->apply($this->model, $this);
                 }
             }
@@ -223,21 +142,16 @@ abstract class AbstractRepository implements
         return $this;
     }
 
-    public function getCriteria() : Collection
+    public function getCriteria(): Collection
     {
         return $this->criteria;
     }
 
-    public function resetModel() : void
+    public function resetModel(): void
     {
         $this->makeModel($this->model());
     }
 
-    /**
-     * @param string $column
-     * @return mixed
-     * @throws RepositoryException
-     */
     public function max(string $column)
     {
         $this->applyCriteria();
@@ -245,11 +159,6 @@ abstract class AbstractRepository implements
         return $this->model->max($column);
     }
 
-    /**
-     * @param string $column
-     * @return mixed
-     * @throws RepositoryException
-     */
     public function min(string $column)
     {
         $this->applyCriteria();
@@ -257,11 +166,6 @@ abstract class AbstractRepository implements
         return $this->model->min($column);
     }
 
-    /**
-     * @param string $column
-     * @return float|int
-     * @throws RepositoryException
-     */
     public function avg(string $column)
     {
         $this->applyCriteria();
@@ -269,12 +173,6 @@ abstract class AbstractRepository implements
         return $this->model->avg($column);
     }
 
-    /**
-     * @param string $column
-     * @return int|float
-     * @throws RepositoryException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
     public function sum(string $column)
     {
         $this->applyCriteria();
@@ -282,16 +180,11 @@ abstract class AbstractRepository implements
         return $this->model->sum($column);
     }
 
-    /**
-     * @param array $data
-     * @return Model
-     * @throws RepositoryException
-     */
-    public function firstOrCreate(array $data) : Model
+    public function firstOrCreate(array $data): Model
     {
         $model = $this->model->firstOrCreate($data);
 
-        if ( $model ) {
+        if ($model) {
             $this->app['events']->dispatch(new EntityCreated($this, $model));
 
             return $model;
@@ -300,23 +193,14 @@ abstract class AbstractRepository implements
         throw new RepositoryException('Não foi possível salvar os dados. Tente novamente');
     }
 
-    /**
-     * @param array $data
-     * @return Model
-     */
-    public function firstOrNew(array $data) : Model
+    public function firstOrNew(array $data): Model
     {
         return $this->model->firstOrNew($data);
     }
 
-    /**
-     * @param array $data
-     * @return Model
-     * @throws RepositoryException
-     */
-    public function save(array $data) : Model
+    public function save(array $data): Model
     {
-        if ( $this->model instanceof Builder ) {
+        if ($this->model instanceof Builder) {
             $this->resetModel();
         }
 
@@ -324,7 +208,7 @@ abstract class AbstractRepository implements
 
         $model->fill($data);
 
-        if ( $model->save() ) {
+        if ($model->save()) {
             $this->app['events']->dispatch(new EntityCreated($this, $model));
 
             return $model;
@@ -342,19 +226,19 @@ abstract class AbstractRepository implements
      * @throws Throwable
      * @todo Retornar o número de rows affected
      */
-    public function insert(array $data) : bool
+    public function insert(array $data): bool
     {
         $response = true;
 
-        if ( $this->driver() == 'firebird' ) {
-            foreach ( $data as $row ) {
+        if ($this->driver() == 'firebird') {
+            foreach ($data as $row) {
                 $this->create($row);
             }
         } else {
             $response = $this->model->insert($data);
         }
 
-        if ( $response ) {
+        if ($response) {
             $this->app['events']->dispatch(new EntityCreated($this, $this->model->getModel()));
 
             return true;
@@ -363,15 +247,32 @@ abstract class AbstractRepository implements
         throw new RepositoryException('Não foi possível salvar os registros. Tente novamente');
     }
 
-    /**
-     * @param Closure $closure
-     * @param int     $attempts
-     * @return mixed
-     * @throws \Throwable
-     */
+    protected function driver(): string
+    {
+        return $this->connection()->getDriverName();
+    }
+
+    public function connection(): Connection
+    {
+        return $this->model->getConnection();
+    }
+
+    public function create(array $data): Model
+    {
+        $model = $this->model->create($data);
+
+        if ($model) {
+            $this->app['events']->dispatch(new EntityCreated($this, $model));
+
+            return $model;
+        }
+
+        throw new RepositoryException('Nāo foi possível salvar os dados. Tente novamente');
+    }
+
     public function transaction(Closure $closure, int $attempts = 1)
     {
-        if ( $this->driver() == 'firebird' ) {
+        if ($this->driver() == 'firebird') {
             $this->disableAutoCommit();
 
             $response = $this->connection()->transaction($closure, $attempts);
@@ -384,82 +285,33 @@ abstract class AbstractRepository implements
         return $this->connection()->transaction($closure, $attempts);
     }
 
-    /**
-     * @return string
-     */
-    protected function driver()
-    {
-        return $this->connection()->getDriverName();
-    }
-
-    /**
-     * @return Connection
-     */
-    public function connection() : Connection
-    {
-        return $this->model->getConnection();
-    }
-
-    /**
-     * @return bool
-     */
-    public function disableAutoCommit() : bool
+    public function disableAutoCommit(): bool
     {
         return $this->getPDO()->setAttribute(PDO::ATTR_AUTOCOMMIT, 0);
     }
 
-    /**
-     * @return PDO
-     */
-    public function getPDO() : PDO
+    public function getPDO(): PDO
     {
         return $this->connection()->getPdo();
     }
 
-    /**
-     * @return bool
-     */
-    public function enableAutoCommit() : bool
+    public function enableAutoCommit(): bool
     {
         return $this->getPDO()->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
     }
 
-    /**
-     * @param array $data
-     * @return Model
-     * @throws RepositoryException
-     */
-    public function create(array $data) : Model
-    {
-        $model = $this->model->create($data);
-
-        if ( $model ) {
-            $this->app['events']->dispatch(new EntityCreated($this, $model));
-
-            return $model;
-        }
-
-        throw new RepositoryException('Nāo foi possível salvar os dados. Tente novamente');
-    }
-
-    /**
-     * @param array    $data
-     * @param int|null $id
-     * @return Model|int|null
-     * @throws RepositoryException
-     */
     public function update(array $data, int $id = null)
     {
         $this->resetModel();
 
-        if ( is_null($id) && $this->criteria->isEmpty() ) {
+        if (is_null($id) && $this->criteria->isEmpty()) {
             throw new RepositoryException('Para atualização de dados, é necessário identificar os registros a serem atualizados');
         }
 
-        if ( $this->criteria->isEmpty() ) {
+        if ($this->criteria->isEmpty()) {
             $model = $this->find($id);
 
-            if ( $model->update($data) ) {
+            if ($model->update($data)) {
                 $this->app['events']->dispatch(new EntityUpdated($this, $this->model));
 
                 return $model;
@@ -469,7 +321,7 @@ abstract class AbstractRepository implements
 
             $builder = $this->getBuilder();
 
-            if ( $update = $builder->update($data) ) {
+            if ($update = $builder->update($data)) {
                 $this->resetModel();
                 $this->app['events']->dispatch(new EntityUpdated($this, $this->model));
 
@@ -480,41 +332,26 @@ abstract class AbstractRepository implements
         throw new RepositoryException('Não foi possível atualizar o registro. Tente novamente');
     }
 
-    /**
-     * @param int   $id
-     * @param array $columns
-     * @return Model|null
-     * @throws RepositoryException
-     */
-    public function find(int $id, $columns = ['*']) : ?Model
+    public function find(int $id, $columns = ['*']): ?Model
     {
         $this->applyCriteria();
 
         return $this->model->find($id, $columns);
     }
 
-    /**
-     * @return Builder
-     */
-    public function getBuilder() : Builder
+    public function getBuilder(): Builder
     {
         return $this->model->newQuery();
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     * @throws RepositoryException
-     * @throws \Exception
-     */
-    public function delete(int $id) : bool
+    public function delete(int $id): bool
     {
         $this->resetModel();
 
-        $model = $this->find($id);
+        $model    = $this->find($id);
         $original = clone $model;
 
-        if ( $model->delete() ) {
+        if ($model->delete()) {
             $this->app['events']->dispatch(new EntityDeleted($this, $original));
 
             return true;
@@ -523,16 +360,11 @@ abstract class AbstractRepository implements
         throw new RepositoryException('Não foi possível apagar o registro. Tente Novamente');
     }
 
-    /**
-     * @param array $records
-     * @return bool
-     * @throws RepositoryException
-     */
-    public function destroy(array $records) : bool
+    public function destroy(array $records): bool
     {
         $this->applyCriteria();
 
-        if ( $this->model->destroy($records) ) {
+        if ($this->model->destroy($records)) {
             $this->app['events']->dispatch(new EntityDeleted($this, $this->model->getModel()));
 
             return true;
@@ -541,64 +373,33 @@ abstract class AbstractRepository implements
         throw new RepositoryException('Os registros não foram apagados. Tente novamente');
     }
 
-    /**
-     * @param int    $id
-     * @param string $relation
-     * @param string $attributes
-     * @param bool   $detach
-     * @return mixed
-     * @throws RepositoryException
-     */
-    public function sync($id, $relation, $attributes, $detach = true)
+    public function sync(int $id, string $relation, string $attributes, bool $detach = true)
     {
         $this->resetModel();
 
         return $this->find($id)->{$relation}()->sync($attributes, $detach);
     }
 
-    /**
-     * @param array $relations
-     * @return $this
-     */
-    public function with(array $relations)
+    public function with(array $relations): AbstractRepository
     {
         $this->model = $this->model->with($relations);
 
         return $this;
     }
 
-    /**
-     * @param string     $value
-     * @param mixed|null $key
-     * @return array
-     * @throws RepositoryException
-     */
-    public function pluck(string $value, $key = null) : array
+    public function pluck(string $value, ?string $key = null): array
     {
         $this->applyCriteria();
 
         return $this->model->pluck($value, $key)->toArray();
     }
 
-    /**
-     * @param int   $perPage
-     * @param array $columns
-     * @return LengthAwarePaginator|Paginator
-     * @throws RepositoryException
-     */
-    public function simplePaginate(int $perPage = 15, array $columns = ['*'])
+    public function simplePaginate(int $perPage = 15, array $columns = ['*']): AbstractPaginator
     {
         return $this->paginate($perPage, $columns, 'simplePaginate');
     }
 
-    /**
-     * @param int    $perPage
-     * @param array  $columns
-     * @param string $method
-     * @return Paginator
-     * @throws RepositoryException
-     */
-    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate')
+    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate'): AbstractPaginator
     {
         $this->applyCriteria();
 
@@ -609,61 +410,37 @@ abstract class AbstractRepository implements
         return $results;
     }
 
-    /**
-     * @param int   $id
-     * @param array $columns
-     * @return Model
-     * @throws RepositoryException
-     */
-    public function findOrFail(int $id, $columns = ['*']) : Model
+    public function findOrFail(int $id, $columns = ['*']): Model
     {
         $this->applyCriteria();
 
         return $this->model->findOrFail($id, $columns);
     }
 
-    /**
-     * @param array $columns
-     * @return Model|null
-     * @throws RepositoryException
-     */
-    public function last(array $columns = ['*']) : ?Model
+    public function last(array $columns = ['*']): ?Model
     {
         $this->applyCriteria();
 
         return $this->orderBy($this->getKeyName(), 'desc')->first($columns);
     }
 
-    /**
-     * @param array $columns
-     * @return Model|null
-     * @throws RepositoryException
-     */
-    public function first(array $columns = ['*']) : ?Model
+    public function first(array $columns = ['*']): ?Model
     {
         $this->applyCriteria();
 
         return $this->model->first($columns);
     }
 
-    /**
-     * @param string $column
-     * @param string $order
-     * @return $this
-     */
-    public function orderBy(string $column, $order = 'asc')
+    public function orderBy(string $column, $order = 'asc'): AbstractRepository
     {
         $this->model = $this->model->orderBy($column, $order);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    private function getKeyName() : string
+    private function getKeyName(): string
     {
-        if ( $this->model instanceof Builder ) {
+        if ($this->model instanceof Builder) {
             $model = $this->model->getModel();
 
             return $model->getKeyName();
@@ -672,63 +449,35 @@ abstract class AbstractRepository implements
         return $this->model->getKeyName();
     }
 
-    /**
-     * @param string $attribute
-     * @param mixed  $value
-     * @param array  $columns
-     * @return Model|null
-     * @throws RepositoryException
-     */
-    public function findBy($attribute, $value, array $columns = ['*']) : ?Model
+    public function findBy(string $field, $value, array $columns = ['*']): ?Model
     {
         $this->applyCriteria();
 
-        return $this->model->where($attribute, '=', $value)->first($columns);
+        return $this->model->where($field, '=', $value)->first($columns);
     }
 
-    /**
-     * @param string $attribute
-     * @param mixed  $value
-     * @param array  $columns
-     * @return Collection
-     * @throws RepositoryException
-     */
-    public function findAllBy($attribute, $value, array $columns = ['*']) : Collection
+    public function findAllBy(string $field, $value, array $columns = ['*']): Collection
     {
         $this->applyCriteria();
 
-        return $this->model->where($attribute, '=', $value)->get($columns);
+        return $this->model->where($field, '=', $value)->get($columns);
     }
 
-    /**
-     * @param int $limit
-     * @return $this
-     */
-    public function limit(int $limit)
+    public function limit(int $limit): AbstractRepository
     {
         $this->model = $this->model->limit($limit);
 
         return $this;
     }
 
-    /**
-     * @param int $offset
-     * @return $this
-     */
-    public function offset(int $offset)
+    public function offset(int $offset): AbstractRepository
     {
         $this->model = $this->model->offset($offset);
 
         return $this;
     }
 
-    /**
-     * @param string $column
-     * @param string $operator
-     * @param mixed  $value
-     * @return $this
-     */
-    public function having(string $column, string $operator, $value)
+    public function having(string $column, string $operator, $value): AbstractRepository
     {
         $this->groupBy($column);
 
@@ -737,35 +486,30 @@ abstract class AbstractRepository implements
         return $this;
     }
 
-    public function groupBy(...$columns)
+    public function groupBy(...$columns): AbstractRepository
     {
         $this->model = $this->model->groupBy($columns);
 
         return $this;
     }
 
-    public function getByCriteria(AbstractCriteria $criteria) : Collection
+    public function getByCriteria(AbstractCriteria $criteria): Collection
     {
         $this->pushCriteria($criteria);
 
         return $this->all();
     }
 
-    /**
-     * @param AbstractCriteria $criteria
-     * @return $this|CriteriaInterface
-     */
     public function pushCriteria(AbstractCriteria $criteria)
     {
-        if ( $this->preventCriteriaOverwriting ) {
+        if ($this->preventCriteriaOverwriting) {
             // Find existing criteria
-            $key = $this->criteria->search(function ($item) use ($criteria)
-            {
-                return ( is_object($item) && ( get_class($item) == get_class($criteria) ) );
+            $key = $this->criteria->search(function ($item) use ($criteria) {
+                return (is_object($item) && (get_class($item) == get_class($criteria)));
             });
 
             // Remove old criteria
-            if ( is_int($key) ) {
+            if (is_int($key)) {
                 $this->criteria->offsetUnset($key);
             }
         }
@@ -775,83 +519,69 @@ abstract class AbstractRepository implements
         return $this;
     }
 
-    public function all(array $columns = ['*']) : Collection
+    public function all(array $columns = ['*']): Collection
     {
         $this->applyCriteria();
 
         return $this->model->get($columns);
     }
 
-    public function enableQueryLog() : void
+    public function enableQueryLog(): void
     {
         $this->connection()->enableQueryLog();
     }
 
-    public function disableQueryLog() : void
+    public function disableQueryLog(): void
     {
         $this->connection()->disableQueryLog();
     }
 
-    public function getLastQuery() : ?string
+    public function getLastQuery(): ?string
     {
         $logs = $this->getQueryLog();
         $last = array_pop($logs);
 
-        if ( is_null($last) ) {
+        if (is_null($last)) {
             return null;
         }
 
         return Str::replaceArray('?', $last['bindings'], $last['query']);
     }
 
-    public function getQueryLog() : array
+    public function getQueryLog(): array
     {
         return $this->connection()->getQueryLog();
     }
 
-    public function exists() : bool
+    public function exists(): bool
     {
         $this->applyCriteria();
 
         return $this->model->exists();
     }
 
-    public function doesntExists() : bool
+    public function doesntExists(): bool
     {
         $this->applyCriteria();
 
         return $this->model->doesntExist();
     }
 
-    /**
-     * @param string    $column
-     * @param int|float $amount
-     * @param array     $extra
-     * @return int
-     * @throws RepositoryException
-     */
-    public function increment(string $column, $amount = 1, array $extra = [])
+    public function increment(string $column, $amount = 1, array $extra = []): int
     {
         $this->applyCriteria();
 
         return $this->model->increment($column, $amount, $extra);
     }
 
-    /**
-     * @param string    $column
-     * @param int|float $amount
-     * @param array     $extra
-     * @return int
-     * @throws RepositoryException
-     */
-    public function decrement(string $column, $amount = 1, array $extra = [])
+    public function decrement(string $column, $amount = 1, array $extra = []): int
     {
         $this->applyCriteria();
 
         return $this->model->decrement($column, $amount, $extra);
     }
 
-    public function select(string $query, array $bindings = [], bool $useReadPdo = true) : Collection
+    public function select(string $query, array $bindings = [], bool $useReadPdo = true): Collection
     {
         $this->resetModel();
 
@@ -860,11 +590,11 @@ abstract class AbstractRepository implements
         );
     }
 
-    public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true) : ?Model
+    public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true): ?Model
     {
         $this->resetModel();
 
-        if ( $result = $this->connection()->selectOne($query, $bindings, $useReadPdo) ) {
+        if ($result = $this->connection()->selectOne($query, $bindings, $useReadPdo)) {
             return $this->model->newInstance(
                 json_decode(json_encode($result), true), true
             );
@@ -873,53 +603,31 @@ abstract class AbstractRepository implements
         return null;
     }
 
-    public function statement(string $query, array $bindings = []) : bool
+    public function statement(string $query, array $bindings = []): bool
     {
         return $this->connection()->statement($query, $bindings);
     }
 
-    public function raw(string $value) : Expression
+    public function raw(string $value): Expression
     {
         return $this->connection()->raw($value);
     }
 
-    public function chunk(int $count, callable $callback)
+    public function chunk(int $count, callable $callback): bool
     {
         $this->applyCriteria();
 
         return $this->model->chunk($count, $callback);
     }
 
-    public function chunkById(int $count, callable $callback, string $column = null, string $alias = null)
+    public function chunkById(int $count, callable $callback, string $column = null, string $alias = null): bool
     {
         $this->applyCriteria();
 
         return $this->model->chunkById($count, $callback, $column, $alias);
     }
 
-    public function skipPresenter() : AbstractRepository
-    {
-        $this->skipPresenter = true;
-
-        return $this;
-    }
-
-    public function presenterSkipped() : bool
-    {
-        return $this->skipPresenter;
-    }
-
-    public function enablePresenter() : AbstractRepository
-    {
-        $this->skipPresenter = false;
-
-        return $this;
-    }
-
-    /**
-     * @return \Generator
-     */
-    public function cursor()
+    public function cursor(): LazyCollection
     {
         $this->applyCriteria();
 

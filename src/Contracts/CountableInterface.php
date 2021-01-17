@@ -12,7 +12,7 @@ namespace Masterkey\Repository\Contracts;
  */
 interface CountableInterface
 {
-    public function count(string $column = '*') : int ;
+    public function count(string $column = '*'): int;
 
     public function max(string $column);
 

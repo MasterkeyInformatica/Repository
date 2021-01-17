@@ -23,11 +23,9 @@ interface RepositoryInterface
 {
     public function makeModel(string $model);
 
-    public function makePresenter(string $presenter = null);
-
     public function getBuilder(): Builder;
 
-    public function getFieldsSearchable();
+    public function getFieldsSearchable(): array;
 
     public function bootTraits(): void;
 
@@ -57,7 +55,7 @@ interface RepositoryInterface
 
     public function raw(string $value): Expression;
 
-    public function chunk(int $count, callable $callback);
+    public function chunk(int $count, callable $callback): bool;
 
-    public function chunkById(int $count, callable $callback, string $column = null, string $alias = null);
+    public function chunkById(int $count, callable $callback, string $column = null, string $alias = null): bool;
 }

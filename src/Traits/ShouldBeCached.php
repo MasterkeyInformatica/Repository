@@ -216,7 +216,7 @@ trait ShouldBeCached
         });
     }
 
-    public function findAllBy($field, $value, array $columns = ['*']): Collection
+    public function findAllBy(string $field, $value, array $columns = ['*']): Collection
     {
         if (!$this->allowedCache('findAllBy') || $this->isSkippedCache()) {
             return parent::findAllBy($field, $value, $columns);

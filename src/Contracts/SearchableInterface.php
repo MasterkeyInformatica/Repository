@@ -36,13 +36,13 @@ interface SearchableInterface
 
     public function findBy(string $field, $value, array $columns = ['*']): ?Model;
 
-    public function findAllBy($field, $value, array $columns = ['*']): Collection;
+    public function findAllBy(string $field, $value, array $columns = ['*']): Collection;
 
     public function exists(): bool;
 
     public function doesntExists(): bool;
 
-    public function increment(string $column, $amount = 1, array $extra = []);
+    public function increment(string $column, $amount = 1, array $extra = []): int;
 
-    public function decrement(string $column, $amount = 1, array $extra = []);
+    public function decrement(string $column, $amount = 1, array $extra = []): int;
 }
