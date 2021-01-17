@@ -3,6 +3,7 @@
 namespace Masterkey\Repository\Criteria;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
@@ -15,46 +16,24 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 class Where extends AbstractCriteria
 {
-    /**
-     * @var string|Closure
-     */
+    /** @var string|Closure */
     protected $column;
 
-    /**
-     * @var string|null
-     */
-    protected $operator;
+    protected ?string $operator;
 
-    /**
-     * @var string|null
-     */
-    protected $value;
+    protected ?string $value;
 
-    /**
-     * @var string
-     */
-    protected $boolean;
+    protected string $boolean;
 
-    /**
-     * @param string|Closure $column
-     * @param string|null    $operator
-     * @param string|null    $value
-     * @param string         $boolean
-     */
-    public function __construct($column, $operator = null, $value = null, $boolean = 'and')
+    public function __construct($column, ?string $operator = null, ?string $value = null, $boolean = 'and')
     {
-        $this->column = $column;
+        $this->column   = $column;
         $this->operator = $operator;
-        $this->value = $value;
-        $this->boolean = $boolean;
+        $this->value    = $value;
+        $this->boolean  = $boolean;
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $model
-     * @param Repository                         $repository
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function apply($model, Repository $repository)
+    public function apply(Builder $model, Repository $repository): Builder
     {
         return $model->where(
             $this->column,

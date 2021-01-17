@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Illuminate\Database\Eloquent\Builder;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
@@ -14,60 +15,30 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 class Join extends AbstractCriteria
 {
-    /**
-     * @var string
-     */
-    protected $table;
+    protected string $table;
 
-    /**
-     * @var string|\Closure
-     */
+    /** @var string|\Closure */
     protected $first;
 
-    /**
-     * @var null
-     */
-    protected $operator;
+    protected ?string $operator;
 
-    /**
-     * @var null
-     */
-    protected $second;
+    protected ?string $second;
 
-    /**
-     * @var string
-     */
-    protected $type;
+    protected string $type;
 
-    /**
-     * @var bool
-     */
-    protected $where;
+    protected bool $where;
 
-    /**
-     * @param   string  $table
-     * @param   string|\Closure  $first
-     * @param   string|null $operator
-     * @param   string|null $second
-     * @param   string|string $type
-     * @param   bool $where
-     */
-    public function __construct($table, $first, $operator = null, $second = null, $type = 'inner', $where = false)
+    public function __construct(string $table, $first, $operator = null, $second = null, string $type = 'inner', bool $where = false)
     {
-        $this->table = $table;
-        $this->first = $first;
+        $this->table    = $table;
+        $this->first    = $first;
         $this->operator = $operator;
-        $this->second = $second;
-        $this->type = $type;
-        $this->where = $where;
+        $this->second   = $second;
+        $this->type     = $type;
+        $this->where    = $where;
     }
 
-    /**
-     * @param   \Illuminate\Database\Query\Builder $model
-     * @param   Repository $repository
-     * @return  \Illuminate\Database\Query\Builder|mixed
-     */
-    public function apply($model, Repository $repository)
+    public function apply(Builder $model, Repository $repository): Builder
     {
         return $model->join(
             $this->table,

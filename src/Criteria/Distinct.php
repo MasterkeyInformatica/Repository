@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Illuminate\Database\Eloquent\Builder;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
@@ -14,12 +15,7 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 class Distinct extends AbstractCriteria
 {
-    /**
-     * @param   \Illuminate\Database\Query\Builder $model
-     * @param   Repository $repository
-     * @return  \Illuminate\Database\Query\Builder|mixed
-     */
-    public function apply($model, Repository $repository)
+    public function apply(Builder $model, Repository $repository): Builder
     {
         return $model->distinct();
     }

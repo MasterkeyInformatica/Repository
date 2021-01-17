@@ -11,10 +11,6 @@ namespace Masterkey\Repository\Criteria;
  */
 class WhereNotNull extends WhereNull
 {
-    /**
-     * @param string $column
-     * @param string $boolean
-     */
     public function __construct(string $column, string $boolean = 'and')
     {
         parent::__construct($column, $boolean, true);

@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
@@ -15,14 +16,8 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 class Select extends AbstractCriteria
 {
-    /**
-     * @var array|mixed
-     */
-    protected $columns;
+    protected array $columns;
 
-    /**
-     * @param array|mixed ...$columns
-     */
     public function __construct(...$columns)
     {
         $columns = Arr::flatten($columns);
@@ -34,12 +29,7 @@ class Select extends AbstractCriteria
         $this->columns = $columns;
     }
 
-    /**
-     * @param   \Illuminate\Database\Query\Builder  $model
-     * @param   Repository  $repository
-     * @return  \Illuminate\Database\Query\Builder|mixed
-     */
-    public function apply($model, Repository $repository)
+    public function apply(Builder $model, Repository $repository): Builder
     {
         return $model->select($this->columns);
     }

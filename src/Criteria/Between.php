@@ -2,7 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
@@ -15,46 +15,23 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 class Between extends AbstractCriteria
 {
-    /**
-     * @var string
-     */
-    protected $column;
+    protected string $column;
 
-    /**
-     * @var array
-     */
-    protected $values;
+    protected array $values;
 
-    /**
-     * @var string
-     */
-    protected $boolean;
+    protected bool $boolean;
 
-    /**
-     * @var bool
-     */
-    protected $not;
+    protected bool $not;
 
-    /**
-     * @param string $column
-     * @param array  $values
-     * @param string $boolean
-     * @param bool   $not
-     */
     public function __construct(string $column, array $values, string $boolean = 'and', bool $not = false)
     {
-        $this->column = $column;
-        $this->values = $values;
+        $this->column  = $column;
+        $this->values  = $values;
         $this->boolean = $boolean;
-        $this->not = $not;
+        $this->not     = $not;
     }
 
-    /**
-     * @param Builder    $model
-     * @param Repository $repository
-     * @return Builder
-     */
-    public function apply($model, Repository $repository)
+    public function apply(Builder $model, Repository $repository): Builder
     {
         return $model->whereBetween(
             $this->column,

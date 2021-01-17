@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
@@ -15,25 +16,14 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 class GroupBy extends AbstractCriteria
 {
-    /**
-     * @var array
-     */
-    protected $groups;
+    protected array $groups;
 
-    /**
-     * @param mixed ...$groups
-     */
     public function __construct(...$groups)
     {
         $this->groups = Arr::flatten($groups);
     }
 
-    /**
-     * @param   \Illuminate\Database\Query\Builder $model
-     * @param   Repository $repository
-     * @return  \Illuminate\Database\Query\Builder|mixed
-     */
-    public function apply($model, Repository $repository)
+    public function apply(Builder $model, Repository $repository): Builder
     {
         return $model->groupBy($this->groups);
     }

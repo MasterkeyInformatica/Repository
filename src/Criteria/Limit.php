@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Illuminate\Database\Eloquent\Builder;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
@@ -14,25 +15,14 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 class Limit extends AbstractCriteria
 {
-    /**
-     * @var int
-     */
-    protected $limit;
+    protected int $limit;
 
-    /**
-     * @param   int  $limit
-     */
     public function __construct(int $limit = 15)
     {
         $this->limit = $limit;
     }
 
-    /**
-     * @param   \Illuminate\Database\Query\Builder  $model
-     * @param   Repository  $repository
-     * @return  \Illuminate\Database\Query\Builder
-     */
-    public function apply($model, Repository $repository)
+    public function apply(Builder $model, Repository $repository): Builder
     {
         return $model->take($this->limit);
     }
