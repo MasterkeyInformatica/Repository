@@ -28,7 +28,7 @@ class CacheKeyStorage
     protected $storedKeys = null;
 
     /**
-     * @param   string  $storagePath
+     * @param string $storagePath
      */
     public function __construct(string $storagePath)
     {
@@ -38,33 +38,17 @@ class CacheKeyStorage
     }
 
     /**
-     * @param   string  $group
-     * @param   string  $key
-     * @return  bool|int
-     */
-    public function storeKey(string $group, string $key)
-    {
-        $this->storedKeys[$group] = $this->readKeys($group);
-
-        if ( ! in_array($key, $this->storedKeys[$group]) ) {
-            $this->storedKeys[$group][] = $key;
-        }
-
-        return $this->writeKeys();
-    }
-
-    /**
      * @return  array|null
      */
     private function loadKeys()
     {
-        if ( ! is_null($this->storedKeys) && is_array($this->storedKeys) ) {
+        if (!is_null($this->storedKeys) && is_array($this->storedKeys)) {
             return $this->storedKeys;
         }
 
         $file = $this->getStorageFilePath();
 
-        if ( ! file_exists($file) ) {
+        if (!file_exists($file)) {
             $this->writeKeys();
         }
 
@@ -74,7 +58,44 @@ class CacheKeyStorage
     }
 
     /**
-     * @param   string  $group
+     * @return  string
+     */
+    private function getStorageFilePath(): string
+    {
+        return $this->storagePath . '/' . $this->storageFile;
+    }
+
+    /**
+     * @return  bool|int
+     */
+    private function writeKeys(): bool
+    {
+        $file = $this->getStorageFilePath();
+
+        $keys    = $this->storedKeys ?? [];
+        $content = json_encode($keys, true);
+
+        return file_put_contents($file, $content);
+    }
+
+    /**
+     * @param string $group
+     * @param string $key
+     * @return  bool|int
+     */
+    public function storeKey(string $group, string $key)
+    {
+        $this->storedKeys[$group] = $this->readKeys($group);
+
+        if (!in_array($key, $this->storedKeys[$group])) {
+            $this->storedKeys[$group][] = $key;
+        }
+
+        return $this->writeKeys();
+    }
+
+    /**
+     * @param string $group
      * @return  mixed
      */
     public function readKeys(string $group)
@@ -82,26 +103,5 @@ class CacheKeyStorage
         $this->storedKeys[$group] = $this->storedKeys[$group] ?? [];
 
         return $this->storedKeys[$group];
-    }
-
-    /**
-     * @return  bool|int
-     */
-    private function writeKeys() : bool
-    {
-        $file = $this->getStorageFilePath();
-
-        $keys       = $this->storedKeys ?? [];
-        $content    = json_encode($keys, true);
-
-        return file_put_contents($file, $content);
-    }
-
-    /**
-     * @return  string
-     */
-    private function getStorageFilePath() : string
-    {
-        return $this->storagePath . '/' . $this->storageFile;
     }
 }
