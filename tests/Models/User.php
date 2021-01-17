@@ -15,5 +15,9 @@ class User extends Model
         'failed_logins'
     ];
 
+    protected $casts = [
+        'active' => 'bool'
+    ];
+
     public $timestamps = false;
 }

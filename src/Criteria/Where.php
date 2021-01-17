@@ -19,13 +19,15 @@ class Where extends AbstractCriteria
     /** @var string|Closure */
     protected $column;
 
-    protected ?string $operator;
+    /** @var mixed */
+    protected $operator;
 
-    protected ?string $value;
+    /** @var mixed */
+    protected $value;
 
     protected string $boolean;
 
-    public function __construct($column, ?string $operator = null, ?string $value = null, $boolean = 'and')
+    public function __construct($column, $operator = null, $value = null, $boolean = 'and')
     {
         $this->column   = $column;
         $this->operator = $operator;

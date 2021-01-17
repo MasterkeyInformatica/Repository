@@ -198,7 +198,7 @@ class UserRepositoryTest extends TestCase
 
     public function testLast()
     {
-        $user = $this->user->find(2);
+        $user = $this->user->find(6);
         $last = $this->user->last();
 
         $this->assertEquals($user->name, $last->name);
@@ -421,16 +421,10 @@ class UserRepositoryTest extends TestCase
 
     public function testUpdateWithCriteria()
     {
-        $users = $this->user->create([
-            'name'          => 'Lopez',
-            'active'        => false,
-            'logins'        => 1,
-            'failed_logins' => 12,
-        ]);
-
-        $inativos     = $this->user->pushCriteria(new InactiveUsers())->count();
-
-        $affectedRows = $this->user->pushCriteria(new InactiveUsers())->update(['active' => 1]);
+        $inativos     = User::where('active', false)->count();
+        $affectedRows = $this->user->resetScope()
+                                   ->pushCriteria(new InactiveUsers())
+                                   ->update(['active' => 1]);
 
         $this->assertEquals($inativos, $affectedRows);
     }

@@ -38,8 +38,7 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function __construct(Container $container)
     {
-        $this->app      = $container;
-        $this->criteria = new Collection();
+        $this->app = $container;
 
         $this->resetScope();
 
@@ -51,7 +50,11 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function resetScope(): AbstractRepository
     {
-        $this->skipCriteria(false);
+        $this->criteria = new Collection();
+
+        if (!$this->model) {
+            $this->resetModel();
+        }
 
         return $this;
     }
@@ -141,7 +144,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function max(string $column)
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->max($column);
@@ -149,7 +151,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function min(string $column)
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->min($column);
@@ -157,7 +158,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function avg(string $column)
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->avg($column);
@@ -165,7 +165,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function sum(string $column)
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->sum($column);
@@ -173,7 +172,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function firstOrCreate(array $data): Model
     {
-        $this->resetModel();
         $model = $this->model->firstOrCreate($data);
 
         if ($model) {
@@ -187,14 +185,11 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function firstOrNew(array $data): Model
     {
-        $this->resetModel();
         return $this->model->firstOrNew($data);
     }
 
     public function save(array $data): Model
     {
-        $this->resetModel();
-
         $model = $this->model;
 
         $model->fill($data);
@@ -219,8 +214,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
      */
     public function insert(array $data): bool
     {
-        $this->resetModel();
-
         $response = true;
 
         if ($this->driver() == 'firebird') {
@@ -329,7 +322,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function find(int $id, $columns = ['*']): ?Model
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->find($id, $columns);
@@ -358,7 +350,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function destroy(array $records): bool
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         if ($this->model->destroy($records)) {
@@ -372,8 +363,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function sync(int $id, string $relation, string $attributes, bool $detach = true)
     {
-        $this->resetModel();
-
         return $this->find($id)->{$relation}()->sync($attributes, $detach);
     }
 
@@ -386,7 +375,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function pluck(string $value, ?string $key = null): array
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->pluck($value, $key)->toArray();
@@ -399,7 +387,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function paginate(int $perPage = 15, array $columns = ['*'], string $method = 'paginate'): AbstractPaginator
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         $results = $this->model->{$method}($perPage, $columns);
@@ -411,7 +398,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function findOrFail(int $id, $columns = ['*']): Model
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->findOrFail($id, $columns);
@@ -419,7 +405,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function last(array $columns = ['*']): ?Model
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->orderBy($this->getKeyName(), 'desc')
@@ -453,7 +438,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function findBy(string $field, $value, array $columns = ['*']): ?Model
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->where($field, '=', $value)->first($columns);
@@ -461,7 +445,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function findAllBy(string $field, $value, array $columns = ['*']): Collection
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->where($field, '=', $value)->get($columns);
@@ -499,7 +482,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function getByCriteria(AbstractCriteria $criteria): Collection
     {
-        $this->resetModel();
         $this->pushCriteria($criteria);
 
         return $this->all();
@@ -526,7 +508,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function all(array $columns = ['*']): Collection
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->get($columns);
@@ -561,7 +542,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function exists(): bool
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->exists();
@@ -569,7 +549,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function doesntExists(): bool
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->doesntExist();
@@ -577,7 +556,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function increment(string $column, $amount = 1, array $extra = []): int
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->increment($column, $amount, $extra);
@@ -585,7 +563,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function decrement(string $column, $amount = 1, array $extra = []): int
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->decrement($column, $amount, $extra);
@@ -593,7 +570,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function select(string $query, array $bindings = [], bool $useReadPdo = true): Collection
     {
-        $this->resetModel();
         $this->resetModel();
 
         return $this->model->newCollection(
@@ -603,7 +579,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true): ?Model
     {
-        $this->resetModel();
         $this->resetModel();
 
         if ($result = $this->connection()->selectOne($query, $bindings, $useReadPdo)) {
@@ -627,7 +602,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function chunk(int $count, callable $callback): bool
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->chunk($count, $callback);
@@ -635,7 +609,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function chunkById(int $count, callable $callback, string $column = null, string $alias = null): bool
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->chunkById($count, $callback, $column, $alias);
@@ -643,7 +616,6 @@ abstract class AbstractRepository implements RepositoryInterface, CriteriaInterf
 
     public function cursor(): LazyCollection
     {
-        $this->resetModel();
         $this->applyCriteria();
 
         return $this->model->cursor();
