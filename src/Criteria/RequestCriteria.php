@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface;
+use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
  * RequestCriteria
@@ -25,7 +26,12 @@ class RequestCriteria extends AbstractCriteria
         $this->request = $request;
     }
 
-    public function apply(Builder $model, RepositoryInterface $repository): Builder
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public function apply($model, RepositoryInterface $repository): Builder
     {
         $fieldsSearchable = $repository->getFieldsSearchable();
         $search           = $this->request->get(Config::get('repository.criteria.params.search', 'search'), null);

@@ -28,7 +28,12 @@ class WhereNull extends AbstractCriteria
         $this->not     = $not;
     }
 
-    public function apply(Builder $model, Repository $repository): Builder
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public function apply($model, Repository $repository): Builder
     {
         return $model->whereNull($this->column, $this->boolean, $this->not);
     }

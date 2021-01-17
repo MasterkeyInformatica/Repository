@@ -28,7 +28,12 @@ class WhereRaw extends AbstractCriteria
         $this->boolean  = $boolean;
     }
 
-    public function apply(Builder $model, Repository $repository): Builder
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public function apply($model, Repository $repository): Builder
     {
         return $model->whereRaw($this->query, $this->bindings, $this->boolean);
     }

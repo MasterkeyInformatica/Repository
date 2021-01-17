@@ -25,7 +25,12 @@ class OrderBy extends AbstractCriteria
         $this->direction = $direction;
     }
 
-    public function apply(Builder $model, Repository $repository): Builder
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public function apply($model, Repository $repository): Builder
     {
         return $model->orderBy($this->column, $this->direction);
     }

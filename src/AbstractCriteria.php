@@ -3,6 +3,7 @@
 namespace Masterkey\Repository;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
 
 /**
@@ -14,5 +15,10 @@ use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
  */
 abstract class AbstractCriteria
 {
-    public abstract function apply(Builder $model, Repository $repository): Builder;
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public abstract function apply($model, Repository $repository): Builder;
 }

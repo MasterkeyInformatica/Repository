@@ -25,7 +25,12 @@ class SelectRaw extends AbstractCriteria
         $this->bindings   = $bindings;
     }
 
-    public function apply(Builder $model, Repository $repository): Builder
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public function apply($model, Repository $repository): Builder
     {
         return $model->selectRaw($this->expression, $this->bindings);
     }

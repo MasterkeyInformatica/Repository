@@ -31,7 +31,12 @@ class WhereBetween extends AbstractCriteria
         $this->not     = $not;
     }
 
-    public function apply(Builder $model, Repository $repository): Builder
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public function apply($model, Repository $repository): Builder
     {
         return $model->whereBetween($this->column, $this->values, $this->boolean, $this->not);
     }

@@ -23,7 +23,12 @@ class With extends AbstractCriteria
         $this->with = Arr::collapse($with);
     }
 
-    public function apply(Builder $model, Repository $repository): Builder
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public function apply($model, Repository $repository): Builder
     {
         return $model->with($this->with);
     }

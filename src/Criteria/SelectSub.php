@@ -25,7 +25,12 @@ class SelectSub extends AbstractCriteria
         $this->as    = $as;
     }
 
-    public function apply(Builder $model, Repository $repository): Builder
+    /**
+     * @param Builder $model
+     * @param Repository    $repository
+     * @return Builder
+     */
+    public function apply($model, Repository $repository): Builder
     {
         return $model->selectSub($this->query, $this->as);
     }
