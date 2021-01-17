@@ -17,28 +17,13 @@ use Masterkey\Repository\AbstractCriteria;
  */
 interface CriteriaInterface
 {
-    /**
-     * @param   bool $status
-     * @return  $this
-     */
     public function skipCriteria(bool $status = true);
 
     public function getCriteria() : Collection;
 
-    /**
-     * @param   AbstractCriteria  $criteria
-     * @return  $this
-     */
     public function getByCriteria(AbstractCriteria $criteria);
 
-    /**
-     * @param   AbstractCriteria  $criteria
-     * @return  $this
-     */
     public function pushCriteria(AbstractCriteria $criteria);
 
-    /**
-     * @return $this
-     */
     public function applyCriteria();
 }

@@ -12,31 +12,13 @@ namespace Masterkey\Repository\Contracts;
  */
 interface SortableInterface
 {
-    /**
-     * @param   int  $limit
-     */
     public function limit(int $limit);
 
-    /**
-     * @param   int  $offset
-     */
     public function offset(int $offset);
 
-    /**
-     * @param   string  $column
-     * @param   string  $operator
-     * @param   mixed  $value
-     */
     public function having(string $column, string $operator, $value);
 
-    /**
-     * @param   string  $column
-     * @param   string  $order
-     */
     public function orderBy(string $column, $order = 'asc');
 
-    /**
-     * @param   mixed ...$columns
-     */
     public function groupBy(...$columns);
 }

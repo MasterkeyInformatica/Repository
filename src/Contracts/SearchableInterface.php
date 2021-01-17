@@ -3,8 +3,7 @@
 namespace Masterkey\Repository\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 
 /**
@@ -17,104 +16,33 @@ use Illuminate\Support\Collection;
  */
 interface SearchableInterface
 {
-    /**
-     * @param   array  $columns
-     * @return  Collection
-     */
-    public function all(array $columns = ['*']) : Collection;
+    public function all(array $columns = ['*']): Collection;
 
-    /**
-     * @param   array  $relations
-     */
     public function with(array $relations);
 
-    /**
-     * @param   string  $value
-     * @param   null  $key
-     * @return  array
-     */
-    public function pluck(string $value, $key = null) : array;
+    public function pluck(string $value, ?string $key = null): array;
 
-    /**
-     * @param   int  $perPage
-     * @param   array  $columns
-     * @param   string  $method
-     * @return  Paginator
-     */
-    public function paginate(int $perPage = 15, array $columns = ['*'], $method = 'paginate');
+    public function paginate(int $perPage = 15, array $columns = ['*'], string $method = 'paginate'): AbstractPaginator;
 
-    /**
-     * @param   int  $perPage
-     * @param   array  $columns
-     * @return  LengthAwarePaginator
-     */
-    public function simplePaginate(int $perPage = 15, array $columns = ['*']);
+    public function simplePaginate(int $perPage = 15, array $columns = ['*']): AbstractPaginator;
 
-    /**
-     * @param   int  $id
-     * @param   array  $columns
-     * @return  Model
-     */
-    public function find(int $id, $columns = ['*']) : ? Model;
+    public function find(int $id, $columns = ['*']): ?Model;
 
-    /**
-     * @param int   $id
-     * @param array $columns
-     * @return Model
-     */
-    public function findOrFail(int $id, $columns = ['*']) : Model;
+    public function findOrFail(int $id, array $columns = ['*']): Model;
 
-    /**
-     * @param   array  $columns
-     * @return  Model
-     */
-    public function first(array $columns = ['*']) : ?Model;
+    public function first(array $columns = ['*']): ?Model;
 
-    /**
-     * @param   array  $columns
-     * @return  Model
-     */
-    public function last(array $columns = ['*']) : ?Model;
+    public function last(array $columns = ['*']): ?Model;
 
-    /**
-     * @param   string  $field
-     * @param   mixed  $value
-     * @param   array  $columns
-     * @return  Model
-     */
-    public function findBy($field, $value, array $columns = ['*']) : ?Model;
+    public function findBy(string $field, $value, array $columns = ['*']): ?Model;
 
-    /**
-     * @param   string  $field
-     * @param   mixed  $value
-     * @param   array  $columns
-     * @return  Collection
-     */
-    public function findAllBy($field, $value, array $columns = ['*']) : Collection;
+    public function findAllBy($field, $value, array $columns = ['*']): Collection;
 
-    /**
-     * @return bool
-     */
-    public function exists() : bool;
+    public function exists(): bool;
 
-    /**
-     * @return bool
-     */
-    public function doesntExists() : bool;
+    public function doesntExists(): bool;
 
-    /**
-     * @param string $column
-     * @param int    $amount
-     * @param array  $extra
-     * @return mixed
-     */
     public function increment(string $column, $amount = 1, array $extra = []);
 
-    /**
-     * @param string $column
-     * @param int    $amount
-     * @param array  $extra
-     * @return mixed
-     */
     public function decrement(string $column, $amount = 1, array $extra = []);
 }

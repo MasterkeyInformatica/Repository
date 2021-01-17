@@ -21,107 +21,41 @@ use PDO;
  */
 interface RepositoryInterface
 {
-    /**
-     * @param string $model
-     */
-    public function makeModel($model);
+    public function makeModel(string $model);
 
-    /**
-     * @param string|null $presenter
-     * @return mixed
-     */
     public function makePresenter(string $presenter = null);
 
-    /**
-     * @return Builder
-     */
-    public function getBuilder() : Builder;
+    public function getBuilder(): Builder;
 
-    /**
-     * @return mixed
-     */
     public function getFieldsSearchable();
 
-    /**
-     * @return  void
-     */
-    public function bootTraits();
+    public function bootTraits(): void;
 
-    /**
-     * @return Connection
-     */
-    public function connection() : Connection;
+    public function connection(): Connection;
 
-    /**
-     * @return PDO
-     */
-    public function getPDO() : PDO;
+    public function getPDO(): PDO;
 
-    /**
-     * @return bool
-     */
-    public function enableAutoCommit() : bool;
+    public function enableAutoCommit(): bool;
 
-    /**
-     * @return bool
-     */
-    public function disableAutoCommit() : bool;
+    public function disableAutoCommit(): bool;
 
-    /**
-     * @param Closure $closure
-     * @param int     $attempts
-     * @return mixed
-     */
     public function transaction(Closure $closure, int $attempts = 1);
 
-    /**
-     * @return void
-     */
-    public function enableQueryLog() : void;
+    public function enableQueryLog(): void;
 
-    /**
-     * @return void
-     */
-    public function disableQueryLog() : void;
+    public function disableQueryLog(): void;
 
-    /**
-     * @return array
-     */
-    public function getQueryLog() : array;
+    public function getQueryLog(): array;
 
-    /**
-     * @return string|null
-     */
-    public function getLastQuery() : ? string;
+    public function getLastQuery(): ?string;
 
-    /**
-     * @param string $query
-     * @param array  $bindings
-     * @param bool   $useReadPdo
-     * @return Collection
-     */
-    public function select(string $query, array $bindings = [], bool $useReadPdo = true) : Collection;
+    public function select(string $query, array $bindings = [], bool $useReadPdo = true): Collection;
 
-    /**
-     * @param string $query
-     * @param array  $bindings
-     * @param bool   $useReadPdo
-     * @return Model|null
-     */
-    public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true) : ? Model;
+    public function selectOne(string $query, array $bindings = [], bool $useReadPdo = true): ?Model;
 
-    /**
-     * @param string $query
-     * @param array  $bindings
-     * @return bool
-     */
-    public function statement(string $query, array $bindings = []) : bool;
+    public function statement(string $query, array $bindings = []): bool;
 
-    /**
-     * @param string $value
-     * @return Expression
-     */
-    public function raw(string $value) : Expression;
+    public function raw(string $value): Expression;
 
     public function chunk(int $count, callable $callback);
 

@@ -15,34 +15,15 @@ use Masterkey\Repository\Cache\CacheKeyStorage;
  */
 interface CachableInterface
 {
-    /**
-     * @param   Cache  $cache
-     */
     public function setCache(Cache $cache);
 
-    /**
-     * @return Cache
-     */
     public function getCache() : Cache;
 
-    /**
-     * @param   CacheKeyStorage  $keyStorage
-     */
     public function setKeyStorage(CacheKeyStorage $keyStorage);
 
-    /**
-     * @param   string  $method
-     * @param   null|mixed  $args
-     */
-    public function getCacheKey($method, $args = null);
+    public function getCacheKey(string $method, $args = null);
 
-    /**
-     * @return int
-     */
     public function getCacheMinutes() : int;
 
-    /**
-     * @param   bool  $status
-     */
     public function skipCache(bool $status = true);
 }

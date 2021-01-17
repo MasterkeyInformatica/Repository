@@ -12,29 +12,13 @@ namespace Masterkey\Repository\Contracts;
  */
 interface CountableInterface
 {
-    /**
-     * @param   string  $column
-     * @return  int
-     */
     public function count(string $column = '*') : int ;
 
-    /**
-     * @param   string  $column
-     */
     public function max(string $column);
 
-    /**
-     * @param   string  $column
-     */
     public function min(string $column);
 
-    /**
-     * @param   string  $column
-     */
     public function avg(string $column);
 
-    /**
-     * @param   string  $column
-     */
     public function sum(string $column);
 }
