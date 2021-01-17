@@ -2,6 +2,7 @@
 
 namespace Masterkey\Repository\Criteria;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -9,6 +10,7 @@ use Illuminate\Support\Str;
 use Masterkey\Repository\AbstractCriteria;
 use Masterkey\Repository\Contracts\RepositoryInterface;
 use Masterkey\Repository\Contracts\RepositoryInterface as Repository;
+use Masterkey\Repository\RepositoryException;
 
 /**
  * RequestCriteria
@@ -27,8 +29,8 @@ class RequestCriteria extends AbstractCriteria
     }
 
     /**
-     * @param Builder $model
-     * @param Repository    $repository
+     * @param Builder    $model
+     * @param Repository $repository
      * @return Builder
      */
     public function apply($model, RepositoryInterface $repository): Builder
@@ -135,7 +137,7 @@ class RequestCriteria extends AbstractCriteria
                      * ex.
                      * products -> product_id
                      */
-                    $prefix  =  Str::singular($sortTable);
+                    $prefix  = Str::singular($sortTable);
                     $keyName = $table . '.' . $prefix . '_id';
                 }
 
@@ -173,7 +175,7 @@ class RequestCriteria extends AbstractCriteria
      * @param array      $fields
      * @param array|null $searchFields
      * @return  array
-     * @throws  \RepositoryException
+     * @throws  RepositoryException
      */
     protected function parserFieldsSearch(array $fields = [], array $searchFields = null)
     {
@@ -214,7 +216,7 @@ class RequestCriteria extends AbstractCriteria
             }
 
             if (count($fields) == 0) {
-                throw new \RepositoryException('Some Fields are not accepted. Verify you repository configuration: ' . implode(',', $searchFields));
+                throw new RepositoryException('Some Fields are not accepted. Verify you repository configuration: ' . implode(',', $searchFields));
             }
         }
 
@@ -236,7 +238,7 @@ class RequestCriteria extends AbstractCriteria
                 try {
                     list($field, $value) = explode(':', $row);
                     $searchData[$field] = $value;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     //Surround offset error
                 }
             }

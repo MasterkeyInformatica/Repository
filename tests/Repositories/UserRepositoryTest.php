@@ -1,29 +1,29 @@
 <?php
 
+namespace Masterkey\Tests\Repositories;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\Expression;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Masterkey\Repository\Criteria\RequestCriteria;
 use Masterkey\Repository\Criteria\Select;
+use Masterkey\Repository\RepositoryException;
+use Masterkey\Tests\Models\ActiveUsers;
 use Masterkey\Tests\Models\InactiveUsers;
 use Masterkey\Tests\Models\User;
 use Masterkey\Tests\Models\UserRepository;
-use Masterkey\Tests\Models\ActiveUsers;
 use PHPUnit\Framework\TestCase;
-
-use Masterkey\Repository\Criteria\RequestCriteria;
 use Symfony\Component\HttpFoundation\Request as BaseRequest;
-use Illuminate\Http\Request;
 
 class UserRepositoryTest extends TestCase
 {
-    protected $user;
+    protected UserRepository $user;
 
-    /**
-     * @throws  RepositoryException
-     */
     public function __construct()
     {
         global $app;
@@ -42,8 +42,8 @@ class UserRepositoryTest extends TestCase
 
     public function testAll()
     {
-        $all        = $this->user->all();
-        $received   = $all->toArray();
+        $all      = $this->user->all();
+        $received = $all->toArray();
 
         $this->assertCount(2, $received);
         $this->assertInstanceOf(Collection::class, $all);
@@ -51,8 +51,8 @@ class UserRepositoryTest extends TestCase
 
     public function testPaginate()
     {
-        $all    = $this->user->paginate(1);
-        $count  = $all->toArray();
+        $all   = $this->user->paginate(1);
+        $count = $all->toArray();
 
         $this->assertCount(1, $count['data']);
         $this->assertInstanceOf(LengthAwarePaginator::class, $all);
@@ -60,8 +60,8 @@ class UserRepositoryTest extends TestCase
 
     public function testSimplePaginate()
     {
-        $all    = $this->user->simplePaginate(1);
-        $count  = $all->toArray();
+        $all   = $this->user->simplePaginate(1);
+        $count = $all->toArray();
 
         $this->assertCount(1, $count['data']);
         $this->assertInstanceOf(Paginator::class, $all);
@@ -69,7 +69,7 @@ class UserRepositoryTest extends TestCase
 
     public function testFind()
     {
-        $this->expectException(Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         $user1 = $this->user->find(1);
         $user2 = $this->user->findOrFail(3);
@@ -79,32 +79,26 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($this->user->find(3));
     }
 
-    /**
-     * @throws RepositoryException
-     */
     public function testCreate()
     {
         $user = $this->user->create([
-            'name'      => 'Garcia',
-            'active'    => true,
-            'logins'    => 2
+            'name'   => 'Garcia',
+            'active' => true,
+            'logins' => 2,
         ]);
 
         $this->assertEquals(true, $user->exists);
         $this->assertInstanceOf(User::class, $user);
     }
 
-    /**
-     * @throws  RepositoryException
-     */
     public function testSave()
     {
         $countUsers = $this->user->count();
 
         $user = $this->user->save([
-            'name'      => 'Penelope',
-            'active'    => true,
-            'logins'    => 8
+            'name'   => 'Penelope',
+            'active' => true,
+            'logins' => 8,
         ]);
 
         $this->assertEquals(true, $user->exists);
@@ -118,7 +112,7 @@ class UserRepositoryTest extends TestCase
     {
         $user = $this->user->insert([
             ['name' => 'Maria', 'active' => false, 'logins' => 5],
-            ['name' => 'Sharon', 'active' => false, 'logins' => 3]
+            ['name' => 'Sharon', 'active' => false, 'logins' => 3],
         ]);
 
         $this->assertEquals(true, $user);
@@ -196,8 +190,8 @@ class UserRepositoryTest extends TestCase
 
     public function testFirst()
     {
-        $user   = $this->user->find(1);
-        $first  = $this->user->first();
+        $user  = $this->user->find(1);
+        $first = $this->user->first();
 
         $this->assertEquals($user->name, $first->name);
     }
@@ -220,7 +214,7 @@ class UserRepositoryTest extends TestCase
     public function testRequestCriteria()
     {
         $symfonyRequest = new BaseRequest(['search' => 'Jonas', 'searchFields' => 'name:like']);
-        $request = Request::createFromBase($symfonyRequest);
+        $request        = Request::createFromBase($symfonyRequest);
 
         $this->user->pushCriteria(new RequestCriteria($request));
 
@@ -234,7 +228,7 @@ class UserRepositoryTest extends TestCase
         $this->expectException(RepositoryException::class);
 
         $symfonyRequest = new BaseRequest(['search' => '1', 'searchFields' => 'id']);
-        $request = Request::createFromBase($symfonyRequest);
+        $request        = Request::createFromBase($symfonyRequest);
 
         $this->user->pushCriteria(new RequestCriteria($request));
 
@@ -250,23 +244,22 @@ class UserRepositoryTest extends TestCase
 
     public function testHaving()
     {
-        $users = $this->user->having('logins' , '=', 2)->all();
+        $users = $this->user->having('logins', '=', 2)->all();
 
         $this->assertEquals(1, $users->count());
     }
 
     public function testOrderBy()
     {
-        $users  = $this->user->orderBy('id', 'desc')->all();
-        $last   = $users->first();
+        $users = $this->user->orderBy('id', 'desc')->all();
+        $last  = $users->first();
 
         $this->assertEquals(6, $last->id);
     }
 
     public function testTransaction()
     {
-        $user = $this->user->transaction(function()
-        {
+        $user = $this->user->transaction(function () {
             return $this->user->create(['name' => 'Marcos', 'active' => false, 'logins' => 3]);
         });
 
@@ -279,7 +272,7 @@ class UserRepositoryTest extends TestCase
 
         $this->user->all();
 
-        $queryLog = $this->user->getQueryLog();
+        $queryLog  = $this->user->getQueryLog();
         $lastQuery = $this->user->getLastQuery();
 
         $this->user->disableQueryLog();
@@ -335,7 +328,7 @@ class UserRepositoryTest extends TestCase
 
     public function testIncrement()
     {
-        $user = $this->user->first();
+        $user   = $this->user->first();
         $logins = $user->logins;
 
         $this->user->pushCriteria(
@@ -349,7 +342,7 @@ class UserRepositoryTest extends TestCase
 
     public function testDecrement()
     {
-        $user = $this->user->first();
+        $user   = $this->user->first();
         $logins = $user->logins;
 
         $this->user->pushCriteria(
@@ -382,7 +375,7 @@ class UserRepositoryTest extends TestCase
     public function testStatement()
     {
         $loginGraterThanThree = User::where('logins', '>', 3)->count();
-        $all = User::count();
+        $all                  = User::count();
 
         $sql = 'delete from users where logins > :logins';
 
@@ -415,20 +408,29 @@ class UserRepositoryTest extends TestCase
 
     public function testWhereColumn()
     {
-        $user = $this->user->first();
+        $user                = $this->user->first();
         $user->failed_logins = 14;
         $user->save();
 
         $count = $this->user
-                      ->pushCriteria(new \Masterkey\Repository\Criteria\WhereColumn('failed_logins', '>', 'logins'))
-                      ->count();
+            ->pushCriteria(new \Masterkey\Repository\Criteria\WhereColumn('failed_logins', '>', 'logins'))
+            ->count();
 
         $this->assertEquals(1, $count);
     }
 
     public function testUpdateWithCriteria()
     {
-        $inativos    = $this->user->pushCriteria(new InactiveUsers())->count();
+        $users = $this->user->create([
+            'name'          => 'Lopez',
+            'active'        => false,
+            'logins'        => 1,
+            'failed_logins' => 12,
+        ]);
+
+        dd($this->user->all());
+        $inativos     = $this->user->pushCriteria(new InactiveUsers())->count();
+
         $affectedRows = $this->user->pushCriteria(new InactiveUsers())->update(['active' => 1]);
 
         $this->assertEquals($inativos, $affectedRows);
